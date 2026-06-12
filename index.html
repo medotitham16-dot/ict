@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة ICT - بوابة الطالب التفاعلية المؤمنة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) e.preventDefault();
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) e.preventDefault();
+            if (e.ctrlKey && (e.key === 'S' || e.key === 's')) e.preventDefault();
+        });
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght=400;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+            background: #1e2540; /* لون الخلفية الداكن الصافي المتوافق مع الصورة */
+            min-height: 100vh;
+        }
+
+        /* ✨ ستايل خطوط النيون المتوهجة المعتمدة للواجهة الجاذبة للأبطال ✨ */
+        .neon-title-glow {
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5), 0 0 20px rgba(244, 63, 94, 0.5);
+            background: linear-gradient(to right, #38bdf8, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .neon-subtitle-glow {
+            font-weight: 800;
+            text-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+            color: #4ade80;
+        }
+
+        /* نظام الحاويات والبطاقات النيونية المتجاوبة والزجاجية */
+        .theme-dark { 
+            --card-bg: #252d4e; 
+            --card-border: #2f385e; 
+            --text-question: #ffffff; 
+            --text-muted: #94a3b8; 
+            --glass-bg: rgba(37, 45, 78, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+        .theme-light { 
+            --card-bg: #ffffff; 
+            --card-border: #e2e8f0; 
+            --text-question: #0f172a; 
+            --text-muted: #64748b; 
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(15, 23, 42, 0.08);
+        }
+
+        .custom-card { 
+            background-color: var(--card-bg); 
+            border-color: var(--card-border); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+        .question-text { color: var(--text-question); }
+        .custom-text-muted { color: var(--text-muted); }
+
+        /* ✨ ستايل تأثير الزجاج البلوري وحركيات توهج النيون للمجلدات المدمج بالكامل ✨ */
+        .glass-folder-btn {
+            background-color: var(--glass-bg) !important;
+            border-color: var(--glass-border) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        /* توهج المحور الأول (أزرق نيون) */
+        .glass-folder-btn[data-axis="first"]:hover {
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
+            border-color: #38bdf8 !important;
+            transform: translateY(-6px) scale(1.02);
+        }
+        
+        /* توهج المحور الثاني (برتقالي نيون) */
+        .glass-folder-btn[data-axis="second"]:hover {
+            box-shadow: 0 0 25px rgba(251, 146, 60, 0.35);
+            border-color: #fb923c !important;
+            transform: translateY(-6px) scale(1.02);
+        }
+
+        /* توهج المراجعات والتقييمات (أخضر نيون) */
+        .glass-folder-btn[data-review="true"]:hover {
+            box-shadow: 0 0 25px rgba(52, 211, 153, 0.35);
+            border-color: #34d399 !important;
+            transform: translateY(-6px) scale(1.03);
+        }
+
+        /* تأثير الحركة ثلاثية الأبعاد للأيقونات الداخلية للمجلد */
+        .glass-folder-btn:hover i {
+            transform: scale(1.18) rotate(8deg);
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+        .glass-folder-btn i {
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        /* الحقول النيونية الدائرية بيضاء السطح لسهولة الاستخدام */
+        .neon-input {
+            background-color: #ffffff !important;
+            color: #1e2540 !important;
+            border-radius: 18px;
+            font-weight: 700;
+        }
+
+        .neon-btn-blue {
+            background: linear-gradient(135deg, #00b4d8, #0077b6);
+            box-shadow: 0 8px 20px rgba(0, 180, 216, 0.4);
+            border-radius: 18px;
+            transition: all 0.3s ease;
+        }
+        .neon-btn-blue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 180, 216, 0.6);
+        }
+
+        .neon-btn-green {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+
+        /* بقية التنسيقات المستقرة للألعاب والاختبارات */
+        .quiz-option-btn, .game-option-btn { transition: all 0.2s ease-in-out; border-width: 2px; }
+        .quiz-option-btn:hover:not(:disabled), .game-option-btn:hover:not(:disabled) { transform: scale(1.01); filter: brightness(1.1); }
+        .progress-glow { box-shadow: 0 0 15px rgba(34, 211, 238, 0.8); }
+        .game-zone-bg { background: linear-gradient(135deg, #023e8a, #0077b6, #0096c7); border-color: #00b4d8; }
+        .game-card-styled { background: rgba(255, 255, 255, 0.96); color: #1e293b; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+
+        @keyframes gameSuccessGlow { 0% { transform: scale(1); } 50% { transform: scale(1.03); box-shadow: 0 0 30px rgba(74, 222, 128, 0.8); } 100% { transform: scale(1); } }
+        .game-success-animate { animation: gameSuccessGlow 0.4s ease-in-out; }
+        @keyframes gameErrorShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+        .game-error-animate { animation: gameErrorShake 0.3s ease-in-out; }
+
+        .star-particle { position: absolute; font-size: 28px; animation: starFallEffect 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; pointer-events: none; z-index: 100; }
+        @keyframes starFallEffect { 0% { transform: translateY(0) scale(0.3) rotate(0deg); opacity: 1; } 55% { opacity: 1; } 100% { transform: translateY(-160px) scale(1.6) rotate(240deg); opacity: 0; } }
+    </style>
+</head>
+<body class="theme-dark min-h-screen p-2 sm:p-4 flex flex-col items-center justify-start relative select-none">
+
+    <div class="w-full max-w-4xl mx-auto flex justify-between items-center py-3 mb-4 border-b border-slate-700/20">
+        <div class="text-xs font-black text-slate-400 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span>بوابة الطلاب الذكية</span>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="toggleSoundMute()" id="soundToggleBtn" class="custom-card border p-2.5 rounded-xl shadow-md flex items-center justify-center w-11 h-11 active:scale-90 transition-all">
+                <i id="soundIcon" class="fa-solid fa-volume-high text-indigo-400 text-lg"></i>
+            </button>
+            <button onclick="toggleThemeMode()" class="custom-card border p-2.5 rounded-xl shadow-md flex items-center justify-center w-11 h-11 active:scale-90 transition-all">
+                <i id="themeIcon" class="fa-solid fa-sun text-amber-400 text-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="authContainer" class="max-w-md w-full custom-card border-2 rounded-[28px] p-6 sm:p-8 text-center my-auto space-y-6">
+        <div class="space-y-1">
+            <h1 class="text-2xl sm:text-3xl font-black neon-title-glow tracking-tight">منصة تكنولوجيا المعلومات ICT</h1>
+            <h2 class="text-lg font-black neon-subtitle-glow">التجريبية الذكية</h2>
+        </div>
+        
+        <div class="bg-slate-900/40 border border-slate-700/40 rounded-2xl p-4 text-right space-y-3">
+            <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
+                <span class="text-lg">📚</span>
+                <span>دروس المنهج بشكل بسيط</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
+                <span class="text-lg">🎬</span>
+                <span>شرح فيديو مميز لكل درس</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
+                <span class="text-lg">📝</span>
+                <span>أسئلة تقييمية واختبارات دورية</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
+                <span class="text-lg">🎮</span>
+                <span>ألعاب التحدي والمغامرات الشيقة</span>
+            </div>
+        </div>
+
+        <form id="loginForm" class="space-y-4" onsubmit="verifyAndLockStudentCode(event)">
+            <input type="text" id="gradeCodeInput" class="w-full neon-input border-2 border-slate-200 py-4 px-4 text-center tracking-wider focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-400" placeholder="أدخل كود الدخول المعتمد" required>
+            <button type="submit" class="w-full neon-btn-blue text-white font-black py-4 rounded-2xl text-md tracking-wide transition-all">دخول للمنصة</button>
+        </form>
+
+        <div class="pt-4 border-t border-slate-700/30 space-y-3">
+            <p class="text-[11px] sm:text-xs font-bold text-slate-400 leading-relaxed">للاشتراك والحصول على كود الدخول برجاء التواصل عبر واتساب</p>
+            <a href="https://wa.me/201010426471" target="_blank" class="inline-flex items-center gap-2 neon-btn-green text-white font-black px-6 sm:px-8 py-3 shadow-lg hover:scale-105 transition-transform">
+                <span class="text-md font-mono font-bold">01010426471</span>
+                <i class="fa-brands fa-whatsapp text-xl"></i>
+            </a>
+        </div>
+    </div>
+
+    <div id="lessonsDashboard" class="max-w-6xl w-full custom-card border rounded-3xl p-6 shadow-2xl hidden mx-auto space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700/30 pb-5 gap-4">
+            <div class="text-right"><h1 class="text-3xl font-black question-text" id="dashboardTitle">تحميل...</h1><p class="text-indigo-500 font-bold text-sm">اختر القسم لبدء رحلة التعلم</p></div>
+            <button onclick="backToMainAuth()" class="bg-red-500/10 text-red-500 border border-red-500/20 px-6 py-2.5 rounded-2xl text-sm font-black flex items-center gap-2 hover:bg-red-500 hover:text-white transition-all w-full sm:w-auto justify-center"><i class="fa-solid fa-power-off"></i><span>خروج</span></button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" id="lessonsGrid"></div>
+    </div>
+
+    <div id="learningCenterContainer" class="max-w-4xl w-full custom-card border rounded-3xl p-4 sm:p-8 shadow-2xl hidden mx-auto space-y-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-700/10 pb-4">
+            <div class="text-right w-full sm:w-auto">
+                <h2 id="learningCenterTitle" class="text-xl sm:text-2xl font-black text-indigo-500 leading-tight">اسم الدرس</h2>
+            </div>
+            <button onclick="backToLessons()" class="text-xs font-black bg-indigo-600/10 text-indigo-400 py-3 px-6 rounded-xl border border-indigo-500/20 hover:bg-indigo-600 hover:text-white transition-all w-full sm:w-auto text-center flex items-center justify-center gap-2">
+                <i class="fa-solid fa-arrow-left-long"></i> <span>رجوع للمجلدات</span>
+            </button>
+        </div>
+
+        <div class="flex bg-slate-500/10 p-1.5 rounded-2xl gap-2 border border-slate-700/10">
+            <button onclick="switchTab('textTab')" id="btn-textTab" class="flex-1 py-3 text-center rounded-xl transition-all font-black text-sm"></button>
+            <button onclick="switchTab('videoTab')" id="btn-videoTab" class="flex-1 py-3 text-center rounded-xl transition-all font-black text-sm"></button>
+        </div>
+
+        <div id="tabContent-textTab" class="min-h-[300px] flex flex-col items-center justify-center w-full space-y-4">
+            <div id="lessonImageWrapper" class="w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/20 flex flex-col items-center justify-center p-2 relative min-h-[250px]">
+                <img id="lessonMainImageDisplay" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onload="handleImageLoadSuccess()" onerror="handleImageLoadError()" class="w-full h-auto block hidden" alt="الشرح">
+                <div id="lessonImageEmptyAlert" class="p-20 text-center font-bold question-text opacity-60">جاري استدعاء البيانات...</div>
+                <div id="backupImageBtnContainer" class="hidden p-10 text-center"><a id="backupImageLinkBtn" href="#" target="_blank" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold inline-block">فتح في نافذة مستقلة</a></div>
+            </div>
+            
+            <div id="imageGalleryControls" class="flex justify-between items-center w-full max-w-xs mx-auto bg-slate-800/40 p-2 rounded-2xl border border-white/5 hidden">
+                <button onclick="navigateGallery('prev')" class="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center active:scale-90 transition-all font-bold shadow">▶</button>
+                <span id="galleryPageIndicator" class="text-xs font-black text-indigo-400 font-mono">صفحة 1 من 1</span>
+                <button onclick="navigateGallery('next')" class="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center active:scale-90 transition-all font-bold shadow">◀</button>
+            </div>
+        </div>
+
+        <div id="tabContent-videoTab" class="hidden">
+            <div class="w-full rounded-2xl bg-indigo-600/5 border-2 border-dashed border-indigo-500/20 p-12 text-center flex flex-col items-center justify-center gap-6">
+                <div id="videoIconContainer" class="w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-inner"></div>
+                <div class="space-y-2">
+                    <h3 id="videoStatusTitle" class="text-xl font-black question-text">الفحص...</h3>
+                    <p id="videoStatusDesc" class="text-sm custom-text-muted font-bold">جاري التأكد من توفر الفيديو...</p>
+                </div>
+                <a id="lessonVideoLinkBtn" href="#" target="_blank" class="bg-red-600 hover:bg-red-500 text-white font-black py-4 px-10 rounded-2xl transition-all shadow-xl shadow-red-500/20 hidden flex items-center gap-3"><i class="fa-brands fa-youtube text-2xl"></i>مشاهدة الآن</a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <button onclick="startStandardQuizEngine()" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bolt-lightning text-lg"></i> بدء التقييم والاختبار الحالي
+            </button>
+            <button onclick="startInteractiveGameEngine()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
+                <i class="fa-solid fa-gamepad text-xl animate-bounce"></i> دخول مغامرة اللعبة التفاعلية 🎮
+            </button>
+        </div>
+    </div>
+
+    <div id="quizContainer" class="max-w-4xl w-full custom-card border rounded-3xl overflow-hidden hidden mx-auto shadow-2xl">
+        <div class="bg-gradient-to-r from-red-700 via-red-600 to-red-800 p-5 text-white flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl border border-white/30 backdrop-blur-md"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <h3 class="text-lg font-black italic">تكنولوجيا المعلومات والاتصالات</h3>
+                    <p id="quizDynamicGradeSub" class="text-xs text-red-100 font-black opacity-90 uppercase">الصف الدراسي</p>
+                </div>
+            </div>
+            <div class="text-left">
+                <span id="quizDynamicLessonTitle" class="bg-black/30 text-white font-black text-xs px-4 py-2 rounded-xl border border-white/10">الدرس الحالي</span>
+            </div>
+        </div>
+
+        <div id="quizProgressBarContainer" class="w-full bg-slate-200/20 h-2">
+            <div id="quizProgressBarFill" class="bg-cyan-400 h-full w-0 transition-all duration-500 progress-glow"></div>
+        </div>
+
+        <div class="p-6 sm:p-10 space-y-8">
+            <div id="quizActiveContent" class="space-y-8">
+                <div id="quizMetaHeader" class="flex justify-between items-center">
+                    <div class="text-sm font-black text-indigo-500" id="quizHeaderLabel">سؤال 1</div>
+                    <div id="timerBadge" class="bg-red-500/10 text-red-500 border border-red-500/20 px-4 py-1.5 rounded-full text-sm font-black font-mono"><i class="fa-solid fa-stopwatch ml-2"></i><span id="timerBox">00</span></div>
+                </div>
+
+                <div id="quizMainCard" class="bg-slate-500/5 p-8 rounded-3xl border-2 border-slate-700/10">
+                    <h2 id="questionBox" class="text-xl sm:text-2xl font-black text-right leading-relaxed question-text">...</h2>
+                </div>
+
+                <div id="optionsContainer" class="grid grid-cols-1 gap-4"></div>
+
+                <div id="quizActionsRow" class="flex justify-between items-center pt-6">
+                    <div class="flex gap-3">
+                        <button id="prevBtn" onclick="goToPrevQuestion()" class="bg-slate-500/10 question-text font-black px-6 py-3 rounded-2xl disabled:opacity-30">السابق</button>
+                        <button id="nextBtn" onclick="goToNextQuestion()" class="bg-indigo-600 text-white font-black px-8 py-3 rounded-2xl shadow-lg">التالي</button>
+                    </div>
+                    <button id="forceExitBtn" onclick="confirmForceExitQuiz()" class="text-red-500 text-xs font-black hover:underline">تسليم الاختبار</button>
+                </div>
+            </div>
+
+            <div id="emptyQuizState" class="hidden text-center py-12 space-y-6">
+                <div class="w-20 h-20 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto"><i class="fa-solid fa-file-circle-xmark"></i></div>
+                <h2 id="emptyQuizHeaderLabel" class="text-2xl font-black question-text">لا توجد أسئلة حالياً لهذا الدرس</h2>
+                <p id="emptyQuizSubLabel" class="custom-text-muted text-sm font-bold max-w-sm mx-auto leading-relaxed">لم يتم رفع أسئلة أو اختبارات لهذا الدرس بعد، تابع مع معلمك لاحقاً.</p>
+                <button onclick="backToCurrentLesson()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black px-10 py-3.5 rounded-2xl shadow-lg text-sm">العودة لصفحة الدرس</button>
+            </div>
+
+            <div id="resultBox" class="hidden text-center py-10 space-y-8">
+                <div class="w-24 h-24 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner"><i class="fa-solid fa-trophy"></i></div>
+                <div class="space-y-2">
+                    <h2 class="text-3xl font-black question-text">تم رصد درجتك بنجاح!</h2>
+                    <p class="custom-text-muted text-sm font-bold">طالع ملخص تقييمك وأدائك الفوري بالأسفل.</p>
+                </div>
+                <div class="bg-black/10 p-8 rounded-3xl max-w-sm mx-auto space-y-2">
+                    <div id="scoreBox" class="text-indigo-500 font-black text-xl">الدرجة: 0 / 0</div>
+                    <div id="percentageBox" class="text-5xl font-black text-emerald-500">0%</div>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto pt-4">
+                    <button onclick="startReviewMode(false)" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-black py-3.5 rounded-2xl shadow-md">مراجعة كافة الأسئلة</button>
+                    <button id="reviewErrorsBtn" onclick="startReviewMode(true)" class="bg-red-600 hover:bg-red-500 text-white text-xs font-black py-3.5 rounded-2xl shadow-md hidden">الأخطاء فقط</button>
+                    <button onclick="backToCurrentLesson()" class="sm:col-span-2 bg-slate-500/10 hover:bg-slate-500/20 question-text font-black py-4 rounded-2xl text-sm border border-slate-700/20">العودة لصفحة الدرس الحالي</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="interactiveGameContainer" class="max-w-4xl w-full game-zone-bg border-4 rounded-3xl overflow-hidden hidden mx-auto shadow-2xl relative">
+        <div class="bg-slate-900/80 p-5 text-white flex justify-between items-center border-b border-cyan-500/30">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-cyan-500/20 text-cyan-400 rounded-xl flex items-center justify-center text-xl border border-cyan-500/30 backdrop-blur-sm"><i class="fa-solid fa-gamepad"></i></div>
+                <div>
+                    <h3 id="gameLessonTitle" class="text-md font-black tracking-tight text-cyan-300">تحميل اسم اللعبة...</h3>
+                    <p class="text-[11px] text-amber-300 font-bold opacity-90 animate-pulse">🎯 طور المغامرة والتحدي التفاعلي للأبطال</p>
+                </div>
+            </div>
+            <div class="bg-cyan-500 text-slate-950 font-black text-xs px-4 py-2 rounded-xl border border-cyan-300 shadow-md shadow-cyan-500/20" id="gameScoreCounter">النجوم المجمعة: 0 ⭐</div>
+        </div>
+
+        <div class="w-full bg-slate-900/60 h-3">
+            <div id="gameProgressBarFill" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-full w-0 transition-all duration-500 progress-glow"></div>
+        </div>
+
+        <div class="p-6 sm:p-10 space-y-8 relative">
+            <div id="gameActiveArea" class="space-y-6">
+                <div class="flex justify-between items-center text-xs font-black text-cyan-200">
+                    <span id="gameQuestIndexLabel" class="bg-slate-900/60 px-3 py-1 rounded-md">المهمة رقم 1</span>
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-4 py-1.5 rounded-full font-black"><i class="fa-solid fa-wand-magic-sparkles ml-1"></i>العب وتعلم الآن</span>
+                </div>
+
+                <div id="gameQuestionMainCard" class="game-card-styled p-8 rounded-3xl transition-all duration-300 relative border-b-4 border-slate-300">
+                    <div class="absolute -top-3 right-6 bg-indigo-600 text-white text-[10px] px-3 py-0.5 rounded-full font-black shadow">سؤال التحدي</div>
+                    <h2 id="gameQuestionBox" class="text-xl sm:text-2xl font-black text-right leading-relaxed">...</h2>
+                </div>
+
+                <div id="gameOptionsContainer" class="grid grid-cols-1 gap-4"></div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-cyan-500/20">
+                    <button onclick="confirmExitGame()" class="text-cyan-200 text-xs font-black hover:underline mr-auto bg-slate-900/40 px-4 py-2 rounded-xl border border-cyan-500/20">انسحاب والعودة لصفحة الدرس</button>
+                </div>
+            </div>
+
+            <div id="gameResultArea" class="hidden text-center py-8 space-y-6 bg-slate-900/60 rounded-3xl p-6 border border-cyan-500/20">
+                <div id="gameTrophyBox" class="w-24 h-24 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-amber-500/30"><i class="fa-solid fa-trophy animate-bounce"></i></div>
+                <div class="space-y-1">
+                    <h2 id="gameResultHeading" class="text-3xl font-black text-amber-300">بطل خارق متميز!</h2>
+                    <p id="gameResultSub" class="text-slate-300 text-sm font-bold">ملخص حصاد نجومك في المغامرة التكنولوجية</p>
+                </div>
+                <div class="bg-slate-950 p-6 rounded-2xl max-w-xs mx-auto border border-slate-800">
+                    <div id="gameFinalPercent" class="text-5xl font-black text-emerald-400">0%</div>
+                    <div id="gameFinalScore" class="text-cyan-400 font-black text-sm mt-2">الدرجة: 0 / 0</div>
+                </div>
+                <button onclick="backToCurrentLesson()" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-4 px-10 rounded-2xl text-sm shadow-lg">العودة لصفحة الدرس الحالي</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="globalEmptyState" class="max-w-md w-full custom-card border rounded-3xl p-8 text-center hidden mx-auto space-y-4 my-auto">
+        <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto"><i class="fa-solid fa-file-circle-xmark"></i></div>
+        <h3 id="emptyStateTitle" class="text-xl font-black question-text">المحتوى التقييمي قيد الإعداد</h3>
+        <p id="emptyStateDesc" class="custom-text-muted text-xs font-bold leading-relaxed">لم يقم المعلم برفع أسئلة أو تحديات لهذا القسم بعد.</p>
+        <button onclick="backToLessons()" class="bg-slate-500/10 question-text text-xs font-black py-2.5 px-6 rounded-xl border border-slate-500/20">رجوع للمجلدات</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdPtiyl2hlZ7U5IWM4gd-vHHORrKqpBJI",
+            authDomain: "ict-eleman.firebaseapp.com",
+            databaseURL: "https://ict-eleman-default-rtdb.firebaseio.com",
+            projectId: "ict-eleman",
+            storageBucket: "ict-eleman.firebasestorage.app",
+            messagingSenderId: "465727317048",
+            appId: "1:465727317048:web:c2677429ab1c05b9f1f2cd",
+            measurementId: "G-YRDX6GPW2G"
+        };
+        const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+        
+        const gradeNames = { 'grade3':'الثالث الابتدائي', 'grade4':'الرابع الابتدائي', 'grade5':'الخامس الابتدائي', 'grade6':'السادس الابتدائي', 'prep1':'الأول الإعدادي', 'prep2':'الثاني الإعدادي', 'prep3':'الثالث الإعدادي', 'sec1':'الصف الأول الثانوي' };
+        
+        let selectedGrade = "", selectedLesson = "", currentLessonTextTitle = "";
+        let allQuestionsFetched = [], activeQuestions = [], studentAnswers = [], currentIndex = 0, timer, timeLeft = 0, deviceFingerprint = "", isReviewMode = false;
+        let gameQuestions = [], gameIndex = 0, gameScore = 0, gameButtonsBlocked = false, isSoundMuted = false;
+        
+        let currentLessonImagesArray = [];
+        let currentImageIndexInGallery = 0;
+
+        window.playGameSound = function(type) {
+            if (isSoundMuted) return;
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+                if (type === 'success') { oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime); oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.15); } 
+                else if (type === 'error') { oscillator.type = 'triangle'; oscillator.frequency.setValueAtTime(220, audioCtx.currentTime); gainNode.gain.setValueAtTime(0.35, audioCtx.currentTime); oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.15); } 
+                else if (type === 'victory') { oscillator.type = 'square'; const notes = [523.25, 587.33, 659.25, 783.99, 1046.50]; notes.forEach((freq, idx) => { oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.08)); }); gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime); oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.45); }
+            } catch(e) {}
+        }
+
+        function triggerGameStars() {
+            const container = document.getElementById('interactiveGameContainer');
+            for (let i = 0; i < 15; i++) {
+                const star = document.createElement("div"); star.className = "star-particle"; star.innerHTML = "⭐";
+                star.style.left = (Math.random() * container.offsetWidth) + "px"; star.style.top = (Math.random() * (container.offsetHeight / 2) + (container.offsetHeight / 4)) + "px";
+                container.appendChild(star); setTimeout(() => star.remove(), 1200);
+            }
+        }
+
+        window.toggleSoundMute = function() { isSoundMuted = !isSoundMuted; document.getElementById('soundIcon').className = isSoundMuted ? "fa-solid fa-volume-xmark text-red-500 text-xl" : "fa-solid fa-volume-high text-indigo-500 text-xl"; }
+        window.toggleThemeMode = function() {
+            const body = document.body; const icon = document.getElementById('themeIcon');
+            if (body.classList.contains('theme-dark')) { body.classList.remove('theme-dark'); body.classList.add('theme-light'); icon.className = "fa-solid fa-moon text-indigo-600"; localStorage.setItem('user_theme', 'light'); } 
+            else { body.classList.remove('theme-light'); body.classList.add('theme-dark'); icon.className = "fa-solid fa-sun text-amber-400"; localStorage.setItem('user_theme', 'dark'); }
+        }
+
+        function getDeviceFingerprint() { let id = localStorage.getItem('student_device_token'); if (!id) { id = 'dev_' + Math.random().toString(36).substring(2, 15); localStorage.setItem('student_device_token', id); } return id; }
+
+        window.verifyAndLockStudentCode = async function(e) {
+            e.preventDefault(); const inputCode = document.getElementById('gradeCodeInput').value.trim(); deviceFingerprint = getDeviceFingerprint();
+            try {
+                const codeSnapshot = await get(ref(db, `individual_student_codes/${inputCode}`));
+                if (!codeSnapshot.exists()) { alert("الكود غير صحيح!"); return; }
+                const codeData = codeSnapshot.val();
+                if (codeData.lockedDevice && codeData.lockedDevice !== deviceFingerprint) { alert("الكود مقفل على جهاز آخر!"); return; }
+                if (!codeData.lockedDevice) { await update(ref(db, `individual_student_codes/${inputCode}`), { lockedDevice: deviceFingerprint }); }
+                selectedGrade = codeData.grade; document.getElementById('authContainer').classList.add('hidden'); document.getElementById('lessonsDashboard').classList.remove('hidden'); document.getElementById('dashboardTitle').innerText = "منهج " + gradeNames[selectedGrade]; buildLessonsGrid();
+            } catch (error) { alert("خطأ في الاتصال بالسيرفر! تأكد من إعداد القواعد Security Rules المحدثة."); }
+        }
+
+        async function buildLessonsGrid() {
+            const grid = document.getElementById('lessonsGrid'); grid.innerHTML = ''; let folderStructure = [];
+            const primaryLessonTitles = {
+                'grade3': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
+                'grade4': ["أدوات الاستكشافات العلمية", "أجهزة الحاسب ومكوناتها", "أنظمة التشغيل", "التكنولوجيا المساعدة", "المشكلات التكنولوجية الشائعة وحلولها", "مصادر جمع البيانات وتحليلها", "الحماية من مخاطر شبكة الإنترنت", "الاستخدام الصحيح والأخلافي لتكنولوجيا المعلومات", "عمليات البحث على شبكة الإنترنت", "الجهات المسئولة عن حل مشكلات الإنترنت", "الأمان الرقمي", "مشروع تطبيقي"],
+                'grade5': ["الأجهزة الملحقة بالحاسب الآلي", "الشبكات وأنواعها", "أنظمة التواصل الذكية", "مشكلات الاتصال بالإنترنت وخطوات حلها", "الملفات الرقمية وكيفية التعامل معها", "مشاركة المعلومات: متى وأين وكيف؟", "أساليب حماية البيانات والمعلومات", "إدارة كلمات المرور", "طرق التعامل مع المواقع الإلكترونية الاحتيالية", "حقوق النشر", "انتقاء المصادر الرقمية", "توثيق المعلومات"],
+                'grade6': ["شبكات الكمبيوتر", "التكنولوجيا المستقبلية", "التكنولوجيا المتطورة لذوي الاحتياجات الخاصة", "أدوات البحث الرقمي", "كيف تعمل أنظمة تشغيل الأجهزة", "أنا مصمم مواقع انترنت!", "عالم الألعاب الالكترونية : متعة وأمان", "حماية بياناتي الرقمية !", "كن بطل الأمن السيبراني !", "التداول المالي الالكتروني", "الحوسبة السحابية", "تطبيقات التخزين السحابي"],
+                'prep3': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
+                'sec1': ["مقدمة في إنشاء مواقع الويب والبرمجيات", "التخطيط لتصميم موقع ويب ثابت", "أساسيات لغة HTML وعلاماتها الرئيسية", "إضافة النصوص والصور والروابط باستخدام HTML", "مقدمة في لغة التنسيق CSS", "ضبط الألوان والخطوط والخلفيات باستخدام CSS", "أساسيات لغات البرمجة التفاعلية (JavaScript)", "المفاهيم البرمجية الأساسية (المتغيرات والشروط)", "تصميم النماذج Forms والتحقق من صحة البيانات", "تكنولوجيا الذكاء الاصطناعي والأمن السيبراني"]
+            };
+
+            if (['grade4', 'grade5', 'grade6'].includes(selectedGrade)) {
+                const titles = primaryLessonTitles[selectedGrade];
+                for (let i = 1; i <= 6; i++) { folderStructure.push({ key: `lesson${i}`, label: `الدرس ${i}`, subLabel: titles[i-1], tag: 'المحور الأول', isReview: false, axis: 'first' }); }
+                folderStructure.push({ key: 'review1', label: '📝 مراجعة المطبوع', subLabel: 'تقييم شامل ومراجعة المحور الأول', tag: 'المحور الأول', isReview: true });
+                for (let i = 1; i <= 6; i++) { folderStructure.push({ key: `lesson${i+6}`, label: `الدرس ${i}`, subLabel: titles[i+5], tag: 'المحور الثاني', isReview: false, axis: 'second' }); }
+                folderStructure.push({ key: 'review2', label: '🏆 مراجعة ختامية', subLabel: 'تقييم شامل ومراجعة المحور الثاني', tag: 'المحور الثاني', isReview: true });
+            } else if (['grade3', 'prep3'].includes(selectedGrade)) {
+                const titles = primaryLessonTitles[selectedGrade]; titles.forEach((title, idx) => { folderStructure.push({ key: `lesson${idx+1}`, label: `القسم ${idx+1}`, subLabel: title, isReview: false, axis: 'first' }); });
+            } else if (selectedGrade === 'prep1') {
+                const prep1Titles = ["التكنولوجيا الخضراء Green Technology", "التحول الرقمي Digital Transformation", "أنظمة التشغيل Operating Systems", "تثبيت وإزالة البرامج والأجهزة الرقمية الملحقة", "البريد الإلكتروني E-mail", "الحوسبة السحابية Cloud Computing", "جوجل ميت وإدارة مشروعك Google Meet", "تصميم قواعد البيانات Databases Design", "النماذج والاستعلامات Forms & Queries", "المشروع + مراجعة عامة على المنهج"];
+                prep1Titles.forEach((title, idx) => { folderStructure.push({ key: `lesson${idx+1}`, label: idx === 9 ? title : `الدرس ${idx+1}`, subLabel: idx === 9 ? 'تقييم ختامي' : title, isReview: idx === 9, axis: idx < 5 ? 'first' : 'second' }); });
+            } else if (selectedGrade === 'prep2') {
+                const unit1Titles = ["الأنظمة الذكية وتأثيرها على التغيرات المناخية", "التهديدات السيبرانية المتقدمة", "البيانات الضخمة Big Data", "البيانات الضخمة وعلاقتها بالذكاء الاصطناعي"];
+                const unit2Titles = ["مبادئ تصميم واجهات شيقة للمواقع الإلكترونية", "تنسيق صفحات الويب", "مشروعي الرقمي لمدرستي", "إنشاء موقع ويب بمساعدة AI"];
+                unit1Titles.forEach((title, idx) => { folderStructure.push({ key: `lesson${idx+1}`, label: `الدرس ${idx+1}`, subLabel: title, tag: 'الوحدة الأولى', isReview: false, axis: 'first' }); });
+                folderStructure.push({ key: 'review1', label: '📝 مراجعة عامة الوحدة الأولى', subLabel: 'الذكاء الاصطناعي وحماية بياناتنا', isReview: true });
+                unit2Titles.forEach((title, idx) => { folderStructure.push({ key: `lesson${idx+5}`, label: `الدرس ${idx+1}`, subLabel: title, tag: 'الوحدة الثانية', isReview: false, axis: 'second' }); });
+                folderStructure.push({ key: 'review2', label: '🏆 مراجعة عامة الوحدة الثانية', subLabel: 'تصميم وإنشاء مواقع الويب', isReview: true });
+            } else if (selectedGrade === 'sec1') {
+                const titles = primaryLessonTitles['sec1'];
+                for (let i = 1; i <= 6; i++) { folderStructure.push({ key: `lesson${i}`, label: `الدرس ${i}`, subLabel: titles[i-1], tag: 'المحور الأول', isReview: false, axis: 'first' }); }
+                folderStructure.push({ key: 'review1', label: '📝 مراجعة شاملة', subLabel: 'تقييم ومراجعة المحور الأول الشاملة', tag: 'المحور الأول', isReview: true });
+                for (let i = 7; i <= 10; i++) { folderStructure.push({ key: `lesson${i}`, label: `الدرس ${i}`, subLabel: titles[i-1], tag: 'المحور الثاني', isReview: false, axis: 'second' }); }
+                folderStructure.push({ key: 'review2', label: '🏆 التقييم النهائي', subLabel: 'المشروع النهائي والتقييم الشامل للمنهج', tag: 'المحور الثاني', isReview: true });
+            }
+
+            let dynamicTitlesData = {};
+            try {
+                const titleSnapshot = await get(ref(db, `lessons_content/${selectedGrade}`));
+                if (titleSnapshot.exists()) { dynamicTitlesData = titleSnapshot.val(); }
+            } catch(e) {}
+
+            const existingLessonKeys = new Set(folderStructure.map(item => item.key));
+            const extraLessonKeys = Object.keys(dynamicTitlesData).filter(lessonKey => !existingLessonKeys.has(lessonKey)).sort((a, b) => { const orderA = Number(dynamicTitlesData[a]?.order ?? 999999); const orderB = Number(dynamicTitlesData[b]?.order ?? 999999); return orderA - orderB || a.localeCompare(b, 'ar'); });
+
+            extraLessonKeys.forEach((lessonKey, idx) => {
+                const lessonData = dynamicTitlesData[lessonKey] || {};
+                folderStructure.push({ key: lessonKey, label: lessonKey.startsWith('review') ? 'مراجعة إضافية' : `درس إضافي ${idx + 1}`, subLabel: lessonData.customTitle && lessonData.customTitle.trim() ? lessonData.customTitle.trim() : 'مجلد إضافي', tag: 'مجلد إضافي', isReview: lessonKey.startsWith('review'), axis: 'first' });
+            });
+
+            folderStructure.forEach((item) => {
+                const gridNode = document.getElementById('lessonsGrid'); if(!gridNode) return;
+                let finalDisplaySubLabel = item.subLabel;
+                if (dynamicTitlesData[item.key] && dynamicTitlesData[item.key].customTitle) { finalDisplaySubLabel = dynamicTitlesData[item.key].customTitle; }
+
+                const folder = document.createElement('button'); 
+                const badgeHtml = item.tag ? `<span class="bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full font-bold mb-1">${item.tag}</span>` : '';
+                
+                folder.setAttribute('data-axis', item.axis || 'first');
+                if (item.isReview) folder.setAttribute('data-review', 'true');
+                
+                folder.className = `custom-card border-2 p-5 rounded-3xl flex flex-col items-center gap-3 shadow-lg glass-folder-btn ${item.isReview ? 'bg-emerald-500/5 border-emerald-500/20' : ''}`;
+                folder.innerHTML = `${badgeHtml}<i class="fa-solid ${item.isReview ? 'fa-file-shield text-emerald-500' : 'fa-folder-open text-amber-500'} text-3xl"></i><div class="text-center px-1"><span class="block font-black question-text text-sm">${item.label}</span><span class="text-[11px] font-bold text-indigo-400 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
+                folder.onclick = () => openLearningCenter(item.key, item.label + " : " + finalDisplaySubLabel);
+                gridNode.appendChild(folder);
+            });
+        }
+
+        window.openLearningCenter = async function(lessonKey, fullDisplayTitle) {
+            selectedLesson = lessonKey; currentLessonTextTitle = fullDisplayTitle; isReviewMode = false;
+            
+            currentLessonImagesArray = [];
+            currentImageIndexInGallery = 0;
+            document.getElementById('imageGalleryControls').classList.add('hidden');
+
+            const mainImgDisplay = document.getElementById('lessonMainImageDisplay');
+            mainImgDisplay.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; mainImgDisplay.classList.add('hidden');
+            document.getElementById('backupImageBtnContainer').classList.add('hidden');
+            document.getElementById('lessonImageEmptyAlert').innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2 text-indigo-500"></i>جاري استدعاء البيانات...`;
+            
+            document.getElementById('lessonsDashboard').classList.add('hidden'); 
+            document.getElementById('learningCenterContainer').classList.remove('hidden'); 
+            document.getElementById('learningCenterTitle').innerText = fullDisplayTitle;
+            switchTab('textTab');
+            
+            try {
+                const lessonSnapshot = await get(ref(db, `lessons_content/${selectedGrade}/${selectedLesson}`));
+                if (lessonSnapshot.exists()) {
+                    const lData = lessonSnapshot.val();
+                    let rawImgURL = lData.imageURL ? lData.imageURL.trim() : "";
+                    
+                    if (rawImgURL && rawImgURL !== "" && rawImgURL !== "#") {
+                        if(rawImgURL.includes(",")) {
+                            currentLessonImagesArray = rawImgURL.split(",").map(str => str.trim()).filter(str => str !== "");
+                        } else {
+                            currentLessonImagesArray = [rawImgURL];
+                        }
+                        currentImageIndexInGallery = 0;
+                        displaySelectedGalleryImage();
+                    } else { executeEmptyUI('image'); }
+                    
+                    let rawVideoURL = lData.videoURL ? lData.videoURL.trim() : "";
+                    if (rawVideoURL && rawVideoURL !== "" && rawVideoURL !== "#") {
+                        document.getElementById('lessonVideoLinkBtn').href = rawVideoURL; document.getElementById('lessonVideoLinkBtn').classList.remove('hidden');
+                        document.getElementById('videoIconContainer').innerHTML = `<i class="fa-brands fa-youtube text-red-500"></i>`;
+                        document.getElementById('videoStatusTitle').innerText = "فيديو الشرح جاهز";
+                    } else { executeEmptyUI('video'); }
+                } else { executeEmptyUI('both'); }
+            } catch(e) { executeEmptyUI('both'); }
+
+            try {
+                const snapshot = await get(ref(db, "questions"));
+                if (snapshot.exists()) {
+                    const allData = Object.values(snapshot.val());
+                    allQuestionsFetched = allData.filter(q => q.grade === selectedGrade && q.lesson === selectedLesson);
+                    gameQuestions = allData.filter(q => q.grade === selectedGrade && q.lesson === (selectedLesson + "_game"));
+                } else { allQuestionsFetched = []; gameQuestions = []; }
+            } catch (error) { allQuestionsFetched = []; gameQuestions = []; }
+        }
+
+        function displaySelectedGalleryImage() {
+            if(currentLessonImagesArray.length === 0) return;
+            const mainImgDisplay = document.getElementById('lessonMainImageDisplay');
+            const alertBox = document.getElementById('lessonImageEmptyAlert');
+            
+            alertBox.classList.remove('hidden');
+            alertBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2 text-indigo-500"></i>جاري تحميل الصفحة الفورية...`;
+            mainImgDisplay.classList.add('hidden');
+            
+            let rawUrl = currentLessonImagesArray[currentImageIndexInGallery];
+            let directImg = rawUrl;
+            if (directImg.includes("drive.google.com/file/d/")) { 
+                directImg = `https://docs.google.com/uc?export=view&id=${directImg.split("/file/d/")[1].split("/")[0]}`; 
+            }
+            
+            document.getElementById('backupImageLinkBtn').href = rawUrl;
+            mainImgDisplay.src = directImg;
+
+            const galleryControls = document.getElementById('imageGalleryControls');
+            if(currentLessonImagesArray.length > 1) {
+                galleryControls.classList.remove('hidden');
+                document.getElementById('galleryPageIndicator').innerText = `صفحة ${currentImageIndexInGallery + 1} من ${currentLessonImagesArray.length}`;
+            } else {
+                galleryControls.classList.add('hidden');
+            }
+        }
+
+        window.navigateGallery = function(direction) {
+            if(currentLessonImagesArray.length <= 1) return;
+            if(direction === 'next') {
+                currentImageIndexInGallery = (currentImageIndexInGallery + 1) % currentLessonImagesArray.length;
+            } else {
+                currentImageIndexInGallery = (currentImageIndexInGallery - 1 + currentLessonImagesArray.length) % currentLessonImagesArray.length;
+            }
+            displaySelectedGalleryImage();
+        }
+
+        window.handleImageLoadSuccess = function() { 
+            const currentSrc = document.getElementById('lessonMainImageDisplay').src;
+            if (currentSrc && !currentSrc.startsWith("data:image/gif")) {
+                document.getElementById('lessonMainImageDisplay').classList.remove('hidden'); 
+                document.getElementById('lessonImageEmptyAlert').classList.add('hidden'); 
+            }
+        }
+        window.handleImageLoadError = function() { 
+            const currentSrc = document.getElementById('lessonMainImageDisplay').src;
+            if (currentSrc && !currentSrc.startsWith("data:image/gif")) {
+                document.getElementById('lessonMainImageDisplay').classList.add('hidden');
+                document.getElementById('lessonImageEmptyAlert').classList.add('hidden'); 
+                document.getElementById('backupImageBtnContainer').classList.remove('hidden'); 
+            }
+        }
+
+        function executeEmptyUI(type) {
+            if (type === 'image' || type === 'both') { 
+                document.getElementById('lessonMainImageDisplay').src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+                document.getElementById('lessonMainImageDisplay').classList.add('hidden');
+                const imgAlert = document.getElementById('lessonImageEmptyAlert');
+                imgAlert.classList.remove('hidden');
+                imgAlert.className = "p-12 text-center text-amber-500 font-bold text-sm leading-relaxed";
+                imgAlert.innerHTML = `<i class="fa-solid fa-note-sticky text-2xl block mb-2 animate-bounce"></i>📚 الشرح المصور قيد التحضير...<span class="block text-[11px] font-normal opacity-80 mt-1">يقوم المعلم حالياً بتجهيز وإعداد مذكرتك الفورية، وستظهر هنا تلقائياً فور نشرها.</span>`;
+            }
+            if (type === 'video' || type === 'both') { 
+                document.getElementById('videoIconContainer').innerHTML = `<i class="fa-solid fa-clock text-amber-500"></i>`; 
+                document.getElementById('videoStatusTitle').innerText = "الشرح المرئي قيد التحضير"; document.getElementById('lessonVideoLinkBtn').classList.add('hidden'); 
+            }
+        }
+
+        window.switchTab = function(tabId) {
+            document.getElementById('tabContent-textTab').classList.add('hidden'); document.getElementById('tabContent-videoTab').classList.add('hidden');
+            const isDark = document.body.classList.contains('theme-dark'); const btnText = document.getElementById('btn-textTab'); const btnVideo = document.getElementById('btn-videoTab');
+            const inactiveClass = isDark ? "flex-1 py-3 text-center rounded-xl text-slate-400 font-bold" : "flex-1 py-3 text-center rounded-xl text-slate-500 font-bold";
+            btnText.className = inactiveClass; btnVideo.className = inactiveClass;
+            document.getElementById('tabContent-' + tabId).classList.remove('hidden'); 
+            document.getElementById('btn-' + tabId).className = "flex-1 py-3 text-center rounded-xl bg-white text-indigo-900 font-black shadow-md";
+            btnText.innerHTML = `<i class="fa-solid fa-file-invoice ml-2"></i>المذكرة`; btnVideo.innerHTML = `<i class="fa-solid fa-play-circle ml-2"></i>الفيديو`;
+        }
+
+        window.startStandardQuizEngine = function() {
+            if(allQuestionsFetched.length === 0) {
+                document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('quizContainer').classList.remove('hidden');
+                document.getElementById('quizActiveContent').classList.add('hidden'); document.getElementById('quizProgressBarContainer').classList.add('hidden');
+                document.getElementById('emptyQuizHeaderLabel').innerText = "الاختبار التقييمي قيد التحضير";
+                document.getElementById('emptyQuizSubLabel').innerText = "لم يقم المعلم برفع أسئلة الامتحان العادية القياسية لهذا الدرس بعد.";
+                document.getElementById('emptyQuizState').classList.remove('hidden'); return;
+            }
+            document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('quizActiveContent').classList.remove('hidden'); document.getElementById('resultBox').classList.add('hidden');
+            document.getElementById('emptyQuizState').classList.add('hidden'); document.getElementById('quizProgressBarContainer').classList.remove('hidden');
+            document.getElementById('quizDynamicGradeSub').innerText = gradeNames[selectedGrade]; document.getElementById('quizDynamicLessonTitle').innerText = currentLessonTextTitle;
+            isReviewMode = false; activeQuestions = [...allQuestionsFetched]; studentAnswers = new Array(activeQuestions.length).fill(null); currentIndex = 0; renderQuestion();
+        }
+
+        function renderQuestion() {
+            clearInterval(timer);
+            if (activeQuestions.length === 0 || !activeQuestions[currentIndex]) return;
+            const currentQ = activeQuestions[currentIndex];
+            document.getElementById('quizProgressBarFill').style.width = ((currentIndex + 1) / activeQuestions.length * 100) + '%';
+            
+            if(isReviewMode) { document.getElementById('quizHeaderLabel').innerHTML = `<i class="fa-solid fa-shield-halved text-emerald-400"></i> مراجعة: سؤال ${currentIndex + 1} من ${activeQuestions.length}`; } 
+            else { document.getElementById('quizHeaderLabel').innerText = `السؤال رقم ${currentIndex + 1} من أصل ${activeQuestions.length}`; }
+            
+            document.getElementById('questionBox').innerText = currentQ.question;
+            if (!isReviewMode) {
+                timeLeft = currentQ.time || 30; document.getElementById('timerBox').innerText = timeLeft;
+                timer = setInterval(() => { timeLeft--; document.getElementById('timerBox').innerText = timeLeft; if(timeLeft <= 0) goToNextQuestion(); }, 1000);
+            }
+
+            const container = document.getElementById('optionsContainer'); container.innerHTML = '';
+            
+            const qOptions = currentQ.options || (currentQ.type === 'true_false' ? ["صح", "خطأ"] : []);
+            if (qOptions && Array.isArray(qOptions)) {
+                qOptions.forEach((opt, idx) => {
+                    if (!opt || opt.toString().trim() === "") return;
+                    
+                    const btn = document.createElement('button'); btn.disabled = isReviewMode;
+                    btn.className = `w-full text-right p-5 rounded-2xl font-black text-sm quiz-option-btn border-2`;
+                    
+                    if (isReviewMode) {
+                        const realQIndex = allQuestionsFetched.findIndex(q => q.question === currentQ.question);
+                        const studentAns = studentAnswers[realQIndex];
+                        if (idx === currentQ.correct) {
+                            btn.className += " bg-emerald-500/10 text-emerald-400 border-emerald-500 shadow-md";
+                            btn.innerHTML = `<div class="flex justify-between items-center"><span>${opt}</span><span class="bg-emerald-500 text-slate-950 text-[10px] px-2 py-0.5 rounded-md font-bold">✓ الإجابة الصحيحة</span></div>`;
+                        } else if (idx === studentAns && idx !== currentQ.correct) {
+                            btn.className += " bg-red-500/10 text-red-500 border-red-500";
+                            btn.innerHTML = `<div class="flex justify-between items-center"><span>${opt}</span><span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-md font-bold">✗ إجابتك الخاطئة</span></div>`;
+                        } else { btn.className += " bg-slate-500/5 border-slate-700/10 question-text opacity-40"; btn.innerHTML = `<span>${opt}</span>`; }
+                    } else {
+                        if (studentAnswers[currentIndex] === idx) {
+                            btn.className += " bg-indigo-600 border-indigo-600 text-white shadow-lg";
+                            btn.innerHTML = `<div class="flex justify-between items-center"><span>${opt}</span><div class="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center"><i class="fa-solid fa-check text-[10px]"></i></div></div>`;
+                        } else {
+                            btn.className += " bg-slate-500/5 border-slate-700/10 question-text";
+                            btn.innerHTML = `<div class="flex justify-between items-center"><span>${opt}</span><div class="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center"></div></div>`;
+                        }
+                        btn.onclick = () => { studentAnswers[currentIndex] = idx; renderQuestion(); };
+                    }
+                    container.appendChild(btn);
+                });
+            }
+            
+            document.getElementById('prevBtn').disabled = (currentIndex === 0);
+            document.getElementById('nextBtn').innerText = (currentIndex === activeQuestions.length - 1) ? (isReviewMode ? "العودة لصفحة الدرس الحالي ✓" : "إنهاء وتسليم") : "السؤال التالي";
+        }
+
+        window.goToNextQuestion = function() {
+            if (currentIndex < activeQuestions.length - 1) { currentIndex++; renderQuestion(); }
+            else { if (isReviewMode) { backToCurrentLesson(); } else { calculateFinalResult(); } }
+        }
+        window.goToPrevQuestion = function() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+        
+        window.backToCurrentLesson = function() {
+            clearInterval(timer); isReviewMode = false;
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('interactiveGameContainer').classList.add('hidden');
+            document.getElementById('globalEmptyState').classList.add('hidden');
+            document.getElementById('lessonsDashboard').classList.add('hidden');
+            document.getElementById('learningCenterContainer').classList.remove('hidden');
+        }
+
+        window.confirmForceExitQuiz = function() { if(confirm("هل تريد تسليم ورقة الإجابة الآن؟")) calculateFinalResult(); }
+
+        async function calculateFinalResult() {
+            clearInterval(timer); let score = 0; let hasErrors = false;
+            allQuestionsFetched.forEach((q, i) => { if (studentAnswers[i] === q.correct) { score++; } else { hasErrors = true; } });
+            const percent = Math.round((allQuestionsFetched.length > 0 ? (score / allQuestionsFetched.length) : 0) * 100);
+            
+            document.getElementById('quizActiveContent').classList.add('hidden'); document.getElementById('resultBox').classList.remove('hidden');
+            document.getElementById('scoreBox').innerText = `درجتك النهائية: ${score} من ${allQuestionsFetched.length}`; document.getElementById('percentageBox').innerText = percent + "%";
+            const reviewErrorsBtn = document.getElementById('reviewErrorsBtn');
+            if (hasErrors) { reviewErrorsBtn.classList.remove('hidden'); } else { reviewErrorsBtn.classList.add('hidden'); }
+            try { await set(ref(db, `open_student_logs/${selectedGrade}/${selectedLesson}`), { score: `${percent}% (اختبار قياسي)`, time: new Date().toLocaleString() }); } catch(e){}
+        }
+
+        window.startReviewMode = function(onlyErrors = false) {
+            isReviewMode = true; document.getElementById('resultBox').classList.add('hidden'); document.getElementById('quizActiveContent').classList.remove('hidden');
+            if (onlyErrors) { activeQuestions = allQuestionsFetched.filter((q, index) => studentAnswers[index] !== q.correct); } else { activeQuestions = [...allQuestionsFetched]; }
+            currentIndex = 0; renderQuestion();
+        }
+
+        window.startInteractiveGameEngine = function() {
+            if(gameQuestions.length === 0) {
+                document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('quizContainer').classList.remove('hidden');
+                document.getElementById('quizActiveContent').classList.add('hidden'); document.getElementById('quizProgressBarContainer').classList.add('hidden');
+                document.getElementById('emptyQuizHeaderLabel').innerText = "🕹️ اللعبة التفاعلية قيد التحضير";
+                document.getElementById('emptyQuizState').classList.remove('hidden'); return;
+            }
+            document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('interactiveGameContainer').classList.remove('hidden');
+            document.getElementById('gameActiveArea').classList.remove('hidden'); document.getElementById('gameResultArea').classList.add('hidden');
+            document.getElementById('gameLessonTitle').innerText = currentLessonTextTitle;
+            gameIndex = 0; gameScore = 0; gameButtonsBlocked = false; document.getElementById('gameScoreCounter').innerText = `النجوم المجمعة: 0 ⭐`;
+            renderGameQuestion();
+        }
+
+        function renderGameQuestion() {
+            if (gameIndex >= gameQuestions.length) return;
+            const q = gameQuestions[gameIndex]; gameButtonsBlocked = false;
+            
+            document.getElementById('gameProgressBarFill').style.width = ((gameIndex + 1) / gameQuestions.length * 100) + '%';
+            document.getElementById('gameQuestIndexLabel').innerText = `المهمة التكنولوجية ${gameIndex + 1} من أصل ${gameQuestions.length}`;
+            document.getElementById('gameQuestionBox').innerText = q.question;
+            
+            const optionsBox = document.getElementById('gameOptionsContainer'); optionsBox.innerHTML = '';
+            
+            const gOptions = q.options || (q.type === 'true_false' ? ["صح", "خطأ"] : []);
+            if (gOptions && Array.isArray(gOptions)) {
+                gOptions.forEach((opt, idx) => {
+                    if(opt && opt.toString().trim() !== "") {
+                        const btn = document.createElement('button');
+                        btn.className = `w-full text-right p-5 rounded-2xl font-black text-sm game-option-btn border-2 bg-slate-100 text-slate-800 border-slate-300 shadow shadow-slate-400/20`;
+                        btn.innerHTML = `<div class="flex justify-between items-center"><span>${opt}</span><div class="w-6 h-6 rounded-full border-2 border-slate-400 flex items-center justify-center"></div></div>`;
+                        btn.onclick = () => handleGameLogic(btn, idx, q.correct);
+                        optionsBox.appendChild(btn);
+                    }
+                });
+            }
+        }
+
+        function handleGameLogic(clickedButton, clickedIdx, correctIdx) {
+            if (gameButtonsBlocked) return;
+            const mainGameCard = document.getElementById('gameQuestionMainCard');
+            
+            if (clickedIdx === correctIdx) {
+                gameButtonsBlocked = true; gameScore++;
+                document.getElementById('gameScoreCounter').innerText = `النجوم المجمعة: ${gameScore} ⭐`;
+                
+                clickedButton.className = "w-full text-right p-5 rounded-2xl font-black text-sm bg-emerald-500 border-emerald-600 text-white shadow-xl transition-all";
+                clickedButton.innerHTML = `<div class="flex justify-between items-center"><span>${clickedButton.querySelector('span').innerText}</span><span class="bg-slate-900/60 text-emerald-300 text-xs px-3 py-1 rounded-full font-black animate-bounce">🌟 بطل! إجابة صحيحة</span></div>`;
+                
+                mainGameCard.classList.add('game-success-animate');
+                playGameSound('success'); triggerGameStars();
+                
+                setTimeout(() => { mainGameCard.classList.remove('game-success-animate'); gameNext(); }, 1500);
+            } else {
+                clickedButton.disabled = true; 
+                clickedButton.className = "w-full text-right p-5 rounded-2xl font-black text-sm bg-red-100 border-red-400 text-red-500 opacity-80 transition-all";
+                clickedButton.innerHTML = `<div class="flex justify-between items-center"><span>${clickedButton.querySelector('span').innerText}</span><span class="bg-red-500 text-white text-[11px] px-2 py-0.5 rounded-md font-bold">✗ حاول مجدداً</span></div>`;
+                
+                mainGameCard.classList.add('game-error-animate');
+                playGameSound('error');
+                setTimeout(() => { mainGameCard.classList.remove('game-error-animate'); }, 1000);
+            }
+        }
+
+        window.gameNext = function() {
+            if (gameIndex < gameQuestions.length - 1) { gameIndex++; renderGameQuestion(); } 
+            else { finishAndCelebrateGame(); }
+        }
+
+        async function finishAndCelebrateGame() {
+            document.getElementById('gameActiveArea').classList.add('hidden'); document.getElementById('gameResultArea').classList.remove('hidden');
+            const percent = Math.round((gameScore / gameQuestions.length) * 100);
+            document.getElementById('gameFinalPercent').innerText = percent + "%";
+            document.getElementById('gameFinalScore').innerText = `الدرجة: ${gameScore} / ${gameQuestions.length}`;
+            
+            const heading = document.getElementById('gameResultHeading'); const trophy = document.getElementById('gameTrophyBox');
+            if (percent >= 85) {
+                heading.innerText = "🏆 أنت بطل تكنولوجي خارق!";
+                trophy.className = "w-24 h-24 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-amber-500/20";
+                playGameSound('victory');
+            } else if (percent >= 50) {
+                heading.innerText = "🚀 مستكشف رقمي مبدع!";
+                trophy.className = "w-24 h-24 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-blue-500/20";
+                playGameSound('victory');
+            } else {
+                heading.innerText = "🎯 محاولة جيدة يا بطل!";
+                trophy.className = "w-24 h-24 bg-slate-500/10 text-slate-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-slate-700/20";
+            }
+            try { await set(ref(db, `open_student_logs/${selectedGrade}/${selectedLesson}`), { score: `${percent}% (طور اللعبة التفاعلية)`, time: new Date().toLocaleString() }); } catch(e){}
+        }
+
+        window.confirmExitGame = function() { if(confirm("هل تود الخروج من طور اللعبة؟")) backToCurrentLesson(); }
+        window.backToLessons = function() { 
+            clearInterval(timer); isReviewMode = false;
+            document.getElementById('quizContainer').classList.add('hidden'); document.getElementById('interactiveGameContainer').classList.add('hidden');
+            document.getElementById('globalEmptyState').classList.add('hidden'); document.getElementById('learningCenterContainer').classList.add('hidden'); 
+            document.getElementById('lessonsDashboard').classList.remove('hidden'); 
+        }
+        window.backToMainAuth = function() { location.reload(); }
+    </script>
+</body>
+</html>
