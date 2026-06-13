@@ -66,13 +66,14 @@
                             <option value="sec1">الصف الأول الثانوي</option>
                         </select>
                     </div>
-                    <button onclick="exportScoresToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center gap-2 w-full sm:w-auto justify-center">
-                        <i class="fa-solid fa-file-excel text-sm"></i> 📥 تصدير درجات الصف الحالي كـ Excel
+                    <input type="text" id="searchStudentScoresInput" onkeyup="filterStudentScores()" class="w-full sm:w-[250px] bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-xs focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-500" placeholder="🔍 ابحث عن طالب بالاسم...">
+                    <button onclick="exportScoresToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center gap-2 w-full sm:w-auto justify-center shrink-0">
+                        <i class="fa-solid fa-file-excel text-sm"></i> 📥 تصدير الدرجات كـ Excel
                     </button>
                 </div>
             </div>
             
-            <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-[350px]">
+            <div class="overflow-auto rounded-xl border border-slate-800 max-h-[180px]">
                 <table class="w-full text-sm text-right text-slate-300" id="scoresTable">
                     <thead class="text-xs uppercase bg-slate-950 text-indigo-400 font-bold sticky top-0">
                         <tr id="scoresTableHeader">
@@ -450,6 +451,28 @@
                 tr.innerHTML = rowHtml;
                 body.appendChild(tr);
             });
+            
+            filterStudentScores(); // Re-apply filter after re-rendering
+        }
+
+        window.filterStudentScores = function() {
+            const input = document.getElementById("searchStudentScoresInput");
+            if (!input) return;
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("scoresTable");
+            if (!table) return;
+            const tr = table.getElementsByTagName("tr");
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }       
+            }
         }
 
 
