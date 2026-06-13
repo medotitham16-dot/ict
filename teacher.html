@@ -24,7 +24,6 @@
             </div>
             <h2 class="text-2xl font-black text-white mb-2">تسجيل دخول المعلم</h2>
             <p class="text-slate-400 text-sm font-bold mb-8">الرجاء إدخال بيانات الاعتماد الموثقة للوصول للوحة</p>
-            
             <form id="teacherLoginForm" onsubmit="loginWithFirebaseAuth(event)" class="space-y-4">
                 <input type="email" id="teacherEmailInput" class="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl py-3 px-4 text-left font-mono text-white focus:outline-none focus:border-indigo-500" placeholder="admin@ict-school.com" required>
                 <input type="password" id="teacherPasswordInput" class="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl py-3 px-4 text-center tracking-widest font-black text-white focus:outline-none focus:border-indigo-500" placeholder="••••••••" required>
@@ -34,13 +33,13 @@
         </div>
     </div>
 
-    <div id="teacherDashboardContent" class="max-w-4xl mx-auto space-y-8 hidden">
+    <div id="teacherDashboardContent" class="max-w-5xl mx-auto space-y-8 hidden">
         
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex items-center gap-4 relative">
             <div class="bg-indigo-600/20 text-indigo-400 p-4 rounded-xl text-3xl"><i class="fa-solid fa-sliders"></i></div>
             <div class="flex-1">
-                <h1 class="text-2xl font-bold text-white">غرفة تحكم المعلم الذكية</h1>
-                <p class="text-slate-400 text-sm mt-1">منصة آمنة ومحمية لإدارة المحتوى والأكواد.</p>
+                <h1 class="text-2xl font-bold text-white">غرفة تحكم المعلم الذكية v2.7 المعتمدة</h1>
+                <p class="text-slate-400 text-sm mt-1">التحكم الكامل في مسارات الطلاب، الترتيب المتسلسل، والأزرار المحدثة المصلحة.</p>
             </div>
             <button onclick="logoutFirebaseAuth()" class="absolute top-6 left-6 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 p-3 rounded-xl transition-all shadow-md flex items-center gap-2 font-bold text-xs">
                 <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline">تسجيل الخروج</span>
@@ -48,22 +47,68 @@
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
-            <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-key text-amber-400"></i>توليد كود سري معقد وآمن للطالب</h2>
-            <div class="flex flex-col sm:flex-row gap-4 items-end">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-slate-800 pb-4 gap-4">
+                <div class="space-y-1 text-right">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-chart-user text-emerald-400"></i> سجل درجات الطلاب الذكي المصفى</h2>
+                    <p class="text-xs text-slate-400 font-bold">اختر الصف بالأسفل لعرض طلابه فقط ودرجاتهم بشكل منفصل تماماً</p>
+                </div>
+                
+                <div class="flex flex-wrap gap-3 w-full lg:w-auto items-center">
+                    <div class="w-full sm:w-56">
+                        <select id="scoreTableGradeFilter" onchange="renderScoresTable()" class="w-full bg-slate-950 border-2 border-indigo-500/40 rounded-xl py-2 px-3 text-xs font-black text-indigo-300 focus:outline-none">
+                            <option value="grade3">الصف الثالث الابتدائي</option>
+                            <option value="grade4" selected>الصف الرابع الابتدائي</option>
+                            <option value="grade5">الصف الخامس الابتدائي</option>
+                            <option value="grade6">الصف السادس الابتدائي</option>
+                            <option value="prep1">الصف الأول الاعدادي</option>
+                            <option value="prep2">الصف الثاني الاعدادي</option>
+                            <option value="prep3">الصف الثالث الاعدادي</option>
+                            <option value="sec1">الصف الأول الثانوي</option>
+                        </select>
+                    </div>
+                    <button onclick="exportScoresToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center gap-2 w-full sm:w-auto justify-center">
+                        <i class="fa-solid fa-file-excel text-sm"></i> 📥 تصدير درجات الصف الحالي كـ Excel
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-[350px]">
+                <table class="w-full text-sm text-right text-slate-300" id="scoresTable">
+                    <thead class="text-xs uppercase bg-slate-950 text-indigo-400 font-bold sticky top-0">
+                        <tr id="scoresTableHeader">
+                            <th class="px-6 py-4">اسم الطالب البطل</th>
+                            <th class="px-6 py-4">معرف الجهاز</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoresTableBody" class="divide-y divide-slate-850">
+                        <tr>
+                            <td colspan="2" class="px-6 py-8 text-center text-slate-500 font-bold">جاري استدعاء سجلات الطلاب الحية...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-key text-amber-400"></i>توليد الأكواد السرية المعقدة والآمنة للطلاب</h2>
+            <div class="flex flex-col sm:flex-row gap-3 items-end">
                 <div class="flex-1 w-full">
                     <select id="targetStudentGrade" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none">
                         <option value="grade3">الصف الثالث الابتدائي</option><option value="grade4">الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
                         <option value="prep1">الصف الأول الاعدادي</option><option value="prep2">الصف الثاني الاعدادي</option><option value="prep3">الصف الثالث الاعدادي</option><option value="sec1">الصف الأول الثانوي</option>
                     </select>
                 </div>
-                <button type="button" id="generateCodeBtn" onclick="generateIndividualStudentCode()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all shadow-lg h-[46px]">توليد الكود</button>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button type="button" id="generateCodeBtn" onclick="generateIndividualStudentCode()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all shadow-lg h-[46px]">توليد كود واحد</button>
+                    <button type="button" id="generate50CodesBtn" onclick="generateBulk50StudentCodes()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3 px-4 rounded-xl text-xs transition-all shadow-lg h-[46px]"><i class="fa-solid fa-layer-group ml-1"></i> توليد 50 كود فوري</button>
+                </div>
             </div>
-            <div class="bg-slate-950 border border-slate-850 rounded-xl p-3 flex justify-between items-center text-sm font-mono text-emerald-400 font-bold justify-center tracking-widest" id="studentCodeResultBox">---</div>
+            <div class="bg-slate-950 border border-slate-850 rounded-xl p-4 font-mono text-emerald-400 font-bold text-center text-xs overflow-y-auto max-h-[150px] space-y-1 scrollbar-thin" id="studentCodeResultBox">اضغط على أحد الأزرار لتوليد الأكواد...</div>
         </div>
 
         <div class="bg-indigo-950/20 border border-indigo-500/20 rounded-2xl p-6 shadow-xl grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-                <label class="block text-indigo-400 text-xs font-bold mb-2">1. اختر الصف الدراسي:</label>
+                <label class="block text-indigo-400 text-xs font-bold mb-2">1. اختر الصف الدراسي الحالي:</label>
                 <select id="filterGrade" onchange="updateLessonOptions(false)" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none">
                     <option value="grade3" selected>الصف الثالث الابتدائي</option><option value="grade4">الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
                     <option value="prep1">الصف الأول الاعدادي</option><option value="prep2">الصف الثاني الاعدادي</option><option value="prep3">الصف الثالث الاعدادي</option><option value="sec1">الصف الأول الثانوي</option>
@@ -77,11 +122,15 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
-                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-folder-plus text-green-400"></i>إدارة المجلدات المخصصة</h2>
+                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-folder-plus text-green-400"></i>إدارة المجلدات المخصصة وترتيبها</h2>
                 <div class="space-y-3">
                     <div>
                         <label class="block text-green-300 text-xs font-bold mb-2">اسم الدرس الجديد أو المجلد الإضافي</label>
                         <input type="text" id="newLessonTitle" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none focus:border-green-500" placeholder="اكتب اسم المجلد الإضافي هنا...">
+                    </div>
+                    <div>
+                        <label class="block text-amber-400 text-xs font-bold mb-2">رقم رتبة الترتيب المباشر (اتركه فارغاً للترتيب التلقائي المتسلسل):</label>
+                        <input type="number" id="newLessonOrder" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none font-mono text-center" placeholder="تلقائي متسلسل">
                     </div>
                     <button type="button" onclick="createNewLessonFolder()" class="w-full bg-green-600 hover:bg-green-500 text-white font-black py-3 rounded-xl text-sm transition-all shadow-md"><i class="fa-solid fa-plus ml-1"></i> إنشاء ومزامنة المجلد المخصص</button>
                     <button type="button" onclick="deleteCurrentLessonFolder()" class="w-full bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 font-black py-3 rounded-xl text-sm transition-all"><i class="fa-solid fa-trash-can ml-1"></i> حذف المجلد المخصص الحالي</button>
@@ -90,93 +139,86 @@
             </div>
 
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
-                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-file-image text-cyan-400"></i>إعدادات الشرح والمسميات للقسم الحالي</h2>
+                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-file-image text-cyan-400"></i>إعدادات الشرح والتحكم بتفعيل المكونات والأزرار</h2>
                 <form id="lessonContentForm" class="space-y-3">
-                    <div>
-                        <label class="block text-amber-400 text-xs font-bold mb-1">✍️ اسم المجلد / العنوان المخصص للدرس (يدوياً):</label>
-                        <input type="text" id="lessonCustomTitle" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none" placeholder="اتركه فارغاً للاعتماد على المسمى التلقائي...">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-indigo-400 text-xs font-bold mb-1">🏷️ الشارة العلوية (اختياري):</label>
+                            <input type="text" id="lessonTagTitle" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-white text-xs focus:outline-none" placeholder="مثل: المحور الأول">
+                        </div>
+                        <div>
+                            <label class="block text-emerald-400 text-xs font-bold mb-1">📌 الاسم الأساسي (اختياري):</label>
+                            <input type="text" id="lessonMainTitle" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-white text-xs focus:outline-none" placeholder="مثل: الدرس الأول">
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-slate-400 text-xs font-semibold mb-1">روابط صور الشرح (ارفع رابط واحد أو روابط متعددة تفصل بينها فاصلة , ):</label>
-                        <textarea id="lessonImageURL" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-xs focus:outline-none font-mono text-left" rows="2" placeholder="رابط_الصفحة_الأولى , رابط_الصفحة_الثانية , رابط_الصفحة_الثالثة"></textarea>
+                        <label class="block text-amber-400 text-xs font-bold mb-1">✍️ العنوان الفرعي (وصف إضافي):</label>
+                        <input type="text" id="lessonCustomTitle" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm focus:outline-none" placeholder="اتركه فارغاً للاعتماد على المسمى التلقائي...">
+                    </div>
+                    <div>
+                        <label class="block text-amber-500 text-xs font-bold mb-1">🔢 تعديل رتبة ترتيب المجلد المختار حالياً (تلقائي):</label>
+                        <input type="number" id="lessonOrderEdit" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm focus:outline-none text-center font-mono" value="1">
+                    </div>
+                    <div>
+                        <label class="block text-pink-400 text-xs font-bold mb-1">🎨 لون أيقونة المجلد المخصص (اختياري):</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" id="lessonFolderColor" class="w-12 h-10 bg-slate-800 border border-slate-700 rounded-xl cursor-pointer p-1" value="#f59e0b">
+                            <button type="button" onclick="document.getElementById('lessonFolderColor').value='#f59e0b'" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-3 py-2 rounded-xl transition-all">إعادة اللون الافتراضي</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-850 space-y-2">
+                        <label class="block text-indigo-400 text-xs font-black mb-1">🕹️ تحكم في ظهور تبويبات وأزرار الطالب في هذا المجلد:</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-bold mb-2 pb-2 border-b border-slate-800">
+                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg"><input type="checkbox" id="chkShowTextTab" checked class="accent-indigo-500"> تبويب الدرس</label>
+                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg"><input type="checkbox" id="chkShowQuizTab" checked class="accent-indigo-500"> تبويب التقييم</label>
+                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg"><input type="checkbox" id="chkShowVideo" checked class="accent-indigo-500"> تبويب الفيديو</label>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg"><input type="checkbox" id="chkShowQuiz" checked class="accent-indigo-500"> التقييم العادي</label>
+                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg"><input type="checkbox" id="chkShowGame" checked class="accent-indigo-500"> اللعبة التفاعلية</label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-400 text-xs font-semibold mb-1">روابط صور الشرح (تفصل بينها فاصلة , ):</label>
+                        <textarea id="lessonImageURL" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-xs focus:outline-none font-mono text-left" rows="1" placeholder="رابط1, رابط2"></textarea>
                     </div>
                     <div>
                         <label class="block text-slate-400 text-xs font-semibold mb-1">رابط فيديو الشرح التوضيحي (YouTube):</label>
                         <input type="url" id="lessonVideoURL" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none font-mono" placeholder="https://...">
                     </div>
-                    <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl text-xs transition-all shadow-md"><i class="fa-solid fa-cloud-arrow-up ml-1"></i> حفظ وتحديث الشروحات والمسميات فوراً</button>
+                    <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl text-xs transition-all shadow-md"><i class="fa-solid fa-cloud-arrow-up ml-1"></i> حفظ وتحديث مكونات المجلد المحددة فوراً</button>
                 </form>
             </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
-            <h2 id="formTitle" class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3"><i class="fa-solid fa-circle-plus text-indigo-400"></i> إضافة أسئلة تقييمية للقسم المحدد</h2>
-            
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3">
-                <label class="block text-xs font-black text-cyan-400"><i class="fa-solid fa-code"></i> معالج الرفع الجماعي الفوري للأسئلة عبر مصفوفة JSON:</label>
-                <textarea id="bulkJsonInput" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-mono text-cyan-300 focus:outline-none" placeholder='[{"question":"...","options":["أ","ب"],"correct":0}]'></textarea>
-                <button type="button" onclick="uploadBulkQuestions()" class="w-full bg-gradient-to-r from-cyan-600 to-indigo-600 text-white font-bold py-2 rounded-xl text-xs transition-all">رفع مصفوفة الأسئلة المكتوبة بالكامل دفعة واحدة 🚀</button>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3"><i class="fa-solid fa-layer-group text-purple-400"></i> إدارة الاختبارات الفرعية المخصصة الاختيارية داخل المجلد المختار</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end bg-slate-950 p-4 rounded-xl border border-slate-850">
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-purple-300 mb-2">اسم الاختبار الفرعي الجديد (النقطة 3 - الأزرار البنفسجية فقط):</label>
+                    <input type="text" id="newQuizSubName" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none" placeholder="اكتب اسم زر الاختبار الفرعي المخصص...">
+                </div>
+                <button type="button" onclick="createNewSubQuizInsideLesson()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all h-[46px] shadow-lg"><i class="fa-solid fa-plus-circle ml-1"></i> توليد زر الاختبار المخصص</button>
             </div>
-            
-            <form id="questionForm" class="space-y-4">
-                <input type="hidden" id="editingQuestionKey" value="">
-                
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-                    <label class="block text-xs font-bold text-indigo-400">تحديد وجهة عرض هذا السؤال للطالب:</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="flex items-center gap-2 bg-slate-900 border border-slate-700 p-3 rounded-xl cursor-pointer">
-                            <input type="radio" name="questionDestination" value="standard" checked class="w-4 h-4 text-indigo-600">
-                            <span class="text-xs font-semibold text-slate-200">📝 أسئلة امتحان عادي</span>
-                        </label>
-                        <label class="flex items-center gap-2 bg-slate-900 border border-slate-700 p-3 rounded-xl cursor-pointer">
-                            <input type="radio" name="questionDestination" value="game" class="w-4 h-4 text-orange-500">
-                            <span class="text-xs font-semibold text-orange-400">🎮 أسئلة للعبة التفاعلية</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <select id="questionType" onchange="toggleTypeFields()" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none">
-                        <option value="mcq">اختيار من متعدد تقليدي (4 خيارات)</option>
-                        <option value="true_false">صح وخطأ</option>
-                    </select>
-                </div>
-                <div><textarea id="questionText" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none" rows="2" placeholder="اكتب صيغة السؤال الفردي الحالي هنا..." required></textarea></div>
-                
-                <div class="space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-850" id="optionsWrapper">
-                    <div id="optBox0" class="flex items-center gap-3"><input type="radio" name="correct" value="0" class="w-4 h-4 text-indigo-600" checked><input type="text" id="opt0" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الأول (A)" required></div>
-                    <div id="optBox1" class="flex items-center gap-3"><input type="radio" name="correct" value="1" class="w-4 h-4 text-indigo-600"><input type="text" id="opt1" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الثاني (B)" required></div>
-                    <div id="optBox2" class="flex items-center gap-3"><input type="radio" name="correct" value="2" class="w-4 h-4 text-indigo-600"><input type="text" id="opt2" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الثالث (C)" required></div>
-                    <div id="optBox3" class="flex items-center gap-3"><input type="radio" name="correct" value="3" class="w-4 h-4 text-indigo-600"><input type="text" id="opt3" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الرابع (D)" required></div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">المؤقت الزمني للسؤال (بالثواني):</label>
-                        <input type="number" id="timeLimit" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm font-mono text-center" value="30" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">نقاط / درجة السؤال التقييمي:</label>
-                        <input type="number" id="questionPoints" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm font-mono text-center" value="5" required>
-                    </div>
-                </div>
-
-                <div class="flex gap-3">
-                    <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3 rounded-xl transition-all shadow-lg"><span id="submitBtnText">نشر السؤال الحالي سحابياً</span></button>
-                    <button type="button" id="cancelEditBtn" onclick="cancelEditing()" class="bg-slate-800 hover:bg-slate-700 text-slate-400 py-3 px-6 rounded-xl text-sm font-semibold hidden">إلغاء التعديل</button>
-                </div>
-            </form>
+            <div>
+                <label class="block text-xs font-black text-amber-400 mb-2">3. اختر الاختبار الفرعي المستهدف لضبط بنك أسئلته ومساره:</label>
+                <select id="activeSubQuizSelector" onchange="renderQuestionsDashboardList()" class="w-full bg-slate-800 border-2 border-purple-500 rounded-xl py-3 px-4 text-white font-bold text-sm focus:outline-none text-purple-300"></select>
+                <button onclick="deleteActiveSubQuiz()" class="mt-2 text-red-400 hover:text-red-500 text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-square-minus"></i> حذف زر هذا الاختبار الفرعي وكافة أسئلته نهائياً</button>
+            </div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
             <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center border-b border-slate-800 pb-3 gap-3">
-                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-cyan-400"></i>استعراض وإدارة بنك الأسئلة للدرس الحالي</h2>
+                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-cyan-400"></i>بنك أسئلة هذا الاختبار المخصص</h2>
                 <div class="flex items-center gap-3 w-full xl:w-auto">
                     <input type="text" id="searchQuestionsInput" onkeyup="renderQuestionsDashboardList()" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none" placeholder="🔍 بحث في الأسئلة...">
                     <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs shrink-0">
-                        <button onclick="changeCurrentTeacherDisplayFilter('all')" id="filterBtn-all" class="px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow">الكل</button>
-                        <button onclick="changeCurrentTeacherDisplayFilter('standard')" id="filterBtn-standard" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">📝 عادي</button>
-                        <button onclick="changeCurrentTeacherDisplayFilter('game')" id="filterBtn-game" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">🕹️ لعبة</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('all')" id="filterBtn-all" class="px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow">الكل</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('standard')" id="filterBtn-standard" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">📝 عادي</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('game')" id="filterBtn-game" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">🕹️ لعبة</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('subquiz')" id="filterBtn-subquiz" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">🟣 إضافي</button>
                     </div>
                 </div>
             </div>
@@ -184,7 +226,7 @@
             <div class="flex flex-wrap gap-2 justify-end bg-slate-950/60 p-3 rounded-xl border border-slate-800 text-xs">
                 <button id="bulkDeleteSelectedBtn" onclick="deleteSelectedQuestions()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2.5 rounded-xl font-black transition-all shadow-md hidden"><i class="fa-solid fa-trash-can ml-1"></i> حذف المحدد</button>
                 <button onclick="executeBulkFilteredDeleteEngine()" class="bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 border border-red-500/20 px-4 py-2.5 rounded-xl font-bold transition-all"><i class="fa-solid fa-filter-circle-xmark"></i> حذف أسئلة الفلتر الحالي فقط</button>
-                <button onclick="executeAbsoluteLessonResetEngine()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2.5 rounded-xl font-black transition-all shadow-md"><i class="fa-solid fa-fire-burner"></i> تفريغ كافة أسئلة الدرس (امتحان + ألعاب)</button>
+                <button onclick="executeAbsoluteLessonResetEngine()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2.5 rounded-xl font-black transition-all shadow-md"><i class="fa-solid fa-fire-burner"></i> تصفير كافة أسئلة الاختبار واللعبة</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -197,6 +239,57 @@
                     <div id="tfQuestionsList" class="space-y-3 max-h-[400px] overflow-y-auto pr-1"></div>
                 </div>
             </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl mt-6">
+            <h2 id="formTitle" class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3"><i class="fa-solid fa-circle-plus text-indigo-400"></i> إضافة سؤال تقييمي جديد للقسم المحدد</h2>
+            
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3 mt-4 mb-4">
+                <label class="block text-xs font-black text-cyan-400"><i class="fa-solid fa-code"></i> معالج الرفع الجماعي الفوري للأسئلة عبر مصفوفة JSON:</label>
+                <textarea id="bulkJsonInput" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs font-mono text-cyan-300 focus:outline-none" placeholder='[{"question":"...","options":["أ","ب"],"correct":0}]'></textarea>
+                <button type="button" onclick="uploadBulkQuestions()" class="w-full bg-gradient-to-r from-cyan-600 to-indigo-600 text-white font-bold py-2 rounded-xl text-xs transition-all">رفع مصفوفة الأسئلة المكتوبة بالكامل دفعة واحدة 🚀</button>
+            </div>
+
+            <form id="questionForm" class="space-y-4">
+                <input type="hidden" id="editingQuestionKey" value="">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
+                        <input type="radio" name="questionDestination" value="main_default" checked class="w-4 h-4 text-blue-500">
+                        <span class="text-xs font-semibold text-blue-400">⚡ الزر الأزرق الرئيسي للدرس</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
+                        <input type="radio" name="questionDestination" value="sub_quiz_active" class="w-4 h-4 text-purple-500">
+                        <span class="text-xs font-semibold text-purple-400">📝 اختبار الزر البنفسجي المختار (3)</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
+                        <input type="radio" name="questionDestination" value="game" class="w-4 h-4 text-orange-500">
+                        <span class="text-xs font-semibold text-orange-400">🎮 لعبة الزر البرتقالي الرئيسي</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
+                        <input type="radio" name="questionDestination" value="sub_quiz_game" class="w-4 h-4 text-pink-500">
+                        <span class="text-xs font-semibold text-pink-400">🕹️ لعبة الزر البنفسجي المختار (3)</span>
+                    </label>
+                </div>
+                <div>
+                    <select id="questionType" onchange="toggleTypeFields()" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none">
+                        <option value="mcq">اختيار من متعدد تقليدي (4 خيارات)</option>
+                        <option value="true_false">صح وخطأ</option>
+                    </select>
+                </div>
+                <div><textarea id="questionText" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none" rows="2" placeholder="اكتب صيغة السؤال الحالي هنا..." required></textarea></div>
+                <div class="space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-850" id="optionsWrapper">
+                    <div id="optBox0" class="flex items-center gap-3"><input type="radio" name="correct" value="0" class="w-4 h-4 text-indigo-600" checked><input type="text" id="opt0" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الأول (A)" required></div>
+                    <div id="optBox1" class="flex items-center gap-3"><input type="radio" name="correct" value="1" class="w-4 h-4 text-indigo-600"><input type="text" id="opt1" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الثاني (B)" required></div>
+                    <div id="optBox2" class="flex items-center gap-3"><input type="radio" name="correct" value="2" class="w-4 h-4 text-indigo-600"><input type="text" id="opt2" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الثالث (C)" required></div>
+                    <div id="optBox3" class="flex items-center gap-3"><input type="radio" name="correct" value="3" class="w-4 h-4 text-indigo-600"><input type="text" id="opt3" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-white text-sm" placeholder="الخيار الرابع (D)" required></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="timeLimit" class="bg-slate-850 border border-slate-700 rounded-xl p-2.5 text-center font-mono text-xs" value="30">
+                    <input type="number" id="questionPoints" class="bg-slate-850 border border-slate-700 rounded-xl p-2.5 text-center font-mono text-xs" value="5">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-black py-3 rounded-xl text-xs transition-all shadow-md"><span id="submitBtnText">نشر وحفظ السؤال الحالي سحابياً 🚀</span></button>
+                <button type="button" id="cancelEditBtn" onclick="cancelEditing()" class="w-full bg-slate-800 text-slate-400 py-2 rounded-xl text-xs font-bold hidden mt-1">إلغاء التعديل</button>
+            </form>
         </div>
     </div>
 
@@ -223,12 +316,15 @@
         let currentDisplayFilter = "all";
         let bulkSelectedKeys = new Set();
         let isGeneratingCode = false;
+        let globalSubQuizzesObject = {};
+        let globalAllStudentsScores = {};
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('securityLockScreen').classList.add('hidden');
                 document.getElementById('teacherDashboardContent').classList.remove('hidden');
                 updateLessonOptions(false);
+                listenToLiveStudentsScores();
             } else {
                 document.getElementById('securityLockScreen').classList.remove('hidden');
                 document.getElementById('teacherDashboardContent').classList.add('hidden');
@@ -241,7 +337,9 @@
             const pass = document.getElementById('teacherPasswordInput').value;
             const btn = document.getElementById('loginBtn');
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`; btn.disabled = true;
-            signInWithEmailAndPassword(auth, email, pass).catch((error) => {
+            signInWithEmailAndPassword(auth, email, pass).then(() => {
+                btn.innerHTML = "فتح لوحة التحكم"; btn.disabled = false;
+            }).catch((error) => {
                 document.getElementById('loginErrorMsg').classList.remove('hidden');
                 btn.innerHTML = "فتح لوحة التحكم"; btn.disabled = false;
             });
@@ -250,117 +348,233 @@
 
         const escapeHTML = str => { if (!str) return ''; return str.replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag])); };
 
+        async function listenToLiveStudentsScores() {
+            try {
+                const snapshot = await get(ref(db, "structured_student_scores"));
+                if(snapshot.exists()) { globalAllStudentsScores = snapshot.val(); } 
+                else { globalAllStudentsScores = {}; }
+                renderScoresTable();
+            } catch(e) {
+                console.error("Error fetching scores:", e);
+                document.getElementById('scoresTableBody').innerHTML = `<tr><td colspan="2" class="px-6 py-8 text-center text-red-500 font-bold">حدث خطأ في جلب الدرجات: ${e.message} (تأكد من تحديث القواعد)</td></tr>`;
+            }
+        }
+
+        window.renderScoresTable = function() {
+            const activeFilterGrade = document.getElementById('scoreTableGradeFilter').value;
+            const header = document.getElementById('scoresTableHeader');
+            const body = document.getElementById('scoresTableBody');
+            
+            header.innerHTML = `<th class="px-6 py-4">اسم الطالب البطل</th><th class="px-6 py-4">معرف الجهاز</th>`;
+            body.innerHTML = "";
+
+            // فلترة الاختبارات الفرعية (البنفسجية) فقط
+            const gradePrefix = activeFilterGrade + "_";
+            const subQuizPrefix = gradePrefix + "subquiz_";
+
+            let filteredStudentsEntries = Object.entries(globalAllStudentsScores).filter(([_, data]) => {
+                return data.studentName && Object.keys(data.quizzes || {}).some(k => k.startsWith(subQuizPrefix));
+            });
+
+            if(filteredStudentsEntries.length === 0) {
+                body.innerHTML = `<tr><td colspan="2" class="px-6 py-8 text-center text-slate-500 font-bold">لا توجد درجات اختبارات مسجلة لهذا الصف المختار حالياً.</td></tr>`;
+                return;
+            }
+
+            // جمع مفاتيح الاختبارات الفرعية فقط + بناء خريطة العناوين من بيانات الدرجة
+            let subQuizKeysSet = new Set();
+            let quizTitleMap = {};
+
+            filteredStudentsEntries.forEach(([_, studentRow]) => {
+                if(studentRow.quizzes) {
+                    Object.entries(studentRow.quizzes).forEach(([quizKey, scoreData]) => {
+                        if(quizKey.startsWith(subQuizPrefix)) {
+                            subQuizKeysSet.add(quizKey);
+                            // حفظ اسم الاختبار واسم الدرس من أول سجل يملك هذه المعلومات
+                            if(!quizTitleMap[quizKey] && typeof scoreData === 'object' && scoreData.quizTitle) {
+                                quizTitleMap[quizKey] = {
+                                    quizTitle: scoreData.quizTitle,
+                                    lessonKey: scoreData.lessonKey || ''
+                                };
+                            }
+                        }
+                    });
+                }
+            });
+            let subQuizKeysArray = Array.from(subQuizKeysSet).sort();
+
+            // دالة لعرض اسم الدرس بشكل جميل
+            function formatLessonName(lessonKey) {
+                if(!lessonKey) return '';
+                if(lessonKey.startsWith('lesson')) return `درس ${lessonKey.replace('lesson', '')}`;
+                if(lessonKey.startsWith('review')) return `مراجعة ${lessonKey.replace('review', '')}`;
+                return lessonKey;
+            }
+
+            // بناء رأس الجدول
+            subQuizKeysArray.forEach(quizKey => {
+                const th = document.createElement('th');
+                th.className = "px-3 py-4 text-center text-xs min-w-[130px] border-r border-slate-800";
+                let meta = quizTitleMap[quizKey];
+                if(meta) {
+                    th.innerHTML = `<div class="text-purple-400 font-black">${meta.quizTitle}</div><div class="text-slate-500 font-bold text-[10px] mt-0.5">${formatLessonName(meta.lessonKey)}</div>`;
+                } else {
+                    // للبيانات القديمة التي لا تحتوي على عنوان
+                    th.innerHTML = `<div class="text-purple-400 font-black">اختبار</div><div class="text-slate-500 text-[10px]">${quizKey.slice(-6)}</div>`;
+                }
+                header.appendChild(th);
+            });
+
+            // بناء صفوف الطلاب
+            filteredStudentsEntries.forEach(([fingerprint, studentRow]) => {
+                const tr = document.createElement('tr');
+                tr.className = "bg-slate-900/40 border-b border-slate-850 hover:bg-slate-800/40 transition-colors";
+                
+                let rowHtml = `<td class="px-6 py-4 font-bold text-white text-xs">${escapeHTML(studentRow.studentName || 'مجهول')}</td>`;
+                rowHtml += `<td class="px-6 py-4 font-mono text-[10px] text-slate-500">${fingerprint}</td>`;
+
+                subQuizKeysArray.forEach(quizKey => {
+                    let rawScore = (studentRow.quizzes && studentRow.quizzes[quizKey]) ? studentRow.quizzes[quizKey] : null;
+                    // الدرجة قد تكون string أو object
+                    let displayScore = null;
+                    if(rawScore !== null) {
+                        displayScore = (typeof rawScore === 'object' && rawScore.score) ? rawScore.score : rawScore;
+                    }
+                    if(displayScore !== null) {
+                        rowHtml += `<td class="px-6 py-4 font-black text-emerald-400 bg-emerald-500/5 text-center text-sm border-r border-slate-850">${displayScore}</td>`;
+                    } else {
+                        rowHtml += `<td class="px-6 py-4 text-center text-slate-600 text-xs font-bold border-r border-slate-850"><i class="fa-solid fa-lock text-[9px] opacity-40"></i> لم يحل</td>`;
+                    }
+                });
+
+                tr.innerHTML = rowHtml;
+                body.appendChild(tr);
+            });
+        }
+
+
+        window.exportScoresToExcel = function() {
+            const activeFilterGrade = document.getElementById('scoreTableGradeFilter').value;
+            let csvContent = "\uFEFF"; 
+            let filteredStudentsEntries = Object.entries(globalAllStudentsScores).filter(([_, data]) => {
+                return data.studentName && Object.keys(data.quizzes || {}).some(k => k.includes('_' + activeFilterGrade + '_') || k.startsWith('subquiz_' + activeFilterGrade + '_'));
+            });
+            if(filteredStudentsEntries.length === 0) { alert("لا توجد بيانات متاحة للتصدير في هذا الصف الدراسي!"); return; }
+            let subQuizKeysSet = new Set();
+            filteredStudentsEntries.forEach(([_, studentRow]) => {
+                if(studentRow.quizzes) {
+                    Object.keys(studentRow.quizzes).forEach(quizKey => {
+                        if(quizKey.includes('_' + activeFilterGrade + '_') || quizKey.startsWith('subquiz_' + activeFilterGrade + '_')) subQuizKeysSet.add(quizKey);
+                    });
+                }
+            });
+            let subQuizKeysArray = Array.from(subQuizKeysSet).sort();
+            let headerArray = ["اسم الطالب البطل", "معرف الجهاز"];
+            subQuizKeysArray.forEach(k => headerArray.push(k.replace('subquiz_' + activeFilterGrade + '_', '')));
+            csvContent += headerArray.join(",") + "\n";
+            filteredStudentsEntries.forEach(([fingerprint, studentRow]) => {
+                let rowArray = [ `"${(studentRow.studentName || 'مجهول').replace(/"/g, '""')}"`, `"${fingerprint}"` ];
+                subQuizKeysArray.forEach(quizKey => {
+                    let scoreVal = (studentRow.quizzes && studentRow.quizzes[quizKey]) ? studentRow.quizzes[quizKey] : "مغلق/لم يحل";
+                    rowArray.push(`"${scoreVal}"`);
+                });
+                csvContent += rowArray.join(",") + "\n";
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", `درجات_منصة_ICT_الصف_${activeFilterGrade}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+
         window.updateLessonOptions = async function(preserveSelection = false) {
             const selectedGrade = document.getElementById('filterGrade').value;
             const lessonSelect = document.getElementById('filterLesson');
             const previousSelectedValue = lessonSelect.value;
             lessonSelect.innerHTML = ''; 
 
-            if (selectedGrade === 'grade3') {
-                let optionsHtml = '<optgroup label="مجلدات الصف الثالث الابتدائي" class="bg-slate-900">';
-                for(let i = 1; i <= 12; i++) { optionsHtml += `<option value="lesson${i}">قسم الدرس ${i}</option>`; }
-                optionsHtml += '</optgroup>'; lessonSelect.innerHTML = optionsHtml;
-            }
-            else if (['grade4', 'grade5', 'grade6'].includes(selectedGrade)) {
-                lessonSelect.innerHTML = `
-                    <optgroup label="المحور الأول" class="bg-slate-900">
-                        <option value="lesson1" selected>الدرس 1 - المحور الأول</option><option value="lesson2">الدرس 2 - المحور الأول</option><option value="lesson3">الدرس 3 - المحور الأول</option>
-                        <option value="lesson4">الدرس 4 - المحور الأول</option><option value="lesson5">الدرس 5 - المحور الأول</option><option value="lesson6">الدرس 6 - المحور الأول</option>
-                        <option value="review1" class="text-emerald-400 font-bold">📝 مراجعة شاملة - المحور الأول</option>
-                    </optgroup>
-                    <optgroup label="المحور الثاني" class="bg-slate-900">
-                        <option value="lesson7">الدرس 1 - المحور الثاني</option><option value="lesson8">الدرس 2 - المحور الثاني</option><option value="lesson9">الدرس 3 - المحور الثاني</option>
-                        <option value="lesson10">الدرس 4 - المحور الثاني</option><option value="lesson11">الدرس 5 - المحور الثاني</option><option value="lesson12">الدرس 6 - المحور الثاني</option>
-                        <option value="review2" class="text-emerald-400 font-bold">🏆 مراجعة شاملة - المحور الثاني</option>
-                    </optgroup>
-                `;
-            } 
-            else if (selectedGrade === 'prep1') {
-                lessonSelect.innerHTML = `
-                    <optgroup label="منهج الصف الأول الإعدادي" class="bg-slate-900">
-                        <option value="lesson1" selected>الدرس 1: التكنولوجيا الخضراء</option><option value="lesson2">الدرس 2: التحول الرقمي</option><option value="lesson3">الدرس 3: أنظمة التشغيل</option>
-                        <option value="lesson4">الدرس 4: تثبيت وإزالة البرامج والأجهزة</option><option value="lesson5">الدرس 5: البريد الإلكتروني</option><option value="lesson6">الدرس 6: الحوسبة السحابية</option>
-                        <option value="lesson7">الدرس 7: جوجل ميت وإدارة مشروعك</option><option value="lesson8">الدرس 8: تصميم قواعد البيانات</option><option value="lesson9">الدرس 9: النماذج والاستعلامات</option>
-                        <option value="lesson10" class="text-amber-400">الدرس 10: المشروع + مراجعة عامة</option>
-                    </optgroup>
-                `;
-            }
-            else if (selectedGrade === 'prep2') {
-                lessonSelect.innerHTML = `
-                    <optgroup label="الوحدة الأولى" class="bg-slate-900">
-                        <option value="lesson1" selected>الدرس 1: الأنظمة الذكية وتغيرات المناخ</option><option value="lesson2">الدرس 2: التهديدات السيبرانية المتقدمة</option>
-                        <option value="lesson3">الدرس 3: البيانات الضخمة Big Data</option><option value="lesson4">الدرس 4: البيانات الضخمة والذكاء الاصطناعي</option>
-                        <option value="review1" class="text-emerald-400 font-bold">📝 مراجعة عامة الوحدة الأولى</option>
-                    </optgroup>
-                    <optgroup label="الوحدة الثانية" class="bg-slate-900">
-                        <option value="lesson5">الدرس 1: مبادئ تصميم واجهات شيقة</option><option value="lesson6">الدرس 2: تنسيق صفحات الويب</option>
-                        <option value="lesson7">الدرس 3: مشروعي الرقمي لمدرستي</option><option value="lesson8">الدرس 4: إنشاء موقع ويب بمساعدة AI</option>
-                        <option value="review2" class="text-emerald-400 font-bold">🏆 مراجعة عامة الوحدة الثانية</option>
-                    </optgroup>
-                `;
-            }
-            else if (selectedGrade === 'prep3') {
-                let optionsHtml = '<optgroup label="مجلدات الصف الثالث الإعدادي" class="bg-slate-900">';
-                for(let i = 1; i <= 12; i++) { optionsHtml += `<option value="lesson${i}">قسم الدرس ${i}</option>`; }
-                optionsHtml += '</optgroup>'; lessonSelect.innerHTML = optionsHtml;
-            }
-            else if (selectedGrade === 'sec1') {
-                lessonSelect.innerHTML = `
-                    <optgroup label="المحور الأول: تصميم الويب وتطوير المواقع الثابتة" class="bg-slate-900">
-                        <option value="lesson1" selected>الدرس 1: مقدمة في إنشاء مواقع الويب والبرمجيات</option>
-                        <option value="lesson2">الدرس 2: التخطيط لتصميم موقع ويب ثابت</option>
-                        <option value="lesson3">الدرس 3: أساسيات لغة HTML وعلاماتها الرئيسية</option>
-                        <option value="lesson4">الدرس 4: إضافة النصوص والصور والروابط باستخدام HTML</option>
-                        <option value="lesson5">الدرس 5: مقدمة في لغة التنسيق CSS</option>
-                        <option value="lesson6">الدرس 6: ضبط الألوان والخطوط والخلفيات باستخدام CSS</option>
-                        <option value="review1" class="text-emerald-400 font-bold">📝 مراجعة شاملة واختبار المحور الأول</option>
-                    </optgroup>
-                    <optgroup label="المحور الثاني: برمجيات الويب والتقنيات الذكية" class="bg-slate-900">
-                        <option value="lesson7">الدرس 7: أساسيات لغات البرمجة التفاعلية (JavaScript)</option>
-                        <option value="lesson8">الدرس 8: المفاهيم البرمجية الأساسية (المتغيرات والشروط)</option>
-                        <option value="lesson9">الدرس 9: تصميم النماذج Forms والتحقق من صحة البيانات</option>
-                        <option value="lesson10">الدرس 10: تكنولوجيا الذكاء الاصطناعي والأمن السيبراني</option>
-                        <option value="review2" class="text-amber-400 font-bold">🚀 المشروع التطبيقي النهائي والتقييم الشامل</option>
-                    </optgroup>
-                `;
+            const primaryLessonTitlesRef = {
+                'grade3': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
+                'grade4': ["أدوات الاستكشافات العلمية", "أجهزة الحاسب ومكوناتها", "أنظمة التشغيل", "التكنولوجيا المساعدة", "المشكلات التكنولوجية الشائعة وحلولها", "مصادر جمع البيانات وتحليلها", "الحماية من مخاطر شبكة الإنترنت", "الاستخدام الصحيح والأخلافي لتكنولوجيا المعلومات", "عمليات البحث على شبكة الإنترنت", "الجهات المسئولة عن حل مشكلات الإنترنت", "الأمان الرقمي", "مشروع تطبيقي"],
+                'grade5': ["الأجهزة الملحقة بالحاسب الآلي", "الشبكات وأنواعها", "أنظمة التواصل الذكية", "مشكلات الاتصال بالإنترنت وخطوات حلها", "الملفات الرقمية وكيفية التعامل معها", "مشاركة المعلومات: متى وأين وكيف؟", "أساليب حماية البيانات والمعلومات", "إدارة كلمات المرور", "طرق التعامل مع المواقع الإلكترونية الاحتيالية", "حقوق النشر", "انتقاء المصادر الرقمية", "توثيق المعلومات"],
+                'grade6': ["شبكات الكمبيوتر", "التكنولوجيا المستقبلية", "التكنولوجيا المتطورة لذوي الاحتياجات الخاصة", "أدوات البحث الرقمي", "كيف تعمل أنظمة تشغيل الأجهزة", "أنا مصمم مواقع انترنت!", "عالم الألعاب الالكترونية : متعة وأمان", "حماية بياناتي الرقمية !", "كن بطل الأمن السيبراني !", "التداول المالي الالكتروني", "الحوسبة السحابية", "تطبيقات التخزين السحابي"],
+                'prep1': ["التكنولوجيا الخضراء Green Technology", "التحول الرقمي Digital Transformation", "أنظمة التشغيل Operating Systems", "تثبيت وإزالة البرامج والأجهزة الرقمية الملحقة", "البريد الإلكتروني E-mail", "الحوسبة السحابية Cloud Computing", "جوجل ميت وإدارة مشروعك Google Meet", "تصميم قواعد البيانات Databases Design", "النماذج والاستعلامات Forms & Queries", "المشروع + مراجعة عامة على المنهج"],
+                'prep2': ["الأنظمة الذكية وتأثيرها على التغيرات المناخية", "التهديدات السيبرانية المتقدمة", "البيانات الضخمة Big Data", "البيانات الضخمة وعلاقتها بالذكاء الاصطناعي", "مبادئ تصميم واجهات شيقة للمواقع الإلكترونية", "تنسيق صفحات الويب", "مشروعي الرقمي لمدرستي", "إنشاء موقع ويب بمساعدة AI"],
+                'prep3': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
+                'sec1': ["مقدمة في إنشاء مواقع الويب والبرمجيات", "التخطيط لتصميم موقع ويب ثابت", "أساسيات لغة HTML وعلاماتها الرئيسية", "إضافة النصوص والصور والروابط باستخدام HTML", "مقدمة في لغة التنسيق CSS", "ضبط الألوان والخطوط والخلفيات باستخدام CSS", "أساسيات لغات البرمجة التفاعلية (JavaScript)", "المفاهيم البرمجية الأساسية (المتغيرات والشروط)", "تصميم النماذج Forms والتحقق من صحة البيانات", "تكنولوجيا الذكاء الاصطناعي والأمن السيبراني"]
+            };
+
+            let folderStructureStatic = [];
+            const refs = primaryLessonTitlesRef[selectedGrade] || [];
+            let autoOrderCounter = 1;
+
+            if (['grade4', 'grade5', 'grade6', 'sec1'].includes(selectedGrade)) {
+                let limit = 6;
+                for (let i = 1; i <= limit; i++) { folderStructureStatic.push({ key: `lesson${i}`, label: `الدرس ${i} - المحور الأول: ${refs[i-1] || ''}`, order: autoOrderCounter++ }); }
+                folderStructureStatic.push({ key: 'review1', label: '📝 مراجعة شاملة واختبار المحور الأول', order: autoOrderCounter++ });
+                let end = selectedGrade === 'sec1' ? 10 : 12;
+                for (let i = limit + 1; i <= end; i++) { folderStructureStatic.push({ key: `lesson${i}`, label: `الدرس ${i} - المحور الثاني: ${refs[i-1] || ''}`, order: autoOrderCounter++ }); }
+                folderStructureStatic.push({ key: 'review2', label: '🏆 التقييم النهائي والشامل للمنهج', order: autoOrderCounter++ });
+            } else if (['grade3', 'prep3'].includes(selectedGrade)) {
+                refs.forEach((t, i) => { folderStructureStatic.push({ key: `lesson${i+1}`, label: `القسم ${i+1} : ${t}`, order: autoOrderCounter++ }); });
+            } else if (selectedGrade === 'prep1') {
+                refs.forEach((t, i) => { folderStructureStatic.push({ key: `lesson${i+1}`, label: i === 9 ? t : `الدرس ${i+1} : ${t}`, order: autoOrderCounter++ }); });
+            } else if (selectedGrade === 'prep2') {
+                for(let i=1; i<=4; i++) { folderStructureStatic.push({ key: `lesson${i}`, label: `الدرس ${i} (الوحدة 1): ${refs[i-1]||''}`, order: autoOrderCounter++ }); }
+                folderStructureStatic.push({ key: 'review1', label: '📝 مراجعة عامة الوحدة الأولى', order: autoOrderCounter++ });
+                for(let i=5; i<=8; i++) { folderStructureStatic.push({ key: `lesson${i}`, label: `الدرس ${i-4} (الوحدة 2): ${refs[i-1]||''}`, order: autoOrderCounter++ }); }
+                folderStructureStatic.push({ key: 'review2', label: '🏆 مراجعة عامة الوحدة الثانية', order: autoOrderCounter++ });
             }
 
             let contentData = {};
             try {
                 const snapshot = await get(ref(db, `lessons_content/${selectedGrade}`));
-                if (snapshot.exists()) {
-                    contentData = snapshot.val();
-                    Object.keys(contentData).forEach(lessonKey => {
-                        if (contentData[lessonKey] && contentData[lessonKey].customTitle) {
-                            const option = lessonSelect.querySelector(`option[value="${lessonKey}"]`);
-                            if (option) {
-                                let prefix = "";
-                                if (lessonKey.startsWith('review')) { prefix = (selectedGrade === 'prep2') ? (lessonKey === 'review1' ? "📝 مراجعة الوحدة الأولى" : "🏆 مراجعة الوحدة الثانية") : (lessonKey === 'review1' ? "📝 مراجعة المحور الأول" : "🏆 مراجعة المحور الثاني"); } 
-                                else { const num = lessonKey.replace('lesson', ''); prefix = (selectedGrade === 'grade3' || selectedGrade === 'prep3') ? `القسم ${num}` : `الدرس ${num}`; }
-                                option.innerText = `${prefix} - ${contentData[lessonKey].customTitle}`;
-                            }
-                        }
-                    });
-                }
+                if (snapshot.exists()) { contentData = snapshot.val(); }
             } catch(e) {}
 
-            const existingVals = new Set(Array.from(lessonSelect.querySelectorAll('option')).map(opt => opt.value));
-            const extraKeys = Object.keys(contentData).filter(k => !existingVals.has(k)).sort((a, b) => (Number(contentData[a]?.order??9999) - Number(contentData[b]?.order??9999)));
-            if (extraKeys.length > 0) {
-                const extraGroup = document.createElement('optgroup'); extraGroup.label = 'مجلدات مخصصة'; extraGroup.className = 'bg-slate-900';
-                extraKeys.forEach((k) => { const opt = document.createElement('option'); opt.value = k; opt.innerText = contentData[k].customTitle || k; extraGroup.appendChild(opt); });
-                lessonSelect.appendChild(extraGroup);
-            }
+            folderStructureStatic.forEach(item => {
+                if(contentData[item.key]) {
+                    if(contentData[item.key].customTitle) item.label = contentData[item.key].customTitle;
+                    if(contentData[item.key].order !== undefined && contentData[item.key].order !== "") item.order = Number(contentData[item.key].order);
+                }
+            });
+
+            Object.entries(contentData).forEach(([k, v]) => {
+                if(!folderStructureStatic.some(x => x.key === k)) {
+                    folderStructureStatic.push({ key: k, label: `📂 مجلد مخصص: ${v.customTitle || k}`, order: Number(v.order || autoOrderCounter++) });
+                }
+            });
+
+            folderStructureStatic.sort((a,b) => a.order - b.order);
+            
+            // Re-index sequentially to eliminate gaps when folders are deleted
+            folderStructureStatic.forEach((item, index) => {
+                item.order = index + 1;
+            });
+            window.currentFolderStructure = folderStructureStatic;
+
+            const mainGroup = document.createElement('optgroup');
+            mainGroup.label = "فهرس المجلدات والدروس المرتبة المكتملة";
+            mainGroup.className = "bg-slate-900";
+            
+            folderStructureStatic.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.key;
+                opt.innerText = `${item.label} [رتبة: ${item.order}]`;
+                mainGroup.appendChild(opt);
+            });
+            lessonSelect.appendChild(mainGroup);
 
             if (preserveSelection && previousSelectedValue) { lessonSelect.value = previousSelectedValue; }
             onFilterChange();
         }
 
+        // 🌟 دالة تحديث وإصلاح فلاتر العرض التنافسية (النقطة الرابعة) 🌟
         window.changeCurrentTeacherDisplayFilter = function(filterValue) {
             currentDisplayFilter = filterValue;
             document.getElementById('filterBtn-all').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
             document.getElementById('filterBtn-standard').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
             document.getElementById('filterBtn-game').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
+            document.getElementById('filterBtn-subquiz').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
             document.getElementById('filterBtn-' + filterValue).className = "px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow";
             renderQuestionsDashboardList();
         }
@@ -375,9 +589,31 @@
             const generatedCode = `ICT-${numMap[selectedGrade] || 0}-${randomStr}`;
             try {
                 await set(ref(db, `individual_student_codes/${generatedCode}`), { grade: selectedGrade, status: "active", createdAt: new Date().toLocaleString() }); 
-                document.getElementById('studentCodeResultBox').innerText = generatedCode; alert(`🎉 تم إنشاء كود الطالب الجديد بنجاح: ${generatedCode}`); 
+                document.getElementById('studentCodeResultBox').innerHTML = `<div class="text-emerald-450 select-all">${generatedCode}</div>`; alert(`🎉 تم إنشاء كود الطالب الجديد بنجاح: ${generatedCode}`); 
             } catch(err) { alert(err.message); }
-            setTimeout(() => { isGeneratingCode = false; btn.innerText = "توليد الكود"; }, 1000);
+            setTimeout(() => { isGeneratingCode = false; btn.innerText = "توليد كود واحد"; }, 500);
+        }
+
+        window.generateBulk50StudentCodes = async function() {
+            if(isGeneratingCode) return; isGeneratingCode = true;
+            const btn = document.getElementById('generate50CodesBtn');
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> جاري الحفظ...`;
+            const selectedGrade = document.getElementById('targetStudentGrade').value;
+            const numMap = { 'grade3':3, 'grade4':4, 'grade5':5, 'grade6':6, 'prep1':7, 'prep2':8, 'prep3':9, 'sec1':10 };
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let batchUpdates = {}; let generatedCodesListHTML = "";
+            for (let block = 0; block < 50; block++) {
+                let randomStr = ''; for(let i=0; i<6; i++) randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+                let finalCode = `ICT-${numMap[selectedGrade] || 0}-${randomStr}`;
+                batchUpdates['individual_student_codes/' + finalCode] = { grade: selectedGrade, status: "active", createdAt: new Date().toLocaleString() };
+                generatedCodesListHTML += `<div class="border-b border-white/5 py-1 select-all hover:bg-white/5 transition-colors text-emerald-400 font-mono text-center">${finalCode}</div>`;
+            }
+            try {
+                await update(ref(db), batchUpdates);
+                document.getElementById('studentCodeResultBox').innerHTML = `<div class="text-right text-xs font-black text-slate-400 mb-2 border-b border-white/10 pb-1">📋 تم توليد 50 كوداً بنجاح (اضغط مرتين لنسخ أي كود):</div>` + generatedCodesListHTML;
+                alert("🚀 تم توليد وحفظ 50 كوداً سرياً سحابياً لطلاب الصف المختار دفعة واحدة بنجاح!");
+            } catch(e) { alert("خطأ في الاتصال بالسيرفر!"); }
+            setTimeout(() => { isGeneratingCode = false; btn.innerHTML = `<i class="fa-solid fa-layer-group ml-1"></i> توليد 50 كود فوري`; }, 500);
         }
 
         window.toggleTypeFields = function() {
@@ -409,12 +645,14 @@
         }
 
         window.uploadBulkQuestions = async function() {
-            const jsonText = document.getElementById('bulkJsonInput').value.trim(); const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value;
-            if (!jsonText || !lesson) { alert("أدخل بيانات JSON واختر الدرس أولاً من النطاق الأعلى"); return; }
+            const jsonText = document.getElementById('bulkJsonInput').value.trim(); const grade = document.getElementById('filterGrade').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value;
+            if (!jsonText || !activeQuizKey) { alert("أدخل بيانات JSON وتأكد من اختيار اختبار فرعي مستهدف أولاً!"); return; }
             try {
                 const questions = JSON.parse(jsonText); let updates = {}; let uploadCount = 0;
                 for (let q of questions) {
-                    let targetLesson = lesson; if (q.isGame) { targetLesson += "_game"; }
+                    let targetLesson = activeQuizKey; 
+                    if(activeQuizKey === 'default_main') targetLesson = document.getElementById('filterLesson').value;
+                    if (q.isGame) { targetLesson = document.getElementById('filterLesson').value + "_game"; }
                     let finalOptions = ["", "", "", ""]; for (let i = 0; i < 4; i++) { finalOptions[i] = (q.options && q.options[i]) ? q.options[i].toString().trim() : ""; }
                     let qType = q.type || ((finalOptions[0] === "صح" && finalOptions[1] === "خطأ") ? "true_false" : "mcq");
                     const newKey = push(ref(db, "questions")).key;
@@ -424,8 +662,31 @@
             } catch(err) { alert("خطأ في صيغة كود الـ JSON"); }
         }
 
+        window.createNewSubQuizInsideLesson = async function() {
+            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const quizName = document.getElementById('newQuizSubName').value.trim();
+            if(!quizName || !lesson) { alert("الرجاء كتابة اسم زر الاختبار المخصص أولاً!"); return; }
+            const quizId = 'subquiz_' + grade + '_' + lesson + '_' + Date.now(); 
+            try {
+                await set(ref(db, `lessons_content/${grade}/${lesson}/sub_quizzes/${quizId}`), { quizTitle: quizName, createdAt: new Date().toLocaleString() });
+                document.getElementById('newQuizSubName').value = ""; alert("🎉 تم توليد زر الاختبار المخصص الفرعي بنجاح!"); onFilterChange();
+            } catch(e) { alert("خطأ في الاتصال بالسيرفر! تحقق من استقرار شبكة الإنترنت."); }
+        }
+
+        window.deleteActiveSubQuiz = async function() {
+            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value;
+            if(!activeQuizKey || activeQuizKey === 'default_main') { alert("لا يمكن حذف الاختبار الأساسي أو القوائم الفارغة!"); return; }
+            if(!confirm("⚠️ تحذير: سيتم حذف هذا الاختبار الفرعي وكافة الأسئلة التابعة له؟")) return;
+            try {
+                const updates = {}; updates[`lessons_content/${grade}/${lesson}/sub_quizzes/${activeQuizKey}`] = null;
+                const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade)));
+                if(snapshot.exists()) { snapshot.forEach(child => { if(child.val().lesson === activeQuizKey) updates[`questions/${child.key}`] = null; }); }
+                await update(ref(db), updates); alert("🗑️ تم حذف الاختبار الفرعي بنجاح!"); onFilterChange();
+            } catch(e) { alert("خطأ أثناء الحذف!"); }
+        }
+
         window.renderQuestionsDashboardList = async function() {
-            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; if (!lesson) return;
+            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value;
+            if (!lesson || !activeQuizKey) return;
             const searchKeyword = document.getElementById('searchQuestionsInput').value.toLowerCase().trim();
             const mcqList = document.getElementById('mcqQuestionsList'); const tfList = document.getElementById('tfQuestionsList'); 
             mcqList.innerHTML = ''; tfList.innerHTML = ''; localQuestionsData = {}; let mcqCount = 0; let tfCount = 0;
@@ -434,14 +695,34 @@
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnap) => {
                         const key = childSnap.key; const q = childSnap.val();
-                        if (q.lesson === lesson || q.lesson === (lesson + "_game")) {
+                        
+                        // الفحص الصارم: عرض الأسئلة بناءً على الفلتر
+                        let matchCondition;
+                        if(activeQuizKey === 'default_main') {
+                            matchCondition = (q.lesson === lesson) || (q.lesson === (lesson + "_game")) || (typeof q.lesson === 'string' && q.lesson.includes(lesson) && q.lesson.includes('subquiz'));
+                        } else {
+                            matchCondition = (q.lesson === activeQuizKey) || (q.lesson === (activeQuizKey + "_game"));
+                        }
+                        
+                        if (matchCondition) {
                             if (currentDisplayFilter === 'standard' && q.lesson.endsWith('_game')) return;
+                            if (currentDisplayFilter === 'standard' && q.lesson.includes('subquiz') && activeQuizKey === 'default_main') return;
                             if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return;
+                            if (currentDisplayFilter === 'subquiz' && !q.lesson.includes('subquiz')) return;
                             if (searchKeyword && !q.question.toLowerCase().includes(searchKeyword)) return;
 
-                            localQuestionsData[key] = q; const isGame = q.lesson.endsWith('_game'); const isChecked = bulkSelectedKeys.has(key) ? 'checked' : '';
+                            localQuestionsData[key] = q; const isGame = q.lesson.endsWith('_game'); const isSubQuiz = q.lesson.includes('subquiz'); const isChecked = bulkSelectedKeys.has(key) ? 'checked' : '';
                             const safeQ = escapeHTML(q.question); let optionsHtml = '';
                             if (q.options) { q.options.forEach((o, i) => { if (o && o.trim() !== "") { optionsHtml += `<span class="text-[11px] px-2 py-0.5 rounded-md ${i === q.correct ? 'bg-emerald-500/20 text-emerald-400 font-black' : 'bg-slate-800 text-slate-400'}">${escapeHTML(o)}</span>`; } }); }
+
+                            let tagHtml = '';
+                            if (isGame) {
+                                tagHtml = '<span class="bg-amber-500/10 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-amber-500/20">🕹️ طور اللعبة</span>';
+                            } else if (isSubQuiz) {
+                                tagHtml = '<span class="bg-purple-500/10 text-purple-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-purple-500/20">🟣 إضافي</span>';
+                            } else {
+                                tagHtml = '<span class="bg-blue-500/10 text-blue-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-blue-500/20">⚡ الدرس</span>';
+                            }
 
                             const card = document.createElement('div'); card.className = "p-4 rounded-2xl bg-slate-900/60 border border-slate-700/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3";
                             card.innerHTML = `
@@ -450,7 +731,7 @@
                                     <div class="space-y-1 flex-1">
                                         <div class="flex items-center gap-2 flex-wrap">
                                             <span class="text-xs font-black text-slate-400">#${q.type === 'true_false' ? (tfCount + 1) : (mcqCount + 1)}</span>
-                                            ${isGame ? '<span class="bg-amber-500/10 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-amber-500/20">🕹️ طور اللعبة</span>' : '<span class="bg-indigo-500/10 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-indigo-500/20">📝 اختبار قياسي</span>'}
+                                            ${tagHtml}
                                             <span class="text-xs text-slate-500 font-mono">(${q.time || 30} ثانية)</span>
                                             <span class="bg-slate-800 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-slate-700">💎 ${q.points || 5} نقاط</span>
                                         </div>
@@ -472,66 +753,211 @@
 
         window.onFilterChange = async function() {
             cancelEditing(); const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; if (!lesson) return;
-            document.getElementById('lessonImageURL').value = ""; document.getElementById('lessonVideoURL').value = ""; document.getElementById('lessonCustomTitle').value = "";
+            
+            const selectEl = document.getElementById('filterLesson');
+            const selectedText = selectEl.options[selectEl.selectedIndex].text;
+            let autoOrderMatch = selectedText.match(/\[رتبة:\s*(\d+)\]/);
+            let autoOrder = autoOrderMatch ? parseInt(autoOrderMatch[1]) : 1;
+
+            document.getElementById('lessonImageURL').value = ""; document.getElementById('lessonVideoURL').value = ""; 
+            document.getElementById('lessonCustomTitle').value = ""; document.getElementById('lessonTagTitle').value = ""; document.getElementById('lessonMainTitle').value = "";
+            document.getElementById('lessonOrderEdit').value = autoOrder;
+            document.getElementById('lessonFolderColor').value = "#f59e0b";
+            document.getElementById('chkShowTextTab').checked = true; document.getElementById('chkShowQuizTab').checked = true;
+            document.getElementById('chkShowVideo').checked = true; document.getElementById('chkShowQuiz').checked = true; document.getElementById('chkShowGame').checked = true;
             bulkSelectedKeys.clear(); document.getElementById('bulkDeleteSelectedBtn').classList.add('hidden');
+            
+            let lData = {};
             try {
                 const lessonSnapshot = await get(ref(db, `lessons_content/${grade}/${lesson}`));
-                if (lessonSnapshot.exists()) { const lData = lessonSnapshot.val(); document.getElementById('lessonImageURL').value = lData.imageURL || ""; document.getElementById('lessonVideoURL').value = lData.videoURL || ""; document.getElementById('lessonCustomTitle').value = lData.customTitle || ""; }
-                renderQuestionsDashboardList();
+                if (lessonSnapshot.exists()) { 
+                    lData = lessonSnapshot.val(); 
+                    document.getElementById('lessonImageURL').value = lData.imageURL || ""; 
+                    document.getElementById('lessonVideoURL').value = lData.videoURL || ""; 
+                    document.getElementById('lessonCustomTitle').value = lData.customTitle || "";
+                    document.getElementById('lessonTagTitle').value = lData.tagTitle || "";
+                    document.getElementById('lessonMainTitle').value = lData.mainTitle || "";
+                    document.getElementById('lessonOrderEdit').value = lData.order || autoOrder;
+                    document.getElementById('lessonFolderColor').value = lData.color || "#f59e0b";
+                    if(lData.visibility) {
+                        document.getElementById('chkShowTextTab').checked = lData.visibility.showTextTab !== false;
+                        document.getElementById('chkShowQuizTab').checked = lData.visibility.showQuizTab !== false;
+                        document.getElementById('chkShowVideo').checked = lData.visibility.showVideo !== false;
+                        document.getElementById('chkShowQuiz').checked = lData.visibility.showQuiz !== false;
+                        document.getElementById('chkShowGame').checked = lData.visibility.showGame !== false;
+                    }
+                }
             } catch (err) {}
+
+            const quizSelector = document.getElementById('activeSubQuizSelector'); quizSelector.innerHTML = "";
+            const defaultOpt = document.createElement('option'); defaultOpt.value = "default_main"; defaultOpt.innerText = "الزر الأزرق الرئيسي للدرس (الأسئلة القديمة)";
+            quizSelector.appendChild(defaultOpt);
+            
+            if(lData && lData.sub_quizzes) {
+                globalSubQuizzesObject = lData.sub_quizzes;
+                Object.entries(globalSubQuizzesObject).forEach(([quizKey, quizData]) => {
+                    const opt = document.createElement('option'); opt.value = quizKey; opt.innerText = quizData.quizTitle || quizKey;
+                    quizSelector.appendChild(opt);
+                });
+            }
+            renderQuestionsDashboardList();
         }
 
         document.getElementById('lessonContentForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const imageURL = document.getElementById('lessonImageURL').value.trim(); const videoURL = document.getElementById('lessonVideoURL').value.trim(); const customTitle = document.getElementById('lessonCustomTitle').value.trim();
-            try { await set(ref(db, `lessons_content/${grade}/${lesson}`), { imageURL: imageURL, videoURL: videoURL, customTitle: customTitle }); alert('🎉 تم تحديث بيانات ومسميات المجلد بنجاح!'); updateLessonOptions(true); } catch(err) { alert(err.message); }
+            e.preventDefault(); 
+            const grade = document.getElementById('filterGrade').value; 
+            const lesson = document.getElementById('filterLesson').value; 
+            const imageURL = document.getElementById('lessonImageURL').value.trim(); 
+            const videoURL = document.getElementById('lessonVideoURL').value.trim(); 
+            const customTitle = document.getElementById('lessonCustomTitle').value.trim(); 
+            const tagTitle = document.getElementById('lessonTagTitle').value.trim(); 
+            const mainTitle = document.getElementById('lessonMainTitle').value.trim(); 
+            const orderInput = document.getElementById('lessonOrderEdit').value;
+            const folderColor = document.getElementById('lessonFolderColor').value;
+            
+            let orderVal = parseInt(orderInput) || 1;
+            
+            let currentList = [...(window.currentFolderStructure || [])];
+            currentList = currentList.filter(x => x.key !== lesson);
+            currentList.sort((a,b) => a.order - b.order);
+            
+            let insertIndex = orderVal - 1;
+            if (insertIndex < 0) insertIndex = 0;
+            
+            currentList.splice(insertIndex, 0, { key: lesson });
+            
+            let updates = {};
+            let finalOrderForTarget = orderVal;
+            
+            currentList.forEach((item, index) => {
+                let sequentialOrder = index + 1;
+                if (item.key === lesson) {
+                    finalOrderForTarget = sequentialOrder;
+                } else {
+                    let originalItem = (window.currentFolderStructure || []).find(x => x.key === item.key);
+                    if (originalItem && originalItem.order !== sequentialOrder) {
+                        updates[`lessons_content/${grade}/${item.key}/order`] = sequentialOrder;
+                    }
+                }
+            });
+
+            const visibilityObj = {
+                showTextTab: document.getElementById('chkShowTextTab').checked,
+                showQuizTab: document.getElementById('chkShowQuizTab').checked,
+                showVideo: document.getElementById('chkShowVideo').checked,
+                showQuiz: document.getElementById('chkShowQuiz').checked,
+                showGame: document.getElementById('chkShowGame').checked
+            };
+            
+            let currentSubQuizzes = null;
+            try { const snap = await get(ref(db, `lessons_content/${grade}/${lesson}/sub_quizzes`)); if(snap.exists()) currentSubQuizzes = snap.val(); } catch(e){}
+
+            updates[`lessons_content/${grade}/${lesson}`] = { imageURL: imageURL, videoURL: videoURL, customTitle: customTitle, mainTitle: mainTitle, tagTitle: tagTitle, order: finalOrderForTarget, color: folderColor, visibility: visibilityObj, sub_quizzes: currentSubQuizzes };
+
+            try { 
+                await update(ref(db), updates); 
+                alert('🎉 تم حفظ الترتيب وحالة الأزرار وكافة شروحات المجلد سحابياً بنجاح!'); 
+                updateLessonOptions(true); 
+            } catch(err) { alert(err.message); }
         });
 
+        // 🌟 معالجة ونشر منشئ الأسئلة الموحد المصلح للـ Radios الثلاثية 🌟
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); const grade = document.getElementById('filterGrade').value; let lesson = document.getElementById('filterLesson').value; const type = document.getElementById('questionType').value; const qText = document.getElementById('questionText').value; const timeLimit = document.getElementById('timeLimit').value; const pointsVal = document.getElementById('questionPoints').value; const correctAnswerIndex = document.querySelector('input[name="correct"]:checked').value; const editingKey = document.getElementById('editingQuestionKey').value;
-            const destination = document.querySelector('input[name="questionDestination"]:checked').value; if (destination === 'game') { lesson += "_game"; }
+            e.preventDefault(); const grade = document.getElementById('filterGrade').value; let lesson = document.getElementById('filterLesson').value; let activeQuizKey = document.getElementById('activeSubQuizSelector').value; const type = document.getElementById('questionType').value; const qText = document.getElementById('questionText').value; const timeLimit = document.getElementById('timeLimit').value; const pointsVal = document.getElementById('questionPoints').value; const correctAnswerIndex = document.querySelector('input[name="correct"]:checked').value; const editingKey = document.getElementById('editingQuestionKey').value;
+            
+            let targetDestinationKey = lesson; // التلقائي للزر الأزرق الرئيسي
+            const destinationMode = document.querySelector('input[name="questionDestination"]:checked').value;
+            
+            if (destinationMode === 'sub_quiz_active') {
+                if(activeQuizKey === 'default_main') { alert("الرجاء اختيار اسم اختبار فرعي مخصص من القائمة رقم (3) أولاً!"); return; }
+                targetDestinationKey = activeQuizKey;
+            } else if (destinationMode === 'sub_quiz_game') {
+                if(activeQuizKey === 'default_main') { alert("الرجاء اختيار اسم اختبار فرعي من القائمة رقم (3) أولاً!"); return; }
+                targetDestinationKey = activeQuizKey + "_game";
+            } else if (destinationMode === 'game') {
+                targetDestinationKey = lesson + "_game";
+            }
+            
             let options = [document.getElementById('opt0').value, document.getElementById('opt1').value, document.getElementById('opt2').value, document.getElementById('opt3').value]; if(type==='true_false'){ options[2]=""; options[3]=""; }
             const targetID = editingKey ? editingKey : push(ref(db, "questions")).key;
-            const questionObj = { id: targetID, grade: grade, lesson: lesson, type: type, question: qText.trim(), options: options, correct: parseInt(correctAnswerIndex), time: parseInt(timeLimit), points: parseInt(pointsVal) };
-            try { await set(ref(db, `questions/${targetID}`), questionObj); cancelEditing(); renderQuestionsDashboardList(); } catch (error) { alert(error.message); }
+            const questionObj = { id: targetID, grade: grade, lesson: targetDestinationKey, type: type, question: qText.trim(), options: options, correct: parseInt(correctAnswerIndex), time: parseInt(timeLimit), points: parseInt(pointsVal) };
+            try { await set(ref(db, `questions/${targetID}`), questionObj); cancelEditing(); renderQuestionsDashboardList(); alert("🎉 تم نشر وحفظ السؤال الفردي الجديد بنجاح!"); } catch (error) { alert(error.message); }
         });
 
         window.triggerEditMode = function(key) {
             const q = localQuestionsData[key]; if(!q) return;
             document.getElementById('editingQuestionKey').value = key; document.getElementById('questionText').value = q.question; document.getElementById('timeLimit').value = q.time || 30; document.getElementById('questionPoints').value = q.points || 5;
-            document.getElementById('opt0').value = q.options[0] || ''; document.getElementById('opt1').value = q.options[1] || ''; document.getElementById('opt2').value = q.options[2] || ''; document.getElementById('opt3').value = q.options[3] || ''; document.querySelectorAll('input[name="correct"]')[q.correct].checked = true; document.querySelectorAll('input[name="questionDestination"]')[q.lesson.endsWith('_game') ? 1 : 0].checked = true;
+            document.getElementById('opt0').value = q.options[0] || ''; document.getElementById('opt1').value = q.options[1] || ''; document.getElementById('opt2').value = q.options[2] || ''; document.getElementById('opt3').value = q.options[3] || ''; document.querySelectorAll('input[name="correct"]')[q.correct].checked = true;
             document.getElementById('questionType').value = q.type || 'mcq'; toggleTypeFields();
-            document.getElementById('submitBtnText').innerText = "حفظ وتحديث التعديل"; document.getElementById('cancelEditBtn').classList.remove('hidden'); document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-400"></i> تعديل السؤال المحدد سحابياً`;
+            document.getElementById('submitBtnText').innerText = "حفظ وتحديث التعديل"; document.getElementById('cancelEditBtn').classList.remove('hidden');
         }
 
-        window.cancelEditing = function() { document.getElementById('editingQuestionKey').value = ""; document.getElementById('questionForm').reset(); toggleTypeFields(); document.getElementById('submitBtnText').innerText = "نشر السؤال الحالي سحابياً"; document.getElementById('cancelEditBtn').classList.add('hidden'); document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-circle-plus"></i> إضافة سؤال تقييمي جديد للقسم المحدد`; }
+        window.cancelEditing = function() { document.getElementById('editingQuestionKey').value = ""; document.getElementById('questionForm').reset(); toggleTypeFields(); document.getElementById('submitBtnText').innerText = "نشر وحفظ السؤال الحالي سحابياً 🚀"; document.getElementById('cancelEditBtn').classList.add('hidden'); }
         window.deleteQuestionInline = async function(key) { if(confirm("حذف السؤال نهائياً؟")) { try { await remove(ref(db, `questions/${key}`)); renderQuestionsDashboardList(); } catch(err) { alert(err.message); } } }
 
         window.executeBulkFilteredDeleteEngine = async function() {
-            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; let filterText = currentDisplayFilter === 'all' ? "كافة الأسئلة" : (currentDisplayFilter === 'standard' ? "أسئلة الامتحان القياسي فقط" : "أسئلة طور اللعبة فقط"); if (!confirm(`⚠️ تحذير: حذف وإزالة [ ${filterText} ] المفتوحة حالياً لهذا الدرس؟`)) return;
-            try { const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade))); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.lesson === lesson || q.lesson === (lesson + "_game")) { if (currentDisplayFilter === 'standard' && q.lesson.endsWith('_game')) return; if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return; updates[`questions/${child.key}`] = null; } }); await update(ref(db), updates); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
+            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value; let filterText = currentDisplayFilter === 'all' ? "كافة الأسئلة" : (currentDisplayFilter === 'standard' ? "أسئلة الامتحان القياسي فقط" : "أسئلة طور اللعبة فقط"); if (!confirm(`⚠️ تحذير: حذف وإزالة [ ${filterText} ] المفتوحة حالياً لهذا الدرس؟`)) return;
+            try { const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade))); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && q.lesson === lesson)) { if (currentDisplayFilter === 'standard' && q.lesson.endsWith('_game')) return; if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return; updates[`questions/${child.key}`] = null; } }); await update(ref(db), updates); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
         }
 
         window.executeAbsoluteLessonResetEngine = async function() {
-            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; if (!confirm("🚨 إبادة وتصفير كافة أسئلة المجلد بالكامل؟")) return;
-            try { const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade))); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.grade === grade && (q.lesson === lesson || q.lesson === (lesson + "_game"))) { updates[`questions/${child.key}`] = null; } }); await update(ref(db), updates); alert(`💥 تم تفريغ المجلد!`); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
+            const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value; if (!confirm("🚨 إبادة وتصفير كافة أسئلة المجلد بالكامل؟")) return;
+            try { const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade))); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.grade === grade && (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && child.val().lesson === lesson))) { updates[`questions/${child.key}`] = null; } }); await update(ref(db), updates); alert(`💥 تم تفريغ المجلد!`); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
         }
 
         window.refreshTeacherLists = function() { updateLessonOptions(true); }
 
         window.createNewLessonFolder = async function() {
-            const grade = document.getElementById('filterGrade').value; const title = document.getElementById('newLessonTitle').value.trim(); 
-            if(!title) { alert("اكتب اسماً للمجلد المخصص الجديد أولاً!"); return; }
+            const grade = document.getElementById('filterGrade').value; 
+            const title = document.getElementById('newLessonTitle').value.trim(); 
+            const orderInput = document.getElementById('newLessonOrder').value;
             const lessonId = `lesson_custom_${Date.now()}`;
+            
+            let currentList = [...(window.currentFolderStructure || [])];
+            currentList.sort((a,b) => a.order - b.order);
+            
+            let insertIndex;
+            if (orderInput === "") {
+                insertIndex = currentList.length;
+            } else {
+                insertIndex = parseInt(orderInput) - 1;
+                if (insertIndex < 0) insertIndex = 0;
+            }
+            
+            currentList.splice(insertIndex, 0, { key: lessonId });
+            
+            let updates = {};
+            let finalOrderForNew = 1;
+            
+            currentList.forEach((item, index) => {
+                let sequentialOrder = index + 1;
+                if (item.key === lessonId) {
+                    finalOrderForNew = sequentialOrder;
+                } else {
+                    let originalItem = (window.currentFolderStructure || []).find(x => x.key === item.key);
+                    if (originalItem && originalItem.order !== sequentialOrder) {
+                        updates[`lessons_content/${grade}/${item.key}/order`] = sequentialOrder;
+                    }
+                }
+            });
+
             try {
-                await set(ref(db, `lessons_content/${grade}/${lessonId}`), { customTitle: title, imageURL: "", videoURL: "", order: 9999, isCustom: true, createdAt: new Date().toLocaleString() });
-                document.getElementById('newLessonTitle').value = ""; document.getElementById('filterLesson').value = lessonId; alert("🎉 تم إنشاء المجلد الجديد بنجاح!"); await updateLessonOptions(true);
+                if (Object.keys(updates).length > 0) {
+                    await update(ref(db), updates);
+                }
+                await set(ref(db, `lessons_content/${grade}/${lessonId}`), { customTitle: title, imageURL: "", videoURL: "", order: finalOrderForNew, isCustom: true, createdAt: new Date().toLocaleString() });
+                document.getElementById('newLessonTitle').value = ""; 
+                document.getElementById('newLessonOrder').value = ""; 
+                document.getElementById('filterLesson').value = lessonId; 
+                alert("🎉 تم إنشاء المجلد الجديد وتحديث الترتيب التلقائي بنجاح!"); 
+                await updateLessonOptions(true);
             } catch (err) { alert(err.message); }
         }
 
         window.deleteCurrentLessonFolder = async function() {
             const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; if (!lesson) { alert("اختر درساً أولاً"); return; }
             if (!lesson.startsWith("lesson_custom_")) { alert("⛔ عذراً، لا يمكن حذف المجلدات الأساسية والثابتة للمنهج!"); return; }
-            if (!confirm("هل تريد حذف هذا المجلد وكل الأسئلة المرتبطة به نهائياً Executive؟")) return;
+            if (!confirm("هل تريد حذف هذا المجلد وكل الأسئلة المرتبطة به نهائياً؟")) return;
             try {
                 const updates = {}; updates[`lessons_content/${grade}/${lesson}`] = null;
                 const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade)));
