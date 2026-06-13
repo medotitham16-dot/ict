@@ -28,6 +28,12 @@
             min-height: 100vh;
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         /* ✨ ستايل خطوط النيون المتوهجة المعتمدة للواجهة الجاذبة للأبطال ✨ */
         .neon-title-glow {
             font-weight: 900;
@@ -178,25 +184,31 @@
         
         <div class="bg-slate-900/40 border border-slate-700/40 rounded-2xl p-4 text-right space-y-3">
             <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
-                <span class="text-lg">📚</span>
+                <span class="text-lg">💻</span>
                 <span>دروس المنهج بشكل بسيط</span>
             </div>
             <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
-                <span class="text-lg">🎬</span>
+                <span class="text-lg">🖥️</span>
                 <span>شرح فيديو مميز لكل درس</span>
             </div>
             <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
-                <span class="text-lg">📝</span>
+                <span class="text-lg">⚙️</span>
                 <span>أسئلة تقييمية واختبارات دورية</span>
             </div>
             <div class="flex items-center gap-3 text-xs sm:text-sm font-black text-white">
-                <span class="text-lg">🎮</span>
+                <span class="text-lg">🕹️</span>
                 <span>ألعاب التحدي والمغامرات الشيقة</span>
             </div>
         </div>
 
         <form id="loginForm" class="space-y-4" onsubmit="verifyAndLockStudentCode(event)">
-            <input type="text" id="gradeCodeInput" class="w-full neon-input border-2 border-slate-200 py-4 px-4 text-center tracking-wider focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-400" placeholder="أدخل كود الدخول المعتمد" required>
+            <input type="text" id="studentNameInput" class="w-full neon-input border-2 border-slate-200 py-4 px-4 text-center tracking-wider focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-400 mb-2" placeholder="أدخل اسمك الثلاثي الأول" required>
+            <div class="relative w-full">
+                <input type="password" id="gradeCodeInput" class="w-full neon-input border-2 border-slate-200 py-4 px-12 text-center tracking-wider focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-400" placeholder="أدخل كود الدخول المعتمد" required>
+                <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-indigo-500 transition-colors">
+                    <i id="eyeIcon" class="fa-solid fa-eye"></i>
+                </button>
+            </div>
             <button type="submit" class="w-full neon-btn-blue text-white font-black py-4 rounded-2xl text-md tracking-wide transition-all">دخول للمنصة</button>
         </form>
 
@@ -227,8 +239,9 @@
             </button>
         </div>
 
-        <div class="flex bg-slate-500/10 p-1.5 rounded-2xl gap-2 border border-slate-700/10">
+        <div class="flex bg-slate-500/10 p-1.5 rounded-2xl gap-2 border border-slate-700/10" id="tabsHeaderContainer">
             <button onclick="switchTab('textTab')" id="btn-textTab" class="flex-1 py-3 text-center rounded-xl transition-all font-black text-sm"></button>
+            <button onclick="switchTab('quizTab')" id="btn-quizTab" class="flex-1 py-3 text-center rounded-xl transition-all font-black text-sm"></button>
             <button onclick="switchTab('videoTab')" id="btn-videoTab" class="flex-1 py-3 text-center rounded-xl transition-all font-black text-sm"></button>
         </div>
 
@@ -257,27 +270,35 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <button onclick="startStandardQuizEngine()" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
-                <i class="fa-solid fa-bolt-lightning text-lg"></i> بدء التقييم والاختبار الحالي
-            </button>
-            <button onclick="startInteractiveGameEngine()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
-                <i class="fa-solid fa-gamepad text-xl animate-bounce"></i> دخول مغامرة اللعبة التفاعلية 🎮
-            </button>
+        <div id="tabContent-quizTab" class="hidden min-h-[200px] w-full flex-col items-center justify-center p-4">
+            <div id="lessonQuizzesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                <button id="btn-standardQuiz" onclick="startStandardQuizEngine()" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-code text-lg"></i> بدء التقييم وأسئلة الدرس
+                </button>
+                <button id="btn-gameQuiz" onclick="startInteractiveGameEngine()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-gamepad text-xl animate-bounce"></i> دخول مغامرة اللعبة التفاعلية 🎮
+                </button>
+            </div>
+            <div id="quizTabEmptyAlert" class="hidden p-12 text-center text-amber-500 font-bold text-sm leading-relaxed w-full">
+                <i class="fa-solid fa-folder-open text-2xl block mb-2 opacity-70"></i>لا يوجد تقييمات أو ألعاب مفعلة حالياً
+            </div>
         </div>
     </div>
 
     <div id="quizContainer" class="max-w-4xl w-full custom-card border rounded-3xl overflow-hidden hidden mx-auto shadow-2xl">
-        <div class="bg-gradient-to-r from-red-700 via-red-600 to-red-800 p-5 text-white flex justify-between items-center">
+        <div id="quizHeaderTopBar" class="bg-gradient-to-r from-red-700 via-red-600 to-red-800 p-5 text-white flex justify-between items-center transition-colors duration-500">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl border border-white/30 backdrop-blur-md"><i class="fa-solid fa-robot"></i></div>
+                <div id="quizHeaderIcon" class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl border border-white/30 backdrop-blur-md"><i class="fa-solid fa-robot"></i></div>
                 <div>
-                    <h3 class="text-lg font-black italic">تكنولوجيا المعلومات والاتصالات</h3>
+                    <h3 id="quizHeaderMainTitle" class="text-lg font-black italic">تكنولوجيا المعلومات والاتصالات</h3>
                     <p id="quizDynamicGradeSub" class="text-xs text-red-100 font-black opacity-90 uppercase">الصف الدراسي</p>
                 </div>
             </div>
-            <div class="text-left">
-                <span id="quizDynamicLessonTitle" class="bg-black/30 text-white font-black text-xs px-4 py-2 rounded-xl border border-white/10">الدرس الحالي</span>
+            <div class="text-left flex items-center gap-2">
+                <span id="quizDynamicLessonTitle" class="bg-black/30 text-white font-black text-xs px-4 py-2 rounded-xl border border-white/10 hidden sm:inline-block">الدرس الحالي</span>
+                <button onclick="confirmCancelQuiz()" title="إلغاء الاختبار والعودة للدرس" class="bg-white/10 hover:bg-white/20 text-white rounded-xl px-3 sm:px-4 py-2 font-black text-[10px] sm:text-xs transition-all border border-white/20 flex items-center gap-2">
+                    <i class="fa-solid fa-person-walking-arrow-right"></i> <span class="hidden sm:inline-block">رجوع للدرس</span>
+                </button>
             </div>
         </div>
 
@@ -343,7 +364,12 @@
                     <p class="text-[11px] text-amber-300 font-bold opacity-90 animate-pulse">🎯 طور المغامرة والتحدي التفاعلي للأبطال</p>
                 </div>
             </div>
-            <div class="bg-cyan-500 text-slate-950 font-black text-xs px-4 py-2 rounded-xl border border-cyan-300 shadow-md shadow-cyan-500/20" id="gameScoreCounter">النجوم المجمعة: 0 ⭐</div>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="bg-cyan-500 text-slate-950 font-black text-[10px] sm:text-xs px-2 sm:px-4 py-2 rounded-xl border border-cyan-300 shadow-md shadow-cyan-500/20" id="gameScoreCounter">النجوم المجمعة: 0 ⭐</div>
+                <button onclick="confirmExitGame()" title="إلغاء اللعبة والعودة للدرس" class="bg-red-500/20 hover:bg-red-500/40 text-red-400 rounded-xl px-2 sm:px-4 py-2 font-black text-[10px] sm:text-xs transition-all border border-red-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline-block">رجوع للدرس</span>
+                </button>
+            </div>
         </div>
 
         <div class="w-full bg-slate-900/60 h-3">
@@ -444,18 +470,33 @@
             else { body.classList.remove('theme-light'); body.classList.add('theme-dark'); icon.className = "fa-solid fa-sun text-amber-400"; localStorage.setItem('user_theme', 'dark'); }
         }
 
+        window.togglePasswordVisibility = function() {
+            const input = document.getElementById('gradeCodeInput');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash text-indigo-500';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye text-slate-400';
+            }
+        }
+
         function getDeviceFingerprint() { let id = localStorage.getItem('student_device_token'); if (!id) { id = 'dev_' + Math.random().toString(36).substring(2, 15); localStorage.setItem('student_device_token', id); } return id; }
 
         window.verifyAndLockStudentCode = async function(e) {
-            e.preventDefault(); const inputCode = document.getElementById('gradeCodeInput').value.trim(); deviceFingerprint = getDeviceFingerprint();
+            e.preventDefault(); const inputCode = document.getElementById('gradeCodeInput').value.trim(); const studentName = document.getElementById('studentNameInput').value.trim(); deviceFingerprint = getDeviceFingerprint();
             try {
                 const codeSnapshot = await get(ref(db, `individual_student_codes/${inputCode}`));
                 if (!codeSnapshot.exists()) { alert("الكود غير صحيح!"); return; }
                 const codeData = codeSnapshot.val();
                 if (codeData.lockedDevice && codeData.lockedDevice !== deviceFingerprint) { alert("الكود مقفل على جهاز آخر!"); return; }
                 if (!codeData.lockedDevice) { await update(ref(db, `individual_student_codes/${inputCode}`), { lockedDevice: deviceFingerprint }); }
+                
+                await set(ref(db, `structured_student_scores/${deviceFingerprint}/studentName`), studentName);
+                localStorage.setItem('saved_student_name', studentName); localStorage.setItem('saved_grade_code', inputCode);
                 selectedGrade = codeData.grade; document.getElementById('authContainer').classList.add('hidden'); document.getElementById('lessonsDashboard').classList.remove('hidden'); document.getElementById('dashboardTitle').innerText = "منهج " + gradeNames[selectedGrade]; buildLessonsGrid();
-            } catch (error) { alert("خطأ في الاتصال بالسيرفر! تأكد من إعداد القواعد Security Rules المحدثة."); }
+            } catch (error) { console.error("Firebase Error:", error); alert("خطأ في الاتصال بالسيرفر! " + (error.message || "تأكد من إعداد القواعد Security Rules المحدثة.")); }
         }
 
         async function buildLessonsGrid() {
@@ -501,28 +542,78 @@
                 if (titleSnapshot.exists()) { dynamicTitlesData = titleSnapshot.val(); }
             } catch(e) {}
 
+            // Assign default orders
+            folderStructure.forEach((item, index) => {
+                item.order = index + 1;
+            });
+
+            // Update with custom orders from Firebase
+            folderStructure.forEach(item => {
+                if (dynamicTitlesData[item.key] && dynamicTitlesData[item.key].order !== undefined) {
+                    item.order = Number(dynamicTitlesData[item.key].order);
+                }
+            });
+
             const existingLessonKeys = new Set(folderStructure.map(item => item.key));
             const extraLessonKeys = Object.keys(dynamicTitlesData).filter(lessonKey => !existingLessonKeys.has(lessonKey)).sort((a, b) => { const orderA = Number(dynamicTitlesData[a]?.order ?? 999999); const orderB = Number(dynamicTitlesData[b]?.order ?? 999999); return orderA - orderB || a.localeCompare(b, 'ar'); });
 
             extraLessonKeys.forEach((lessonKey, idx) => {
                 const lessonData = dynamicTitlesData[lessonKey] || {};
-                folderStructure.push({ key: lessonKey, label: lessonKey.startsWith('review') ? 'مراجعة إضافية' : `درس إضافي ${idx + 1}`, subLabel: lessonData.customTitle && lessonData.customTitle.trim() ? lessonData.customTitle.trim() : 'مجلد إضافي', tag: 'مجلد إضافي', isReview: lessonKey.startsWith('review'), axis: 'first' });
+                folderStructure.push({ 
+                    key: lessonKey, 
+                    label: lessonKey.startsWith('review') ? 'مراجعة إضافية' : `مجلد مخصص`, 
+                    subLabel: lessonData.customTitle && lessonData.customTitle.trim() ? lessonData.customTitle.trim() : 'مجلد إضافي', 
+                    tag: 'مجلد مخصص', 
+                    isReview: lessonKey.startsWith('review'), 
+                    axis: 'first',
+                    order: lessonData.order !== undefined ? Number(lessonData.order) : 999999
+                });
+            });
+            
+            // Assign colors from dynamic data to all items
+            folderStructure.forEach(item => {
+                if (dynamicTitlesData[item.key] && dynamicTitlesData[item.key].color) {
+                    item.color = dynamicTitlesData[item.key].color;
+                }
+            });
+
+            folderStructure.sort((a, b) => a.order - b.order);
+            
+            // Re-index sequentially to eliminate gaps when folders are deleted
+            folderStructure.forEach((item, index) => {
+                item.order = index + 1;
             });
 
             folderStructure.forEach((item) => {
                 const gridNode = document.getElementById('lessonsGrid'); if(!gridNode) return;
                 let finalDisplaySubLabel = item.subLabel;
-                if (dynamicTitlesData[item.key] && dynamicTitlesData[item.key].customTitle) { finalDisplaySubLabel = dynamicTitlesData[item.key].customTitle; }
+                let finalDisplayLabel = item.label;
+                let finalDisplayTag = item.tag;
+                
+                if (dynamicTitlesData[item.key]) {
+                    if (dynamicTitlesData[item.key].customTitle) { finalDisplaySubLabel = dynamicTitlesData[item.key].customTitle; }
+                    if (dynamicTitlesData[item.key].mainTitle) { finalDisplayLabel = dynamicTitlesData[item.key].mainTitle; }
+                    if (dynamicTitlesData[item.key].tagTitle) { finalDisplayTag = dynamicTitlesData[item.key].tagTitle; }
+                }
 
                 const folder = document.createElement('button'); 
-                const badgeHtml = item.tag ? `<span class="bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full font-bold mb-1">${item.tag}</span>` : '';
+                const badgeHtml = finalDisplayTag ? `<span class="bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full font-bold mb-1">${finalDisplayTag}</span>` : '';
                 
                 folder.setAttribute('data-axis', item.axis || 'first');
                 if (item.isReview) folder.setAttribute('data-review', 'true');
                 
                 folder.className = `custom-card border-2 p-5 rounded-3xl flex flex-col items-center gap-3 shadow-lg glass-folder-btn ${item.isReview ? 'bg-emerald-500/5 border-emerald-500/20' : ''}`;
-                folder.innerHTML = `${badgeHtml}<i class="fa-solid ${item.isReview ? 'fa-file-shield text-emerald-500' : 'fa-folder-open text-amber-500'} text-3xl"></i><div class="text-center px-1"><span class="block font-black question-text text-sm">${item.label}</span><span class="text-[11px] font-bold text-indigo-400 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
-                folder.onclick = () => openLearningCenter(item.key, item.label + " : " + finalDisplaySubLabel);
+                
+                let iconStyleStr = "";
+                let iconClass = item.isReview ? 'fa-server text-emerald-500' : 'fa-microchip text-amber-500';
+                
+                if (item.color && item.color !== "#f59e0b" && item.color !== "#1e293b") {
+                    iconStyleStr = `style="color: ${item.color} !important; filter: drop-shadow(0 0 10px ${item.color}80);"`;
+                    iconClass = item.isReview ? 'fa-server' : 'fa-microchip';
+                }
+                
+                folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl transition-colors" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black question-text text-sm">${finalDisplayLabel}</span><span class="text-[11px] font-bold text-indigo-400 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
+                folder.onclick = () => openLearningCenter(item.key, finalDisplayLabel + " : " + finalDisplaySubLabel);
                 gridNode.appendChild(folder);
             });
         }
@@ -566,6 +657,45 @@
                         document.getElementById('videoIconContainer').innerHTML = `<i class="fa-brands fa-youtube text-red-500"></i>`;
                         document.getElementById('videoStatusTitle').innerText = "فيديو الشرح جاهز";
                     } else { executeEmptyUI('video'); }
+
+                    // Apply visibility configs
+                    let firstVisibleTab = null;
+                    if (lData.visibility) {
+                        // Tabs
+                        if (lData.visibility.showTextTab === false) { document.getElementById('btn-textTab').classList.add('hidden'); } else { document.getElementById('btn-textTab').classList.remove('hidden'); firstVisibleTab = firstVisibleTab || 'textTab'; }
+                        if (lData.visibility.showQuizTab === false) { document.getElementById('btn-quizTab').classList.add('hidden'); } else { document.getElementById('btn-quizTab').classList.remove('hidden'); firstVisibleTab = firstVisibleTab || 'quizTab'; }
+                        if (lData.visibility.showVideo === false) { document.getElementById('btn-videoTab').classList.add('hidden'); } else { document.getElementById('btn-videoTab').classList.remove('hidden'); firstVisibleTab = firstVisibleTab || 'videoTab'; }
+                        
+                        // Buttons inside Quiz Tab
+                        if (lData.visibility.showQuiz === false) { document.getElementById('btn-standardQuiz').classList.add('hidden'); } else { document.getElementById('btn-standardQuiz').classList.remove('hidden'); }
+                        if (lData.visibility.showGame === false) { document.getElementById('btn-gameQuiz').classList.add('hidden'); } else { document.getElementById('btn-gameQuiz').classList.remove('hidden'); }
+                    } else {
+                        document.getElementById('btn-textTab').classList.remove('hidden'); firstVisibleTab = 'textTab';
+                        document.getElementById('btn-quizTab').classList.remove('hidden');
+                        document.getElementById('btn-videoTab').classList.remove('hidden');
+                        document.getElementById('btn-standardQuiz').classList.remove('hidden');
+                        document.getElementById('btn-gameQuiz').classList.remove('hidden');
+                    }
+                    
+                    if (!firstVisibleTab) {
+                        document.getElementById('tabsHeaderContainer').classList.add('hidden');
+                    } else {
+                        document.getElementById('tabsHeaderContainer').classList.remove('hidden');
+                        switchTab(firstVisibleTab);
+                    }
+                    
+                    // Show empty alert in quiz tab if both main quizzes are hidden
+                    if (lData.visibility && lData.visibility.showQuiz === false && lData.visibility.showGame === false && (!lData.sub_quizzes || Object.keys(lData.sub_quizzes).length === 0)) {
+                        document.getElementById('quizTabEmptyAlert').classList.remove('hidden');
+                        document.getElementById('lessonQuizzesContainer').classList.add('hidden');
+                    } else {
+                        document.getElementById('quizTabEmptyAlert').classList.add('hidden');
+                        document.getElementById('lessonQuizzesContainer').classList.remove('hidden');
+                    }
+
+                    // Render sub_quizzes dynamically
+                    window.currentLessonSubQuizzes = lData.sub_quizzes || null;
+                    if (window.renderSubQuizzesUI) window.renderSubQuizzesUI();
                 } else { executeEmptyUI('both'); }
             } catch(e) { executeEmptyUI('both'); }
 
@@ -573,10 +703,10 @@
                 const snapshot = await get(ref(db, "questions"));
                 if (snapshot.exists()) {
                     const allData = Object.values(snapshot.val());
-                    allQuestionsFetched = allData.filter(q => q.grade === selectedGrade && q.lesson === selectedLesson);
-                    gameQuestions = allData.filter(q => q.grade === selectedGrade && q.lesson === (selectedLesson + "_game"));
-                } else { allQuestionsFetched = []; gameQuestions = []; }
-            } catch (error) { allQuestionsFetched = []; gameQuestions = []; }
+                    window.allGradeQuestions = allData.filter(q => q.grade === selectedGrade);
+                    gameQuestions = window.allGradeQuestions.filter(q => q.lesson === (selectedLesson + "_game"));
+                } else { window.allGradeQuestions = []; gameQuestions = []; }
+            } catch (error) { window.allGradeQuestions = []; gameQuestions = []; }
         }
 
         function displaySelectedGalleryImage() {
@@ -639,7 +769,7 @@
                 const imgAlert = document.getElementById('lessonImageEmptyAlert');
                 imgAlert.classList.remove('hidden');
                 imgAlert.className = "p-12 text-center text-amber-500 font-bold text-sm leading-relaxed";
-                imgAlert.innerHTML = `<i class="fa-solid fa-note-sticky text-2xl block mb-2 animate-bounce"></i>📚 الشرح المصور قيد التحضير...<span class="block text-[11px] font-normal opacity-80 mt-1">يقوم المعلم حالياً بتجهيز وإعداد مذكرتك الفورية، وستظهر هنا تلقائياً فور نشرها.</span>`;
+                imgAlert.innerHTML = `<i class="fa-solid fa-note-sticky text-2xl block mb-2 animate-bounce"></i>📚 الشرح المصور قيد التحضير...<span class="block text-[11px] font-normal opacity-80 mt-1">يقوم المعلم حالياً بتجهيز وإعداد محتوى الدرس، وسيظهر هنا تلقائياً فور نشره.</span>`;
             }
             if (type === 'video' || type === 'both') { 
                 document.getElementById('videoIconContainer').innerHTML = `<i class="fa-solid fa-clock text-amber-500"></i>`; 
@@ -648,27 +778,78 @@
         }
 
         window.switchTab = function(tabId) {
-            document.getElementById('tabContent-textTab').classList.add('hidden'); document.getElementById('tabContent-videoTab').classList.add('hidden');
-            const isDark = document.body.classList.contains('theme-dark'); const btnText = document.getElementById('btn-textTab'); const btnVideo = document.getElementById('btn-videoTab');
-            const inactiveClass = isDark ? "flex-1 py-3 text-center rounded-xl text-slate-400 font-bold" : "flex-1 py-3 text-center rounded-xl text-slate-500 font-bold";
-            btnText.className = inactiveClass; btnVideo.className = inactiveClass;
+            document.getElementById('tabContent-textTab').classList.add('hidden'); 
+            document.getElementById('tabContent-videoTab').classList.add('hidden');
+            document.getElementById('tabContent-quizTab').classList.add('hidden');
+            const isDark = document.body.classList.contains('theme-dark'); 
+            const btnText = document.getElementById('btn-textTab'); 
+            const btnVideo = document.getElementById('btn-videoTab');
+            const btnQuiz = document.getElementById('btn-quizTab');
+            
+            [btnText, btnVideo, btnQuiz].forEach(btn => {
+                btn.classList.remove('bg-white', 'text-indigo-900', 'shadow-md');
+                if (isDark) {
+                    btn.classList.add('text-slate-400');
+                    btn.classList.remove('text-slate-500');
+                } else {
+                    btn.classList.add('text-slate-500');
+                    btn.classList.remove('text-slate-400');
+                }
+            });
+            
             document.getElementById('tabContent-' + tabId).classList.remove('hidden'); 
-            document.getElementById('btn-' + tabId).className = "flex-1 py-3 text-center rounded-xl bg-white text-indigo-900 font-black shadow-md";
-            btnText.innerHTML = `<i class="fa-solid fa-file-invoice ml-2"></i>المذكرة`; btnVideo.innerHTML = `<i class="fa-solid fa-play-circle ml-2"></i>الفيديو`;
+            
+            // For quiz tab layout, switch to flex since it was hidden
+            if (tabId === 'quizTab') {
+                document.getElementById('tabContent-quizTab').style.display = 'flex';
+            } else {
+                document.getElementById('tabContent-quizTab').style.display = 'none';
+            }
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-400', 'text-slate-500');
+                activeBtn.classList.add('bg-white', 'text-indigo-900', 'shadow-md');
+            }
+            btnText.innerHTML = `<i class="fa-solid fa-laptop-code ml-2"></i>الدرس`; 
+            btnQuiz.innerHTML = `<i class="fa-solid fa-network-wired ml-2"></i>التقييم والأسئلة`; 
+            btnVideo.innerHTML = `<i class="fa-solid fa-desktop ml-2"></i>الفيديو`;
         }
 
-        window.startStandardQuizEngine = function() {
+        window.startStandardQuizEngine = function(targetQuizKey = selectedLesson, targetQuizTitle = currentLessonTextTitle) {
+            window.activeQuizKey = targetQuizKey;
+            window.activeQuizTitle = targetQuizTitle;
+            window.activeQuizLessonKey = selectedLesson;
+            allQuestionsFetched = (window.allGradeQuestions || []).filter(q => q.lesson === targetQuizKey);
+
             if(allQuestionsFetched.length === 0) {
                 document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('quizContainer').classList.remove('hidden');
                 document.getElementById('quizActiveContent').classList.add('hidden'); document.getElementById('quizProgressBarContainer').classList.add('hidden');
                 document.getElementById('emptyQuizHeaderLabel').innerText = "الاختبار التقييمي قيد التحضير";
-                document.getElementById('emptyQuizSubLabel').innerText = "لم يقم المعلم برفع أسئلة الامتحان العادية القياسية لهذا الدرس بعد.";
+                document.getElementById('emptyQuizSubLabel').innerText = "لم يقم المعلم برفع أسئلة الامتحان القياسية لهذا القسم بعد.";
                 document.getElementById('emptyQuizState').classList.remove('hidden'); return;
             }
             document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('quizContainer').classList.remove('hidden');
             document.getElementById('quizActiveContent').classList.remove('hidden'); document.getElementById('resultBox').classList.add('hidden');
             document.getElementById('emptyQuizState').classList.add('hidden'); document.getElementById('quizProgressBarContainer').classList.remove('hidden');
-            document.getElementById('quizDynamicGradeSub').innerText = gradeNames[selectedGrade]; document.getElementById('quizDynamicLessonTitle').innerText = currentLessonTextTitle;
+            document.getElementById('quizDynamicGradeSub').innerText = gradeNames[selectedGrade]; document.getElementById('quizDynamicLessonTitle').innerText = targetQuizTitle;
+            
+            const quizTopBar = document.getElementById('quizHeaderTopBar');
+            const quizIcon = document.getElementById('quizHeaderIcon');
+            const quizMainTitle = document.getElementById('quizHeaderMainTitle');
+            
+            if (String(targetQuizKey).startsWith('subquiz_') || String(targetQuizKey).startsWith('review')) {
+                quizTopBar.className = "bg-gradient-to-r from-indigo-700 via-purple-600 to-indigo-800 p-5 text-white flex justify-between items-center transition-colors duration-500";
+                quizIcon.innerHTML = '<i class="fa-solid fa-file-signature text-amber-300"></i>';
+                quizMainTitle.innerText = "📝 وضع الامتحان والتقييم";
+                document.getElementById('quizProgressBarFill').className = "bg-purple-400 h-full w-0 transition-all duration-500 progress-glow";
+            } else {
+                quizTopBar.className = "bg-gradient-to-r from-red-700 via-red-600 to-red-800 p-5 text-white flex justify-between items-center transition-colors duration-500";
+                quizIcon.innerHTML = '<i class="fa-solid fa-robot"></i>';
+                quizMainTitle.innerText = "تكنولوجيا المعلومات والاتصالات";
+                document.getElementById('quizProgressBarFill').className = "bg-cyan-400 h-full w-0 transition-all duration-500 progress-glow";
+            }
+            
             isReviewMode = false; activeQuestions = [...allQuestionsFetched]; studentAnswers = new Array(activeQuestions.length).fill(null); currentIndex = 0; renderQuestion();
         }
 
@@ -738,9 +919,39 @@
             document.getElementById('globalEmptyState').classList.add('hidden');
             document.getElementById('lessonsDashboard').classList.add('hidden');
             document.getElementById('learningCenterContainer').classList.remove('hidden');
+            if (window.renderSubQuizzesUI) window.renderSubQuizzesUI();
         }
 
-        window.confirmForceExitQuiz = function() { if(confirm("هل تريد تسليم ورقة الإجابة الآن؟")) calculateFinalResult(); }
+        window.renderSubQuizzesUI = function() {
+            const quizzesContainer = document.getElementById('lessonQuizzesContainer');
+            document.querySelectorAll('.sub-quiz-btn-dynamic').forEach(el => el.remove());
+            
+            if (window.currentLessonSubQuizzes) {
+                const sortedQuizzes = Object.entries(window.currentLessonSubQuizzes).sort((a, b) => a[0].localeCompare(b[0]));
+                let isPreviousPassed = true;
+                
+                sortedQuizzes.forEach(([quizKey, quizData]) => {
+                    const subBtn = document.createElement('button');
+                    const savedLocalScore = localStorage.getItem(`local_score_${selectedGrade}_${quizKey}`);
+                    const scoreNum = savedLocalScore ? parseInt(savedLocalScore) : 0;
+                    
+                    if (isPreviousPassed) {
+                        subBtn.className = "sub-quiz-btn-dynamic w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 transition-transform hover:scale-105";
+                        subBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} ${scoreNum >= 50 ? '<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓</span>' : ''}`;
+                        subBtn.onclick = () => startStandardQuizEngine(quizKey, quizData.quizTitle || 'اختبار إضافي');
+                    } else {
+                        subBtn.className = "sub-quiz-btn-dynamic w-full bg-slate-800 text-slate-500 font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80 border border-slate-700";
+                        subBtn.innerHTML = `<i class="fa-solid fa-lock text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} <span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full mr-2">مغلق</span>`;
+                        subBtn.onclick = () => alert("🔒 يجب عليك اجتياز الاختبار السابق بنسبة 50% على الأقل لفتح هذا الاختبار.");
+                    }
+                    quizzesContainer.appendChild(subBtn);
+                    isPreviousPassed = (scoreNum >= 50);
+                });
+            }
+        }
+
+        window.confirmForceExitQuiz = function() { if(confirm("هل تريد تسليم ورقة الإجابة الآن؟ (سيتم احتساب درجتك الحالية)")) calculateFinalResult(); }
+        window.confirmCancelQuiz = function() { if(confirm("هل تريد العودة للدرس؟ (لن يتم احتساب أي درجات أو فقدان نقاط وكأنك لم تدخل الاختبار)")) backToCurrentLesson(); }
 
         async function calculateFinalResult() {
             clearInterval(timer); let score = 0; let hasErrors = false;
@@ -751,7 +962,14 @@
             document.getElementById('scoreBox').innerText = `درجتك النهائية: ${score} من ${allQuestionsFetched.length}`; document.getElementById('percentageBox').innerText = percent + "%";
             const reviewErrorsBtn = document.getElementById('reviewErrorsBtn');
             if (hasErrors) { reviewErrorsBtn.classList.remove('hidden'); } else { reviewErrorsBtn.classList.add('hidden'); }
-            try { await set(ref(db, `open_student_logs/${selectedGrade}/${selectedLesson}`), { score: `${percent}% (اختبار قياسي)`, time: new Date().toLocaleString() }); } catch(e){}
+            try { 
+                const isSubQuiz = String(window.activeQuizKey).startsWith('subquiz_');
+                const saveVal = isSubQuiz 
+                    ? { score: `${percent}%`, quizTitle: window.activeQuizTitle || '', lessonKey: window.activeQuizLessonKey || selectedLesson }
+                    : `${percent}%`;
+                await set(ref(db, `structured_student_scores/${deviceFingerprint}/quizzes/${selectedGrade}_${window.activeQuizKey}`), saveVal);
+            } catch(e){}
+            localStorage.setItem(`local_score_${selectedGrade}_${window.activeQuizKey}`, percent);
         }
 
         window.startReviewMode = function(onlyErrors = false) {
@@ -848,7 +1066,7 @@
                 heading.innerText = "🎯 محاولة جيدة يا بطل!";
                 trophy.className = "w-24 h-24 bg-slate-500/10 text-slate-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-slate-700/20";
             }
-            try { await set(ref(db, `open_student_logs/${selectedGrade}/${selectedLesson}`), { score: `${percent}% (طور اللعبة التفاعلية)`, time: new Date().toLocaleString() }); } catch(e){}
+            try { await set(ref(db, `structured_student_scores/${deviceFingerprint}/quizzes/${selectedGrade}_${selectedLesson}_game`), `${percent}%`); } catch(e){}
         }
 
         window.confirmExitGame = function() { if(confirm("هل تود الخروج من طور اللعبة؟")) backToCurrentLesson(); }
@@ -859,6 +1077,18 @@
             document.getElementById('lessonsDashboard').classList.remove('hidden'); 
         }
         window.backToMainAuth = function() { location.reload(); }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('saved_student_name');
+            const savedCode = localStorage.getItem('saved_grade_code');
+            if (savedName) {
+                const nameInput = document.getElementById('studentNameInput');
+                nameInput.value = savedName;
+                nameInput.readOnly = true;
+                nameInput.classList.add('opacity-60', 'cursor-not-allowed');
+            }
+            if (savedCode) document.getElementById('gradeCodeInput').value = savedCode;
+        });
     </script>
 </body>
 </html>
