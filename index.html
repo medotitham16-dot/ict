@@ -426,10 +426,15 @@
     <div id="leaderboardModal" class="fixed inset-0 bg-[#0b0f19]/90 z-[200] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity">
         <div class="max-w-lg w-full custom-card border border-amber-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-amber-500/10 relative overflow-hidden">
             <button onclick="closeLeaderboard()" class="absolute top-4 left-4 text-slate-400 hover:text-red-400 transition-colors bg-slate-800/50 hover:bg-slate-800 p-2 rounded-full w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-            <div class="text-center mb-6">
+            <div class="text-center mb-4">
                 <div class="w-20 h-20 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.5)]"><i class="fa-solid fa-crown"></i></div>
                 <h2 class="text-2xl font-black neon-title-glow">لوحة الشرف 🏆</h2>
                 <p class="text-slate-400 text-sm font-bold mt-1" id="leaderboardGradeLabel">أبطال الصف</p>
+            </div>
+            <div class="mb-4">
+                <select id="leaderboardLessonSelect" onchange="fetchAndRenderLeaderboard()" class="w-full bg-slate-900 border-2 border-slate-700 text-white font-bold py-3 px-4 rounded-xl focus:border-amber-500 outline-none transition-colors">
+                    <option value="" disabled selected>جاري تحميل الدروس...</option>
+                </select>
             </div>
             <div class="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-2 max-h-[300px] overflow-y-auto scrollbar-thin space-y-2" id="leaderboardList">
                 <div class="text-center py-8 text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>جاري جلب بيانات الأبطال...</div>
@@ -460,20 +465,20 @@
                 <div class="relative z-10 flex flex-col h-full justify-between py-4">
                     <div>
                         <div class="text-amber-500 text-4xl md:text-5xl mb-2"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <h1 class="text-3xl md:text-5xl font-black text-amber-400 mb-2" style="font-family: 'Cairo', sans-serif; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">شهادة تقدير وتفوق</h1>
+                        <h1 class="text-3xl md:text-5xl font-black text-amber-400 mb-4 leading-normal" style="font-family: 'Cairo', sans-serif; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">شهادة تقدير وتفوق</h1>
                         <h2 class="text-md md:text-xl font-bold text-slate-300">تمنحها إدارة المنصة التعليمية لـتكنولوجيا المعلومات (ICT)</h2>
                     </div>
                     
-                    <div class="space-y-4 my-auto">
+                    <div class="space-y-2 my-auto">
                         <p class="text-slate-400 text-md md:text-xl font-bold">بكل فخر واعتزاز، نشهد أن الطالب/ـة البطل:</p>
                         <h3 id="certStudentName" class="text-2xl md:text-5xl font-black text-white py-2 px-8 inline-block border-b-2 border-amber-500 bg-slate-900/30 rounded-t-xl" style="color: #38bdf8;">اسم الطالب</h3>
                         <p class="text-slate-300 text-sm md:text-lg font-bold leading-relaxed max-w-lg mx-auto">
                             المقيد بـ <span id="certGradeName" class="text-amber-400">الصف الدراسي</span><br>
-                            قد أظهر تفوقاً وتميزاً ملحوظاً في اجتياز التقييمات والمهام التفاعلية للمنهج عبر المنصة، ونتمنى له دوام التوفيق والنجاح.
+                            قد أظهر تفوقاً وتميزاً ملحوظاً في التقييمات الخاصة بـ <span id="certLessonName" class="text-cyan-400 font-black">الدرس</span>، ونتمنى له دوام التوفيق والنجاح.
                         </p>
                     </div>
 
-                    <div class="flex justify-between items-end px-4 md:px-16 mt-4">
+                    <div class="flex justify-between items-end px-4 md:px-16 mt-2">
                         <div class="text-center">
                             <p class="text-slate-400 text-xs md:text-sm font-bold mb-1">تاريخ الإصدار</p>
                             <p id="certDate" class="text-white font-mono font-bold border-t border-slate-600 pt-1 text-xs md:text-sm">2024/01/01</p>
@@ -495,10 +500,9 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBdPtiyl2hlZ7U5IWM4gd-vHHORrKqpBJI",
             authDomain: "ict-eleman.firebaseapp.com",
@@ -509,7 +513,7 @@
             appId: "1:465727317048:web:c2677429ab1c05b9f1f2cd",
             measurementId: "G-YRDX6GPW2G"
         };
-        const app = initializeApp(firebaseConfig); const db = getDatabase(app);
+        const app = firebase.initializeApp(firebaseConfig); const db = firebase.database();
         
         const gradeNames = { 'grade3':'الثالث الابتدائي', 'grade4':'الرابع الابتدائي', 'grade5':'الخامس الابتدائي', 'grade6':'السادس الابتدائي', 'prep1':'الأول الإعدادي', 'prep2':'الثاني الإعدادي', 'prep3':'الثالث الإعدادي', 'sec1':'الصف الأول الثانوي' };
         
@@ -565,13 +569,13 @@
         window.verifyAndLockStudentCode = async function(e) {
             e.preventDefault(); const inputCode = document.getElementById('gradeCodeInput').value.trim(); const studentName = document.getElementById('studentNameInput').value.trim(); deviceFingerprint = getDeviceFingerprint();
             try {
-                const codeSnapshot = await get(ref(db, `individual_student_codes/${inputCode}`));
+                const codeSnapshot = await db.ref(`individual_student_codes/${inputCode}`).get();
                 if (!codeSnapshot.exists()) { alert("الكود غير صحيح!"); return; }
                 const codeData = codeSnapshot.val();
                 if (codeData.lockedDevice && codeData.lockedDevice !== deviceFingerprint) { alert("الكود مقفل على جهاز آخر!"); return; }
-                if (!codeData.lockedDevice) { await update(ref(db, `individual_student_codes/${inputCode}`), { lockedDevice: deviceFingerprint }); }
+                if (!codeData.lockedDevice) { await db.ref(`individual_student_codes/${inputCode}`).update({ lockedDevice: deviceFingerprint }); }
                 
-                await set(ref(db, `structured_student_scores/${deviceFingerprint}/studentName`), studentName);
+                await db.ref(`structured_student_scores/${deviceFingerprint}/studentName`).set(studentName);
                 localStorage.setItem('saved_student_name', studentName); localStorage.setItem('saved_grade_code', inputCode);
                 selectedGrade = codeData.grade; document.getElementById('authContainer').classList.add('hidden'); document.getElementById('lessonsDashboard').classList.remove('hidden'); document.getElementById('dashboardTitle').innerText = "منهج " + gradeNames[selectedGrade]; buildLessonsGrid();
             } catch (error) { console.error("Firebase Error:", error); alert("خطأ في الاتصال بالسيرفر! " + (error.message || "تأكد من إعداد القواعد Security Rules المحدثة.")); }
@@ -616,7 +620,7 @@
 
             let dynamicTitlesData = {};
             try {
-                const titleSnapshot = await get(ref(db, `lessons_content/${selectedGrade}`));
+                const titleSnapshot = await db.ref(`lessons_content/${selectedGrade}`).get();
                 if (titleSnapshot.exists()) { dynamicTitlesData = titleSnapshot.val(); }
             } catch(e) {}
 
@@ -662,6 +666,9 @@
                 item.order = index + 1;
             });
 
+            window.currentGradeLessons = window.currentGradeLessons || {};
+            window.currentGradeLessons[selectedGrade] = {};
+
             folderStructure.forEach((item) => {
                 const gridNode = document.getElementById('lessonsGrid'); if(!gridNode) return;
                 let finalDisplaySubLabel = item.subLabel;
@@ -673,6 +680,11 @@
                     if (dynamicTitlesData[item.key].mainTitle) { finalDisplayLabel = dynamicTitlesData[item.key].mainTitle; }
                     if (dynamicTitlesData[item.key].tagTitle) { finalDisplayTag = dynamicTitlesData[item.key].tagTitle; }
                 }
+
+                window.currentGradeLessons[selectedGrade][item.key] = {
+                    title: finalDisplayLabel + " - " + finalDisplaySubLabel,
+                    order: item.order
+                };
 
                 const folder = document.createElement('button'); 
                 const badgeHtml = finalDisplayTag ? `<span class="bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full font-bold mb-1">${finalDisplayTag}</span>` : '';
@@ -714,7 +726,7 @@
             switchTab('textTab');
             
             try {
-                const lessonSnapshot = await get(ref(db, `lessons_content/${selectedGrade}/${selectedLesson}`));
+                const lessonSnapshot = await db.ref(`lessons_content/${selectedGrade}/${selectedLesson}`).get();
                 if (lessonSnapshot.exists()) {
                     const lData = lessonSnapshot.val();
                     let rawImgURL = lData.imageURL ? lData.imageURL.trim() : "";
@@ -778,7 +790,7 @@
             } catch(e) { executeEmptyUI('both'); }
 
             try {
-                const snapshot = await get(ref(db, "questions"));
+                const snapshot = await db.ref("questions").get();
                 if (snapshot.exists()) {
                     const allData = Object.values(snapshot.val());
                     window.allGradeQuestions = allData.filter(q => q.grade === selectedGrade);
@@ -928,7 +940,7 @@
                 document.getElementById('quizProgressBarFill').className = "bg-cyan-400 h-full w-0 transition-all duration-500 progress-glow";
             }
             
-            isReviewMode = false; activeQuestions = [...allQuestionsFetched]; studentAnswers = new Array(activeQuestions.length).fill(null); currentIndex = 0; renderQuestion();
+            isReviewMode = false; window.currentQuizStartTime = Date.now(); activeQuestions = [...allQuestionsFetched]; studentAnswers = new Array(activeQuestions.length).fill(null); currentIndex = 0; renderQuestion();
         }
 
         function renderQuestion() {
@@ -1041,11 +1053,14 @@
             const reviewErrorsBtn = document.getElementById('reviewErrorsBtn');
             if (hasErrors) { reviewErrorsBtn.classList.remove('hidden'); } else { reviewErrorsBtn.classList.add('hidden'); }
             try { 
-                const isSubQuiz = String(window.activeQuizKey).startsWith('subquiz_');
-                const saveVal = isSubQuiz 
-                    ? { score: `${percent}%`, quizTitle: window.activeQuizTitle || '', lessonKey: window.activeQuizLessonKey || selectedLesson }
-                    : `${percent}%`;
-                await set(ref(db, `structured_student_scores/${deviceFingerprint}/quizzes/${selectedGrade}_${window.activeQuizKey}`), saveVal);
+                const timeSpent = Math.floor((Date.now() - (window.currentQuizStartTime || Date.now())) / 1000);
+                const saveVal = {
+                    score: `${percent}%`,
+                    timeSpent: timeSpent,
+                    lessonKey: window.activeQuizLessonKey || selectedLesson,
+                    quizTitle: window.activeQuizTitle || ''
+                };
+                await db.ref(`structured_student_scores/${deviceFingerprint}/quizzes/${selectedGrade}_${window.activeQuizKey}`).set(saveVal);
             } catch(e){}
             localStorage.setItem(`local_score_${selectedGrade}_${window.activeQuizKey}`, percent);
         }
@@ -1061,4 +1076,387 @@
                 document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('quizContainer').classList.remove('hidden');
                 document.getElementById('quizActiveContent').classList.add('hidden'); document.getElementById('quizProgressBarContainer').classList.add('hidden');
                 document.getElementById('emptyQuizHeaderLabel').innerText = "🕹️ اللعبة التفاعلية قيد التحضير";
-                document.getElementById('emp
+                document.getElementById('emptyQuizState').classList.remove('hidden'); return;
+            }
+            document.getElementById('learningCenterContainer').classList.add('hidden'); document.getElementById('interactiveGameContainer').classList.remove('hidden');
+            document.getElementById('gameActiveArea').classList.remove('hidden'); document.getElementById('gameResultArea').classList.add('hidden');
+            document.getElementById('gameLessonTitle').innerText = currentLessonTextTitle;
+            gameIndex = 0; gameScore = 0; gameButtonsBlocked = false; window.currentQuizStartTime = Date.now(); document.getElementById('gameScoreCounter').innerText = `النجوم المجمعة: 0 ⭐`;
+            renderGameQuestion();
+        }
+
+        function renderGameQuestion() {
+            if (gameIndex >= gameQuestions.length) return;
+            const q = gameQuestions[gameIndex]; gameButtonsBlocked = false;
+            
+            document.getElementById('gameProgressBarFill').style.width = ((gameIndex + 1) / gameQuestions.length * 100) + '%';
+            document.getElementById('gameQuestIndexLabel').innerText = `المهمة التكنولوجية ${gameIndex + 1} من أصل ${gameQuestions.length}`;
+            document.getElementById('gameQuestionBox').innerText = q.question;
+            
+            const optionsBox = document.getElementById('gameOptionsContainer'); optionsBox.innerHTML = '';
+            
+            const gOptions = q.options || (q.type === 'true_false' ? ["صح", "خطأ"] : []);
+            if (gOptions && Array.isArray(gOptions)) {
+                gOptions.forEach((opt, idx) => {
+                    if(opt && opt.toString().trim() !== "") {
+                        const btn = document.createElement('button');
+                        btn.className = `w-full text-right p-5 rounded-2xl font-black text-sm game-option-btn border-2 bg-slate-100 text-slate-800 border-slate-300 shadow shadow-slate-400/20`;
+                        btn.innerHTML = `<div class="flex justify-between items-center"><span>${opt}</span><div class="w-6 h-6 rounded-full border-2 border-slate-400 flex items-center justify-center"></div></div>`;
+                        btn.onclick = () => handleGameLogic(btn, idx, q.correct);
+                        optionsBox.appendChild(btn);
+                    }
+                });
+            }
+        }
+
+        function handleGameLogic(clickedButton, clickedIdx, correctIdx) {
+            if (gameButtonsBlocked) return;
+            const mainGameCard = document.getElementById('gameQuestionMainCard');
+            
+            if (clickedIdx === correctIdx) {
+                gameButtonsBlocked = true; gameScore++;
+                document.getElementById('gameScoreCounter').innerText = `النجوم المجمعة: ${gameScore} ⭐`;
+                
+                clickedButton.className = "w-full text-right p-5 rounded-2xl font-black text-sm bg-emerald-500 border-emerald-600 text-white shadow-xl transition-all";
+                clickedButton.innerHTML = `<div class="flex justify-between items-center"><span>${clickedButton.querySelector('span').innerText}</span><span class="bg-slate-900/60 text-emerald-300 text-xs px-3 py-1 rounded-full font-black animate-bounce">🌟 بطل! إجابة صحيحة</span></div>`;
+                
+                mainGameCard.classList.add('game-success-animate');
+                playGameSound('success'); triggerGameStars();
+                
+                setTimeout(() => { mainGameCard.classList.remove('game-success-animate'); gameNext(); }, 1500);
+            } else {
+                clickedButton.disabled = true; 
+                clickedButton.className = "w-full text-right p-5 rounded-2xl font-black text-sm bg-red-100 border-red-400 text-red-500 opacity-80 transition-all";
+                clickedButton.innerHTML = `<div class="flex justify-between items-center"><span>${clickedButton.querySelector('span').innerText}</span><span class="bg-red-500 text-white text-[11px] px-2 py-0.5 rounded-md font-bold">✗ حاول مجدداً</span></div>`;
+                
+                mainGameCard.classList.add('game-error-animate');
+                playGameSound('error');
+                setTimeout(() => { mainGameCard.classList.remove('game-error-animate'); }, 1000);
+            }
+        }
+
+        window.gameNext = function() {
+            if (gameIndex < gameQuestions.length - 1) { gameIndex++; renderGameQuestion(); } 
+            else { finishAndCelebrateGame(); }
+        }
+
+        async function finishAndCelebrateGame() {
+            document.getElementById('gameActiveArea').classList.add('hidden'); document.getElementById('gameResultArea').classList.remove('hidden');
+            const percent = Math.round((gameScore / gameQuestions.length) * 100);
+            document.getElementById('gameFinalPercent').innerText = percent + "%";
+            document.getElementById('gameFinalScore').innerText = `الدرجة: ${gameScore} / ${gameQuestions.length}`;
+            
+            const heading = document.getElementById('gameResultHeading'); const trophy = document.getElementById('gameTrophyBox');
+            if (percent >= 85) {
+                heading.innerText = "🏆 أنت بطل تكنولوجي خارق!";
+                trophy.className = "w-24 h-24 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-amber-500/20";
+                playGameSound('victory');
+            } else if (percent >= 50) {
+                heading.innerText = "🚀 مستكشف رقمي مبدع!";
+                trophy.className = "w-24 h-24 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-blue-500/20";
+                playGameSound('victory');
+            } else {
+                heading.innerText = "🎯 محاولة جيدة يا بطل!";
+                trophy.className = "w-24 h-24 bg-slate-500/10 text-slate-400 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner border border-slate-700/20";
+            }
+            try { 
+                const timeSpent = Math.floor((Date.now() - (window.currentQuizStartTime || Date.now())) / 1000);
+                await db.ref(`structured_student_scores/${deviceFingerprint}/quizzes/${selectedGrade}_${selectedLesson}_game`).set({ score: `${percent}%`, timeSpent: timeSpent }); 
+            } catch(e){}
+        }
+
+        window.confirmExitGame = function() { if(confirm("هل تود الخروج من طور اللعبة؟")) backToCurrentLesson(); }
+        window.backToLessons = function() { 
+            clearInterval(timer); isReviewMode = false;
+            document.getElementById('quizContainer').classList.add('hidden'); document.getElementById('interactiveGameContainer').classList.add('hidden');
+            document.getElementById('globalEmptyState').classList.add('hidden'); document.getElementById('learningCenterContainer').classList.add('hidden'); 
+            document.getElementById('lessonsDashboard').classList.remove('hidden'); 
+        }
+        window.backToMainAuth = function() { location.reload(); }
+
+        window.showLeaderboard = async function() {
+            document.getElementById('leaderboardModal').classList.remove('hidden');
+            document.getElementById('leaderboardModal').classList.add('flex');
+            document.getElementById('leaderboardGradeLabel').innerText = "أبطال " + (gradeNames[selectedGrade] || "الصف");
+            
+            // Populate Lessons
+            const selectEl = document.getElementById('leaderboardLessonSelect');
+            selectEl.innerHTML = '';
+            let gradeLessons = window.currentGradeLessons[selectedGrade] || {};
+            let lessonList = Object.entries(gradeLessons).map(([key, data]) => ({key, order: data.order || 999, title: data.title}));
+            lessonList.sort((a, b) => a.order - b.order);
+            
+            if (lessonList.length === 0) {
+                selectEl.innerHTML = '<option value="" disabled>لا توجد دروس حالياً</option>';
+            } else {
+                lessonList.forEach(lesson => {
+                    const opt = document.createElement('option');
+                    opt.value = lesson.key;
+                    opt.text = lesson.title || "درس بدون عنوان";
+                    selectEl.appendChild(opt);
+                });
+                selectEl.value = lessonList[0].key; // select first by default
+            }
+
+            fetchAndRenderLeaderboard();
+        }
+
+        window.fetchAndRenderLeaderboard = async function() {
+            const listDiv = document.getElementById('leaderboardList');
+            const targetLesson = document.getElementById('leaderboardLessonSelect').value;
+            if (!targetLesson) {
+                listDiv.innerHTML = '<div class="text-center py-4 text-slate-500 font-bold">لا يوجد درس محدد لعرض أبطاله.</div>';
+                return;
+            }
+
+            listDiv.innerHTML = '<div class="text-center py-8 text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>جاري جلب بيانات الأبطال...</div>';
+
+            try {
+                const snapshot = await db.ref("structured_student_scores").get();
+                if(!snapshot.exists()) {
+                    listDiv.innerHTML = '<div class="text-center py-4 text-slate-500 font-bold">لا توجد بيانات حالياً.</div>';
+                    return;
+                }
+                const allScores = snapshot.val();
+                let studentsData = [];
+
+                for (let key in allScores) {
+                    let data = allScores[key];
+                    if (data.studentName && data.quizzes) {
+                        let totalScore = 0;
+                        let totalTimeSpent = 0;
+                        let validQuizCount = 0;
+
+                        for (let quizKey in data.quizzes) {
+                            if (quizKey.endsWith('_game')) continue;
+
+                            // Only count quizzes for THIS SPECIFIC LESSON
+                            let rawScore = data.quizzes[quizKey];
+                            let lessonKeyForQuiz = (typeof rawScore === 'object' && rawScore.lessonKey) ? rawScore.lessonKey : null;
+                            
+                            // For standard quizzes without object saving or old data, try to infer from quizKey
+                            let inferredLessonKey = quizKey.replace(selectedGrade + "_", "");
+                            if (inferredLessonKey.endsWith('_game')) inferredLessonKey = inferredLessonKey.replace('_game', '');
+                            if (inferredLessonKey.startsWith('subquiz_')) inferredLessonKey = null; // Need object structure for subquizzes to be accurate
+
+                            let finalLessonKey = lessonKeyForQuiz || inferredLessonKey;
+
+                            if (quizKey.startsWith(selectedGrade + "_") && finalLessonKey === targetLesson) {
+                                let scoreStr = (typeof rawScore === 'object' && rawScore.score) ? rawScore.score : rawScore;
+                                let scoreNum = parseInt(String(scoreStr).replace('%', ''));
+                                if (!isNaN(scoreNum)) {
+                                    totalScore += scoreNum;
+                                    validQuizCount++;
+                                    totalTimeSpent += (typeof rawScore === 'object' && rawScore.timeSpent !== undefined) ? parseInt(rawScore.timeSpent) : 999999;
+                                }
+                            }
+                        }
+
+                        if (validQuizCount > 0) {
+                            let averageScore = Math.round(totalScore / validQuizCount);
+                            if (averageScore >= 90) {
+                                studentsData.push({
+                                    key: key,
+                                    name: data.studentName,
+                                    average: averageScore,
+                                    timeSpent: totalTimeSpent,
+                                    isMe: (key === deviceFingerprint)
+                                });
+                            }
+                        }
+                    }
+                }
+
+                // Sort: Highest average first. If tie, lowest timeSpent first.
+                studentsData.sort((a, b) => {
+                    if (b.average !== a.average) return b.average - a.average;
+                    return a.timeSpent - b.timeSpent;
+                });
+                
+                if (studentsData.length === 0) {
+                    listDiv.innerHTML = '<div class="text-center py-4 text-slate-500 font-bold leading-loose text-sm">لم يكمل أي طالب تقييمات هذا الدرس بمتوسط 90% فأكثر حتى الآن.<br>كن أنت أول الأبطال!</div>';
+                    return;
+                }
+
+                let html = "";
+                const medals = ['🥇', '🥈', '🥉'];
+                const topStudents = studentsData.slice(0, 10);
+
+                topStudents.forEach((student, index) => {
+                    const isMeClass = student.isMe ? "bg-amber-500/20 border-amber-500/50" : "bg-slate-800/50 border-slate-700/50";
+                    const isMeText = student.isMe ? "text-amber-400" : "text-white";
+                    const rankDisplay = index < 3 ? `<span class="text-2xl">${medals[index]}</span>` : `<span class="text-lg font-black text-slate-500 w-8 inline-block text-center">${index + 1}</span>`;
+                    
+                    html += `
+                    <div class="flex items-center justify-between p-3 rounded-xl border ${isMeClass} mb-2">
+                        <div class="flex items-center gap-3">
+                            ${rankDisplay}
+                            <span class="font-bold ${isMeText} text-sm sm:text-base truncate max-w-[150px] sm:max-w-[200px]" title="${escapeHTML(student.name)}">${escapeHTML(student.name)} ${student.isMe ? '(أنت)' : ''}</span>
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            <div class="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-xs font-black text-emerald-400 shrink-0">
+                                ${student.average}% <i class="fa-solid fa-award text-amber-400 text-[10px] ml-1"></i>
+                            </div>
+                            ${student.timeSpent < 999999 ? `<div class="text-[10px] text-slate-400 font-bold bg-slate-900/40 px-2 py-0.5 rounded-md"><i class="fa-solid fa-stopwatch ml-1"></i>${student.timeSpent} ثانية</div>` : ''}
+                        </div>
+                    </div>`;
+                });
+
+                listDiv.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                listDiv.innerHTML = `<div class="text-center py-4 text-red-500 font-bold">حدث خطأ أثناء جلب البيانات:<br><span class="text-xs text-left" dir="ltr">${err.message || err}</span></div>`;
+            }
+        }
+
+        window.closeLeaderboard = function() {
+            document.getElementById('leaderboardModal').classList.add('hidden');
+            document.getElementById('leaderboardModal').classList.remove('flex');
+        }
+
+        window.generateCertificate = async function() {
+            try {
+                const snapshot = await db.ref("structured_student_scores").get();
+                if(!snapshot.exists()) {
+                    alert("لا توجد بيانات كافية لإصدار الشهادة حالياً.");
+                    return;
+                }
+                const allScores = snapshot.val();
+                
+                // Fetch lessons to check all leaderboards
+                let gradeLessons = window.currentGradeLessons[selectedGrade] || {};
+                let lessonKeys = Object.keys(gradeLessons);
+                
+                if (lessonKeys.length === 0) {
+                    alert("لا توجد دروس مكتملة لإصدار الشهادة حالياً.");
+                    return;
+                }
+
+                let isEligible = false;
+                let eligibleLessonKey = null;
+
+                // Loop through all lessons to see if user is top 10 in AT LEAST ONE lesson
+                for (let lessonKey of lessonKeys) {
+                    let studentsData = [];
+                    for (let key in allScores) {
+                        let data = allScores[key];
+                        if (data.studentName && data.quizzes) {
+                            let totalScore = 0;
+                            let totalTimeSpent = 0;
+                            let validQuizCount = 0;
+                            for (let quizKey in data.quizzes) {
+                                if (quizKey.endsWith('_game')) continue;
+
+                                let rawScore = data.quizzes[quizKey];
+                                let lessonKeyForQuiz = (typeof rawScore === 'object' && rawScore.lessonKey) ? rawScore.lessonKey : null;
+                                let inferredLessonKey = quizKey.replace(selectedGrade + "_", "");
+                                if (inferredLessonKey.endsWith('_game')) inferredLessonKey = inferredLessonKey.replace('_game', '');
+                                if (inferredLessonKey.startsWith('subquiz_')) inferredLessonKey = null;
+
+                                let finalLessonKey = lessonKeyForQuiz || inferredLessonKey;
+
+                                if (quizKey.startsWith(selectedGrade + "_") && finalLessonKey === lessonKey) {
+                                    let scoreStr = (typeof rawScore === 'object' && rawScore.score) ? rawScore.score : rawScore;
+                                    let scoreNum = parseInt(String(scoreStr).replace('%', ''));
+                                    if (!isNaN(scoreNum)) {
+                                        totalScore += scoreNum;
+                                        validQuizCount++;
+                                        totalTimeSpent += (typeof rawScore === 'object' && rawScore.timeSpent !== undefined) ? parseInt(rawScore.timeSpent) : 999999;
+                                    }
+                                }
+                            }
+                            if (validQuizCount > 0) {
+                                let averageScore = Math.round(totalScore / validQuizCount);
+                                if (averageScore >= 90) {
+                                    studentsData.push({ key: key, average: averageScore, timeSpent: totalTimeSpent });
+                                }
+                            }
+                        }
+                    }
+
+                    studentsData.sort((a, b) => {
+                        if (b.average !== a.average) return b.average - a.average;
+                        return a.timeSpent - b.timeSpent;
+                    });
+                    
+                    const topStudents = studentsData.slice(0, 10);
+                    if (topStudents.some(s => s.key === deviceFingerprint)) {
+                        isEligible = true;
+                        eligibleLessonKey = lessonKey;
+                        break;
+                    }
+                }
+
+                if (!isEligible) {
+                    alert("عذراً! الشهادة التقديرية متاحة فقط للطلاب المتفوقين في لوحة شرف الدروس (بمتوسط 90% فأكثر) 🏆. استمر في المحاولة لرفع نقاطك!");
+                    return;
+                }
+
+                let lessonTitle = "الدرس";
+                if (eligibleLessonKey && gradeLessons[eligibleLessonKey]) {
+                    lessonTitle = gradeLessons[eligibleLessonKey].title;
+                }
+
+                document.getElementById('certStudentName').innerText = document.getElementById('studentNameInput').value || "بطل مجهول";
+                document.getElementById('certGradeName').innerText = gradeNames[selectedGrade] || "الصف";
+                document.getElementById('certLessonName').innerText = lessonTitle;
+                document.getElementById('certDate').innerText = new Date().toLocaleDateString('ar-EG');
+                
+                document.getElementById('certificateModal').classList.remove('hidden');
+                document.getElementById('certificateModal').classList.add('flex');
+                
+            } catch (e) {
+                console.error(e);
+                alert("حدث خطأ أثناء التأكد من أهليتك للشهادة.");
+            }
+        }
+
+        window.closeCertificate = function() {
+            document.getElementById('certificateModal').classList.add('hidden');
+            document.getElementById('certificateModal').classList.remove('flex');
+        }
+
+        window.downloadCertificate = function() {
+            const btn = document.getElementById('downloadCertBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>جاري المعالجة...</span>`;
+            btn.disabled = true;
+
+            const certBox = document.getElementById('certificateBox');
+            html2canvas(certBox, {
+                scale: 2, 
+                useCORS: true, 
+                backgroundColor: "#1e293b"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `شهادة_تقدير_${document.getElementById('certStudentName').innerText}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error("Error generating image:", err);
+                alert("حدث خطأ أثناء إنشاء الصورة.");
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
+        }
+
+        const escapeHTML = str => { if (!str) return ''; return str.replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag])); };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('saved_student_name');
+            const savedCode = localStorage.getItem('saved_grade_code');
+            if (savedName) {
+                const nameInput = document.getElementById('studentNameInput');
+                nameInput.value = savedName;
+                nameInput.readOnly = true;
+                nameInput.classList.add('opacity-60', 'cursor-not-allowed');
+            }
+            if (savedCode) document.getElementById('gradeCodeInput').value = savedCode;
+        });
+    </script>
+</body>
+</html>
