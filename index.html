@@ -25,7 +25,7 @@
             font-family: 'Cairo', sans-serif; 
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-x: hidden;
-            background: #1e2540; /* لون الخلفية الداكن الصافي المتوافق مع الصورة */
+            background-color: var(--main-bg);
             min-height: 100vh;
         }
 
@@ -52,6 +52,7 @@
 
         /* نظام الحاويات والبطاقات النيونية المتجاوبة والزجاجية */
         .theme-dark { 
+            --main-bg: #1e2540;
             --card-bg: #252d4e; 
             --card-border: #2f385e; 
             --text-question: #ffffff; 
@@ -60,6 +61,7 @@
             --glass-border: rgba(255, 255, 255, 0.08);
         }
         .theme-light { 
+            --main-bg: #f8fafc;
             --card-bg: #ffffff; 
             --card-border: #e2e8f0; 
             --text-question: #0f172a; 
@@ -160,7 +162,7 @@
         @keyframes starFallEffect { 0% { transform: translateY(0) scale(0.3) rotate(0deg); opacity: 1; } 55% { opacity: 1; } 100% { transform: translateY(-160px) scale(1.6) rotate(240deg); opacity: 0; } }
     </style>
 </head>
-<body class="theme-dark min-h-screen p-2 sm:p-4 flex flex-col items-center justify-start relative select-none">
+<body class="theme-light min-h-screen p-2 sm:p-4 flex flex-col items-center justify-start relative select-none">
 
     <div class="w-full max-w-4xl mx-auto flex justify-between items-center py-3 mb-4 border-b border-slate-700/20">
         <div class="text-xs font-black text-slate-400 flex items-center gap-2">
@@ -172,7 +174,7 @@
                 <i id="soundIcon" class="fa-solid fa-volume-high text-indigo-400 text-lg"></i>
             </button>
             <button onclick="toggleThemeMode()" class="custom-card border p-2.5 rounded-xl shadow-md flex items-center justify-center w-11 h-11 active:scale-90 transition-all">
-                <i id="themeIcon" class="fa-solid fa-sun text-amber-400 text-lg"></i>
+                <i id="themeIcon" class="fa-solid fa-moon text-indigo-600 text-lg"></i>
             </button>
         </div>
     </div>
@@ -448,47 +450,47 @@
         
         <div class="flex flex-col items-center w-full max-w-3xl gap-6">
             <!-- The Certificate Itself -->
-            <div id="certificateBox" class="w-full bg-[#1e293b] text-center relative overflow-hidden" style="aspect-ratio: 1.414/1; max-width: 800px; padding: 4%; border: 15px solid #0f172a; box-shadow: 0 0 40px rgba(245,158,11,0.2);">
+            <div id="certificateBox" class="w-full bg-[#1e293b] text-center relative overflow-hidden border-8 md:border-[15px] border-slate-900 shadow-[0_0_40px_rgba(245,158,11,0.2)]" style="aspect-ratio: 1.414/1; max-width: 800px; padding: 2% 4%;">
                 <!-- Decorative Borders -->
-                <div class="absolute inset-2 border-2 border-amber-500/40" style="outline: 2px solid rgba(245,158,11,0.2); outline-offset: -8px;"></div>
-                <div class="absolute top-0 left-0 w-32 h-32 border-t-4 border-l-4 border-amber-500"></div>
-                <div class="absolute top-0 right-0 w-32 h-32 border-t-4 border-r-4 border-amber-500"></div>
-                <div class="absolute bottom-0 left-0 w-32 h-32 border-b-4 border-l-4 border-amber-500"></div>
-                <div class="absolute bottom-0 right-0 w-32 h-32 border-b-4 border-r-4 border-amber-500"></div>
+                <div class="absolute inset-1 md:inset-2 border border-amber-500/40" style="outline: 1px solid rgba(245,158,11,0.2); outline-offset: -4px;"></div>
+                <div class="absolute top-0 left-0 w-16 h-16 md:w-32 md:h-32 border-t-2 md:border-t-4 border-l-2 md:border-l-4 border-amber-500"></div>
+                <div class="absolute top-0 right-0 w-16 h-16 md:w-32 md:h-32 border-t-2 md:border-t-4 border-r-2 md:border-r-4 border-amber-500"></div>
+                <div class="absolute bottom-0 left-0 w-16 h-16 md:w-32 md:h-32 border-b-2 md:border-b-4 border-l-2 md:border-l-4 border-amber-500"></div>
+                <div class="absolute bottom-0 right-0 w-16 h-16 md:w-32 md:h-32 border-b-2 md:border-b-4 border-r-2 md:border-r-4 border-amber-500"></div>
                 
                 <!-- Watermark -->
                 <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                    <i class="fa-solid fa-award text-[300px] text-amber-500"></i>
+                    <i class="fa-solid fa-award text-[150px] md:text-[300px] text-amber-500"></i>
                 </div>
 
                 <!-- Content -->
-                <div class="relative z-10 flex flex-col h-full justify-between py-4">
+                <div class="relative z-10 flex flex-col h-full justify-between py-1 md:py-4">
                     <div>
-                        <div class="text-amber-500 text-4xl md:text-5xl mb-2"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <h1 class="text-3xl md:text-5xl font-black text-amber-400 mb-4 leading-normal" style="font-family: 'Cairo', sans-serif; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">شهادة تقدير وتفوق</h1>
-                        <h2 class="text-md md:text-xl font-bold text-slate-300">تمنحها إدارة المنصة التعليمية لـتكنولوجيا المعلومات (ICT)</h2>
+                        <div class="text-amber-500 text-2xl md:text-5xl mb-1 md:mb-2"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <h1 class="text-lg sm:text-2xl md:text-5xl font-black text-amber-400 mb-1 md:mb-4 leading-normal" style="font-family: 'Cairo', sans-serif; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">شهادة تقدير وتفوق</h1>
+                        <h2 class="text-[10px] sm:text-sm md:text-xl font-bold text-slate-300">تمنحها إدارة المنصة التعليمية لـتكنولوجيا المعلومات (ICT)</h2>
                     </div>
                     
-                    <div class="space-y-2 my-auto">
-                        <p class="text-slate-400 text-md md:text-xl font-bold">بكل فخر واعتزاز، نشهد أن الطالب/ـة البطل:</p>
-                        <h3 id="certStudentName" class="text-2xl md:text-5xl font-black text-white py-2 px-8 inline-block border-b-2 border-amber-500 bg-slate-900/30 rounded-t-xl" style="color: #38bdf8;">اسم الطالب</h3>
-                        <p class="text-slate-300 text-sm md:text-lg font-bold leading-relaxed max-w-lg mx-auto">
+                    <div class="space-y-1 md:space-y-2 my-auto">
+                        <p class="text-slate-400 text-[10px] sm:text-sm md:text-xl font-bold">بكل فخر واعتزاز، نشهد أن الطالب/ـة البطل:</p>
+                        <h3 id="certStudentName" class="text-sm sm:text-xl md:text-5xl font-black text-white py-1 md:py-2 px-4 md:px-8 inline-block border-b-2 border-amber-500 bg-slate-900/30 rounded-t-xl" style="color: #38bdf8;">اسم الطالب</h3>
+                        <p class="text-slate-300 text-[9px] sm:text-xs md:text-lg font-bold leading-relaxed max-w-[250px] md:max-w-lg mx-auto mt-1 md:mt-2">
                             المقيد بـ <span id="certGradeName" class="text-amber-400">الصف الدراسي</span><br>
                             قد أظهر تفوقاً وتميزاً ملحوظاً في التقييمات الخاصة بـ <span id="certLessonName" class="text-cyan-400 font-black">الدرس</span>، ونتمنى له دوام التوفيق والنجاح.
                         </p>
                     </div>
 
-                    <div class="flex justify-between items-end px-4 md:px-16 mt-2">
+                    <div class="flex justify-between items-end px-2 md:px-16 mt-1 md:mt-2">
                         <div class="text-center">
-                            <p class="text-slate-400 text-xs md:text-sm font-bold mb-1">تاريخ الإصدار</p>
-                            <p id="certDate" class="text-white font-mono font-bold border-t border-slate-600 pt-1 text-xs md:text-sm">2024/01/01</p>
+                            <p class="text-slate-400 text-[8px] md:text-sm font-bold mb-0.5 md:mb-1">تاريخ الإصدار</p>
+                            <p id="certDate" class="text-white font-mono font-bold border-t border-slate-600 pt-0.5 md:pt-1 text-[9px] md:text-sm">2024/01/01</p>
                         </div>
-                        <div class="w-16 h-16 md:w-20 md:h-20 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center text-2xl md:text-3xl border-2 border-amber-500/50" style="transform: rotate(-15deg);">
+                        <div class="w-10 h-10 md:w-20 md:h-20 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center text-lg md:text-3xl border-2 border-amber-500/50" style="transform: rotate(-15deg);">
                             <i class="fa-solid fa-award"></i>
                         </div>
                         <div class="text-center">
-                            <p class="text-slate-400 text-xs md:text-sm font-bold mb-1">توقيع المعلم المعتمد</p>
-                            <p class="text-emerald-400 font-bold border-t border-slate-600 pt-1 text-xs md:text-sm" style="font-family: 'Tahoma', sans-serif;">إدارة المنصة التعليمية</p>
+                            <p class="text-slate-400 text-[8px] md:text-sm font-bold mb-0.5 md:mb-1">توقيع المعلم المعتمد</p>
+                            <p class="text-emerald-400 font-bold border-t border-slate-600 pt-0.5 md:pt-1 text-[9px] md:text-sm" style="font-family: 'Tahoma', sans-serif;">إدارة المنصة التعليمية</p>
                         </div>
                     </div>
                 </div>
@@ -1461,6 +1463,12 @@
         const escapeHTML = str => { if (!str) return ''; return str.replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag])); };
 
         window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('user_theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.replace('theme-light', 'theme-dark');
+                document.getElementById('themeIcon').className = "fa-solid fa-sun text-amber-400 text-lg";
+            }
+
             const savedName = localStorage.getItem('saved_student_name');
             const savedCode = localStorage.getItem('saved_grade_code');
             if (savedName) {
