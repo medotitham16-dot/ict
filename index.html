@@ -162,7 +162,7 @@
         @keyframes starFallEffect { 0% { transform: translateY(0) scale(0.3) rotate(0deg); opacity: 1; } 55% { opacity: 1; } 100% { transform: translateY(-160px) scale(1.6) rotate(240deg); opacity: 0; } }
     </style>
 </head>
-<body class="theme-light min-h-screen p-2 sm:p-4 flex flex-col items-center justify-start relative select-none">
+<body class="theme-dark min-h-screen p-2 sm:p-4 flex flex-col items-center justify-start relative select-none">
 
     <div class="w-full max-w-4xl mx-auto flex justify-between items-center py-3 mb-4 border-b border-slate-700/20">
         <div class="text-xs font-black text-slate-400 flex items-center gap-2">
@@ -174,7 +174,7 @@
                 <i id="soundIcon" class="fa-solid fa-volume-high text-indigo-400 text-lg"></i>
             </button>
             <button onclick="toggleThemeMode()" class="custom-card border p-2.5 rounded-xl shadow-md flex items-center justify-center w-11 h-11 active:scale-90 transition-all">
-                <i id="themeIcon" class="fa-solid fa-moon text-indigo-600 text-lg"></i>
+                <i id="themeIcon" class="fa-solid fa-sun text-amber-400 text-lg"></i>
             </button>
         </div>
     </div>
@@ -1464,9 +1464,9 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('user_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.replace('theme-light', 'theme-dark');
-                document.getElementById('themeIcon').className = "fa-solid fa-sun text-amber-400 text-lg";
+            if (savedTheme === 'light') {
+                document.body.classList.replace('theme-dark', 'theme-light');
+                document.getElementById('themeIcon').className = "fa-solid fa-moon text-indigo-600 text-lg";
             }
 
             const savedName = localStorage.getItem('saved_student_name');
