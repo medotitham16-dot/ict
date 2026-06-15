@@ -1018,7 +1018,7 @@
             if (mainBtn) {
                 const savedMainScore = localStorage.getItem(`local_score_${selectedGrade}_${selectedLesson}`);
                 const mainScoreNum = savedMainScore ? parseInt(savedMainScore) : 0;
-                mainBtn.innerHTML = `<i class="fa-solid fa-code text-lg"></i> بدء التقييم وأسئلة الدرس ${mainScoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2" dir="rtl">مكتمل ✓ (${mainScoreNum}%)</span>` : ''}`;
+                mainBtn.innerHTML = `<i class="fa-solid fa-code text-lg"></i> بدء التقييم وأسئلة الدرس ${mainScoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓ ${mainScoreNum}%</span>` : ''}`;
             }
 
             const gameBtn = document.getElementById('btn-gameQuiz');
@@ -1040,7 +1040,7 @@
                     
                     if (isPreviousPassed) {
                         subBtn.className = "sub-quiz-btn-dynamic w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 transition-transform hover:scale-105";
-                        subBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} ${scoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2" dir="rtl">مكتمل ✓ (${scoreNum}%)</span>` : ''}`;
+                        subBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} ${scoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓ ${scoreNum}%</span>` : ''}`;
                         subBtn.onclick = () => startStandardQuizEngine(quizKey, quizData.quizTitle || 'اختبار إضافي');
                     } else {
                         subBtn.className = "sub-quiz-btn-dynamic w-full bg-slate-800 text-slate-500 font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80 border border-slate-700";
@@ -1449,4 +1449,28 @@
                 link.click();
                 
                 btn.innerHTML = originalHTML;
-           
+                btn.disabled = false;
+            }).catch(err => {
+                console.error("Error generating image:", err);
+                alert("حدث خطأ أثناء إنشاء الصورة.");
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
+        }
+
+        const escapeHTML = str => { if (!str) return ''; return str.replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag])); };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('saved_student_name');
+            const savedCode = localStorage.getItem('saved_grade_code');
+            if (savedName) {
+                const nameInput = document.getElementById('studentNameInput');
+                nameInput.value = savedName;
+                nameInput.readOnly = true;
+                nameInput.classList.add('opacity-60', 'cursor-not-allowed');
+            }
+            if (savedCode) document.getElementById('gradeCodeInput').value = savedCode;
+        });
+    </script>
+</body>
+</html>
