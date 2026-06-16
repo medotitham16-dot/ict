@@ -278,12 +278,15 @@
         </div>
 
         <div id="tabContent-quizTab" class="hidden min-h-[200px] w-full flex-col items-center justify-center p-4">
-            <div id="lessonQuizzesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div id="lessonQuizzesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                 <button id="btn-standardQuiz" onclick="startStandardQuizEngine()" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-code text-lg"></i> بدء التقييم وأسئلة الدرس
+                    <i class="fa-solid fa-file-pen text-lg"></i> تقييم و أسئلة الدرس
                 </button>
                 <button id="btn-gameQuiz" onclick="startInteractiveGameEngine()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-gamepad text-xl animate-bounce"></i> دخول مغامرة اللعبة التفاعلية 🎮
+                    <i class="fa-solid fa-gamepad text-xl animate-bounce"></i> لعبة الأسئلة 🎮
+                </button>
+                <button id="btn-superComputerGlobal" onclick="startGlobalSuperComputerGame()" class="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 hidden">
+                    <i class="fa-solid fa-microchip animate-pulse text-xl"></i> بناء الكمبيوتر ⚡
                 </button>
             </div>
             <div id="quizTabEmptyAlert" class="hidden p-12 text-center text-amber-500 font-bold text-sm leading-relaxed w-full">
@@ -417,6 +420,79 @@
         </div>
     </div>
 
+    <!-- Super Computer Game Container -->
+    <div id="superComputerGameContainer" class="max-w-5xl w-full bg-[#0b0f19] border-4 border-purple-500/30 rounded-3xl overflow-hidden hidden mx-auto shadow-[0_0_50px_rgba(168,85,247,0.15)] relative">
+        <div class="bg-slate-900/90 p-5 text-white flex justify-between items-center border-b border-purple-500/30">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center text-xl border border-purple-500/30 backdrop-blur-sm"><i class="fa-solid fa-microchip"></i></div>
+                <div>
+                    <h3 id="scGameLessonTitle" class="text-md font-black tracking-tight text-purple-300">تحميل اسم اللعبة...</h3>
+                    <p class="text-[11px] text-amber-300 font-bold opacity-90 animate-pulse">⚡ بناء الكمبيوتر الخارق</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="bg-purple-600 text-white font-black text-[10px] sm:text-xs px-2 sm:px-4 py-2 rounded-xl shadow-md" id="scGameScoreCounter">القطع المجمعة: 0 / 0</div>
+                <button onclick="confirmExitGame()" title="إلغاء اللعبة والعودة للدرس" class="bg-red-500/20 hover:bg-red-500/40 text-red-400 rounded-xl px-2 sm:px-4 py-2 font-black text-[10px] sm:text-xs transition-all border border-red-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline-block">رجوع للدرس</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="w-full bg-slate-900 h-2">
+            <div id="scGameProgressBarFill" class="bg-gradient-to-r from-purple-500 to-fuchsia-500 h-full w-0 transition-all duration-500 progress-glow"></div>
+        </div>
+
+        <div class="flex flex-col md:flex-row min-h-[500px]">
+            <!-- Blueprint Section -->
+            <div class="md:w-5/12 bg-slate-950 p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-l border-purple-500/20 relative">
+                <div class="text-center mb-6 w-full">
+                    <h4 class="text-cyan-400 font-black text-sm uppercase tracking-widest"><i class="fa-solid fa-layer-group"></i> Blueprint</h4>
+                </div>
+                <!-- PC Case Wireframe -->
+                <div class="w-48 h-64 border-2 border-dashed border-cyan-500/40 rounded-xl relative flex flex-col items-center justify-center bg-cyan-900/10 shadow-[inset_0_0_20px_rgba(6,182,212,0.1)]">
+                    <div id="scPart-motherboard" class="absolute inset-2 border border-slate-700 rounded-lg flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-chess-board text-3xl text-slate-500"></i></div>
+                    <div id="scPart-cpu" class="absolute top-1/4 left-1/2 -translate-x-1/2 border border-slate-700 w-12 h-12 rounded-md flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-microchip text-xl text-slate-500"></i></div>
+                    <div id="scPart-ram" class="absolute top-1/4 right-4 border border-slate-700 w-4 h-16 rounded-sm flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-memory text-sm text-slate-500"></i></div>
+                    <div id="scPart-gpu" class="absolute bottom-1/4 left-1/2 -translate-x-1/2 border border-slate-700 w-32 h-8 rounded flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-server text-lg text-slate-500"></i></div>
+                    <div id="scPart-cooler" class="absolute top-8 left-1/2 -translate-x-1/2 border border-slate-700 w-16 h-16 rounded-full flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-fan text-2xl text-slate-500"></i></div>
+                    <div id="scPart-psu" class="absolute bottom-2 left-1/2 -translate-x-1/2 border border-slate-700 w-24 h-12 rounded flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-plug text-xl text-slate-500"></i></div>
+                </div>
+                <div id="scBlueprintStatus" class="mt-6 text-xs font-bold text-slate-400 bg-slate-900 px-4 py-2 rounded-full border border-slate-800">جاري التجميع...</div>
+            </div>
+
+            <!-- Question Section -->
+            <div class="md:w-7/12 p-6 sm:p-10 relative bg-slate-900/40">
+                <div id="scGameActiveArea" class="space-y-6">
+                    <div class="flex justify-between items-center text-xs font-black text-purple-300 mb-4">
+                        <span id="scGameQuestIndexLabel" class="bg-purple-900/40 px-3 py-1 rounded-md border border-purple-500/20">تحدي رقم 1</span>
+                        <span class="text-amber-400 bg-amber-900/30 px-3 py-1 rounded-md border border-amber-500/20" id="scTargetPartLabel">القطعة المستهدفة: اللوحة الأم</span>
+                    </div>
+
+                    <div id="scGameQuestionMainCard" class="bg-slate-800/80 p-8 rounded-3xl transition-all duration-300 relative border-b-4 border-purple-500/50 shadow-lg">
+                        <h2 id="scGameQuestionBox" class="text-xl sm:text-2xl font-black text-right leading-relaxed text-white">...</h2>
+                    </div>
+
+                    <div id="scGameOptionsContainer" class="grid grid-cols-1 gap-4 mt-6"></div>
+                </div>
+
+                <div id="scGameResultArea" class="hidden text-center py-8 space-y-6">
+                    <div id="scResultPCBox" class="w-32 h-32 mx-auto flex items-center justify-center text-7xl transition-transform transform hover:scale-110"><i id="scResultIcon" class="fa-solid fa-desktop text-slate-600"></i></div>
+                    <div class="space-y-2">
+                        <h2 id="scGameResultHeading" class="text-3xl font-black text-white">...</h2>
+                        <p id="scGameResultSub" class="text-slate-400 text-sm font-bold">ملخص بناء الكمبيوتر الخارق الخاص بك</p>
+                    </div>
+                    <div class="bg-slate-950 p-6 rounded-2xl max-w-xs mx-auto border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.1)]">
+                        <div id="scGameFinalPercent" class="text-5xl font-black text-purple-400">0%</div>
+                        <div id="scGameFinalScore" class="text-slate-300 font-bold text-sm mt-2">تم تجميع: 0 قطع</div>
+                    </div>
+                    <div class="flex flex-col gap-3 max-w-xs mx-auto mt-6">
+                        <button onclick="backToCurrentLesson()" class="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-black py-4 px-10 rounded-2xl text-sm shadow-lg w-full">العودة لصفحة الدرس</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="globalEmptyState" class="max-w-md w-full custom-card border rounded-3xl p-8 text-center hidden mx-auto space-y-4 my-auto">
         <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto"><i class="fa-solid fa-file-circle-xmark"></i></div>
         <h3 id="emptyStateTitle" class="text-xl font-black question-text">المحتوى التقييمي قيد الإعداد</h3>
@@ -522,6 +598,101 @@
         let selectedGrade = "", selectedLesson = "", currentLessonTextTitle = "";
         let allQuestionsFetched = [], activeQuestions = [], studentAnswers = [], currentIndex = 0, timer, timeLeft = 0, deviceFingerprint = "", isReviewMode = false;
         let gameQuestions = [], gameIndex = 0, gameScore = 0, gameButtonsBlocked = false, isSoundMuted = false;
+        
+        const gameThemesRegistry = {
+            'pc_builder': {
+                id: 'pc_builder',
+                title: 'بناء الكمبيوتر الخارق',
+                icon: 'fa-microchip',
+                bgGradient: 'from-purple-500 to-fuchsia-500',
+                borderGlow: 'shadow-[0_0_50px_rgba(168,85,247,0.15)]',
+                parts: [
+                    { id: 'part1', name: 'اللوحة الأم', icon: 'fa-chess-board', color: 'text-purple-400', style: 'inset-2 rounded-lg' },
+                    { id: 'part2', name: 'المعالج (CPU)', icon: 'fa-microchip', color: 'text-amber-400', style: 'top-1/4 left-1/2 -translate-x-1/2 w-12 h-12 rounded-md' },
+                    { id: 'part3', name: 'الذاكرة (RAM)', icon: 'fa-memory', color: 'text-emerald-400', style: 'top-1/4 right-4 w-4 h-16 rounded-sm' },
+                    { id: 'part4', name: 'بطاقة الرسوميات (GPU)', icon: 'fa-server', color: 'text-cyan-400', style: 'bottom-1/4 left-1/2 -translate-x-1/2 w-32 h-8 rounded' },
+                    { id: 'part5', name: 'نظام التبريد', icon: 'fa-fan', color: 'text-blue-400', style: 'top-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full' },
+                    { id: 'part6', name: 'مزود الطاقة', icon: 'fa-plug', color: 'text-fuchsia-400', style: 'bottom-2 left-1/2 -translate-x-1/2 w-24 h-12 rounded' }
+                ],
+                finalIcon: 'fa-server',
+                finalDecorator: 'fa-bolt',
+                finalMessage: '🌟 تم تجميع الكمبيوتر الخارق الخاص بك بنجاح!',
+                finalGradient: 'from-purple-600/30 via-fuchsia-500/30 to-blue-500/30',
+                finalTextGradient: 'from-purple-400 to-fuchsia-400'
+            },
+            'rocket_builder': {
+                id: 'rocket_builder',
+                title: 'بناء صاروخ الفضاء',
+                icon: 'fa-rocket',
+                bgGradient: 'from-orange-500 to-red-500',
+                borderGlow: 'shadow-[0_0_50px_rgba(249,115,22,0.15)]',
+                parts: [
+                    { id: 'part1', name: 'الهيكل الرئيسي', icon: 'fa-space-shuttle', color: 'text-orange-400', style: 'inset-x-6 top-12 bottom-20 rounded-t-[100px] rounded-b-xl' },
+                    { id: 'part2', name: 'خزان الوقود', icon: 'fa-gas-pump', color: 'text-red-400', style: 'bottom-24 left-1/2 -translate-x-1/2 w-16 h-24 rounded-lg' },
+                    { id: 'part3', name: 'المحرك النفاث', icon: 'fa-fire-flame-curved', color: 'text-yellow-400', style: 'bottom-4 left-1/2 -translate-x-1/2 w-20 h-16 rounded-b-3xl' },
+                    { id: 'part4', name: 'غرفة القيادة', icon: 'fa-user-astronaut', color: 'text-blue-400', style: 'top-20 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full' },
+                    { id: 'part5', name: 'الأجنحة الديناميكية', icon: 'fa-paper-plane', color: 'text-slate-300', style: 'bottom-16 -inset-x-2 h-20 rounded-xl' },
+                    { id: 'part6', name: 'رادار التوجيه', icon: 'fa-satellite-dish', color: 'text-emerald-400', style: 'top-4 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full' }
+                ],
+                finalIcon: 'fa-rocket',
+                finalDecorator: 'fa-fire',
+                finalMessage: '🚀 الصاروخ الفضائي جاهز للانطلاق!',
+                finalGradient: 'from-orange-600/30 via-red-500/30 to-yellow-500/30',
+                finalTextGradient: 'from-orange-400 to-red-400'
+            },
+            'robot_builder': {
+                id: 'robot_builder',
+                title: 'بناء الروبوت الذكي',
+                icon: 'fa-robot',
+                bgGradient: 'from-emerald-500 to-teal-500',
+                borderGlow: 'shadow-[0_0_50px_rgba(16,185,129,0.15)]',
+                parts: [
+                    { id: 'part1', name: 'الهيكل الخارجي', icon: 'fa-box', color: 'text-slate-400', style: 'top-1/4 bottom-1/4 left-1/4 right-1/4 rounded-xl' },
+                    { id: 'part2', name: 'العقل الذكي (AI)', icon: 'fa-brain', color: 'text-pink-400', style: 'top-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-3xl' },
+                    { id: 'part3', name: 'الأذرع الهيدروليكية', icon: 'fa-hand-fist', color: 'text-amber-400', style: 'top-1/3 -inset-x-4 h-8 rounded-full' },
+                    { id: 'part4', name: 'المستشعرات', icon: 'fa-eye', color: 'text-cyan-400', style: 'top-10 left-1/2 -translate-x-1/2 w-10 h-4 rounded-full' },
+                    { id: 'part5', name: 'قلب الطاقة', icon: 'fa-battery-full', color: 'text-emerald-400', style: 'top-1/2 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full' },
+                    { id: 'part6', name: 'نظام الحركة', icon: 'fa-shoe-prints', color: 'text-blue-400', style: 'bottom-4 left-1/2 -translate-x-1/2 w-20 h-10 rounded-t-xl' }
+                ],
+                finalIcon: 'fa-robot',
+                finalDecorator: 'fa-bolt',
+                finalMessage: '🤖 تم تنشيط الروبوت الذكي بنجاح!',
+                finalGradient: 'from-emerald-600/30 via-teal-500/30 to-cyan-500/30',
+                finalTextGradient: 'from-emerald-400 to-teal-400'
+            },
+            'city_builder': {
+                id: 'city_builder',
+                title: 'بناء المدينة الذكية',
+                icon: 'fa-city',
+                bgGradient: 'from-blue-500 to-indigo-500',
+                borderGlow: 'shadow-[0_0_50px_rgba(59,130,246,0.15)]',
+                parts: [
+                    { id: 'part1', name: 'الطرق الذكية', icon: 'fa-road', color: 'text-slate-500', style: 'bottom-2 inset-x-2 h-12 rounded-lg' },
+                    { id: 'part2', name: 'محطة الطاقة المتجددة', icon: 'fa-solar-panel', color: 'text-amber-400', style: 'bottom-16 left-4 w-16 h-12 rounded-lg' },
+                    { id: 'part3', name: 'الأبراج السكنية', icon: 'fa-building', color: 'text-indigo-400', style: 'bottom-16 left-1/2 -translate-x-1/2 w-20 h-32 rounded-t-xl' },
+                    { id: 'part4', name: 'المستشفى الآلي', icon: 'fa-hospital', color: 'text-red-400', style: 'bottom-16 right-4 w-16 h-20 rounded-t-xl' },
+                    { id: 'part5', name: 'شبكة الاتصالات', icon: 'fa-wifi', color: 'text-cyan-400', style: 'top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full' },
+                    { id: 'part6', name: 'الحدائق البيئية', icon: 'fa-tree', color: 'text-emerald-400', style: 'bottom-16 left-24 w-10 h-16 rounded-t-full' }
+                ],
+                finalIcon: 'fa-city',
+                finalDecorator: 'fa-tree',
+                finalMessage: '🏙️ المدينة الذكية جاهزة للمستقبل!',
+                finalGradient: 'from-blue-600/30 via-indigo-500/30 to-sky-500/30',
+                finalTextGradient: 'from-blue-400 to-indigo-400'
+            }
+        };
+
+        function getThemeForLesson(lessonKey) {
+            const themesArray = ['pc_builder', 'rocket_builder', 'robot_builder', 'city_builder'];
+            // Hash the lesson key to consistently pick a theme
+            let hash = 0;
+            for (let i = 0; i < lessonKey.length; i++) { hash = lessonKey.charCodeAt(i) + ((hash << 5) - hash); }
+            const themeIndex = Math.abs(hash) % themesArray.length;
+            return gameThemesRegistry[themesArray[themeIndex]];
+        }
+
+        let scGameQuestions = [], scGameIndex = 0, scGameScore = 0, scGameButtonsBlocked = false, scActiveGameKey = "";
+        let currentTheme = null;
         
         let currentLessonImagesArray = [];
         let currentImageIndexInGallery = 0;
@@ -762,12 +933,20 @@
                         // Buttons inside Quiz Tab
                         if (lData.visibility.showQuiz === false) { document.getElementById('btn-standardQuiz').classList.add('hidden'); } else { document.getElementById('btn-standardQuiz').classList.remove('hidden'); }
                         if (lData.visibility.showGame === false) { document.getElementById('btn-gameQuiz').classList.add('hidden'); } else { document.getElementById('btn-gameQuiz').classList.remove('hidden'); }
+                        if (lData.visibility.showSuperComputer === false) { document.getElementById('btn-superComputerGlobal').classList.add('hidden'); } else { 
+                            document.getElementById('btn-superComputerGlobal').classList.remove('hidden');
+                            const thm = getThemeForLesson(selectedLesson);
+                            document.getElementById('btn-superComputerGlobal').innerHTML = `<i class="fa-solid ${thm.icon} animate-pulse text-xl"></i> ${thm.title} ⚡`;
+                        }
                     } else {
                         document.getElementById('btn-textTab').classList.remove('hidden'); firstVisibleTab = 'textTab';
                         document.getElementById('btn-quizTab').classList.remove('hidden');
                         document.getElementById('btn-videoTab').classList.remove('hidden');
                         document.getElementById('btn-standardQuiz').classList.remove('hidden');
                         document.getElementById('btn-gameQuiz').classList.remove('hidden');
+                        document.getElementById('btn-superComputerGlobal').classList.remove('hidden');
+                        const thm = getThemeForLesson(selectedLesson);
+                        document.getElementById('btn-superComputerGlobal').innerHTML = `<i class="fa-solid ${thm.icon} animate-pulse text-xl"></i> ${thm.title} ⚡`;
                     }
                     
                     if (!firstVisibleTab) {
@@ -777,8 +956,8 @@
                         switchTab(firstVisibleTab);
                     }
                     
-                    // Show empty alert in quiz tab if both main quizzes are hidden
-                    if (lData.visibility && lData.visibility.showQuiz === false && lData.visibility.showGame === false && (!lData.sub_quizzes || Object.keys(lData.sub_quizzes).length === 0)) {
+                    // Show empty alert in quiz tab if all quizzes/games are hidden
+                    if (lData.visibility && lData.visibility.showQuiz === false && lData.visibility.showGame === false && lData.visibility.showSuperComputer === false && (!lData.sub_quizzes || Object.keys(lData.sub_quizzes).length === 0)) {
                         document.getElementById('quizTabEmptyAlert').classList.remove('hidden');
                         document.getElementById('lessonQuizzesContainer').classList.add('hidden');
                     } else {
@@ -1009,6 +1188,7 @@
             clearInterval(timer); isReviewMode = false;
             document.getElementById('quizContainer').classList.add('hidden');
             document.getElementById('interactiveGameContainer').classList.add('hidden');
+            document.getElementById('superComputerGameContainer').classList.add('hidden');
             document.getElementById('globalEmptyState').classList.add('hidden');
             document.getElementById('lessonsDashboard').classList.add('hidden');
             document.getElementById('learningCenterContainer').classList.remove('hidden');
@@ -1020,39 +1200,49 @@
             if (mainBtn) {
                 const savedMainScore = localStorage.getItem(`local_score_${selectedGrade}_${selectedLesson}`);
                 const mainScoreNum = savedMainScore ? parseInt(savedMainScore) : 0;
-                mainBtn.innerHTML = `<i class="fa-solid fa-code text-lg"></i> بدء التقييم وأسئلة الدرس ${mainScoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓ ${mainScoreNum}%</span>` : ''}`;
+                mainBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> تقييم و أسئلة الدرس ${mainScoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓</span>` : ''}`;
             }
 
             const gameBtn = document.getElementById('btn-gameQuiz');
             if (gameBtn) {
-                gameBtn.innerHTML = `<i class="fa-solid fa-gamepad text-xl animate-bounce"></i> دخول مغامرة اللعبة التفاعلية 🎮`;
+                gameBtn.innerHTML = `<i class="fa-solid fa-gamepad text-xl animate-bounce"></i> لعبة الأسئلة 🎮`;
             }
 
             const quizzesContainer = document.getElementById('lessonQuizzesContainer');
             document.querySelectorAll('.sub-quiz-btn-dynamic').forEach(el => el.remove());
             
+            let hasAnySuperComputerGames = false;
+
             if (window.currentLessonSubQuizzes) {
                 const sortedQuizzes = Object.entries(window.currentLessonSubQuizzes).sort((a, b) => a[0].localeCompare(b[0]));
                 let isPreviousPassed = true;
                 
                 sortedQuizzes.forEach(([quizKey, quizData]) => {
+                    // Check if this sub-quiz has any game questions (Legacy logic kept for reference if needed, but SC button is independent now)
+                    const sqGames = (window.allGradeQuestions || []).filter(q => q.lesson === quizKey + "_game");
+                    if (sqGames.length > 0) hasAnySuperComputerGames = true;
+
                     const subBtn = document.createElement('button');
                     const savedLocalScore = localStorage.getItem(`local_score_${selectedGrade}_${quizKey}`);
                     const scoreNum = savedLocalScore ? parseInt(savedLocalScore) : 0;
                     
                     if (isPreviousPassed) {
-                        subBtn.className = "sub-quiz-btn-dynamic w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 transition-transform hover:scale-105";
+                        subBtn.className = "sub-quiz-btn-dynamic w-full bg-slate-800 border-2 border-fuchsia-500/30 hover:bg-slate-700 text-fuchsia-400 hover:text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 transition-all hover:scale-105";
                         subBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} ${scoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓ ${scoreNum}%</span>` : ''}`;
                         subBtn.onclick = () => startStandardQuizEngine(quizKey, quizData.quizTitle || 'اختبار إضافي');
                     } else {
-                        subBtn.className = "sub-quiz-btn-dynamic w-full bg-slate-800 text-slate-500 font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80 border border-slate-700";
+                        subBtn.className = "sub-quiz-btn-dynamic w-full bg-slate-800/50 text-slate-500 font-black py-4 rounded-2xl text-md flex items-center justify-center gap-2 cursor-not-allowed opacity-80 border-2 border-slate-700";
                         subBtn.innerHTML = `<i class="fa-solid fa-lock text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} <span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full mr-2">مغلق</span>`;
                         subBtn.onclick = () => alert("🔒 يجب عليك اجتياز الاختبار السابق بنسبة 50% على الأقل لفتح هذا الاختبار.");
                     }
                     quizzesContainer.appendChild(subBtn);
+                    
                     isPreviousPassed = (scoreNum >= 50);
                 });
             }
+
+            // Note: The SC button visibility is now controlled globally by lData.visibility.showSuperComputer
+            // We no longer hide it based on hasAnySuperComputerGames.
         }
 
         window.confirmForceExitQuiz = function() { if(confirm("هل تريد تسليم ورقة الإجابة الآن؟ (سيتم احتساب درجتك الحالية)")) calculateFinalResult(); }
@@ -1215,6 +1405,214 @@
             }
 
             fetchAndRenderLeaderboard();
+        }
+
+        function setupDynamicThemeUI(theme, title) {
+            document.getElementById('superComputerGameContainer').className = `max-w-5xl w-full bg-[#0b0f19] border-4 rounded-3xl overflow-hidden hidden mx-auto relative ${theme.borderGlow} border-${theme.bgGradient.split(' ')[0].replace('from-', '')}/30`;
+            
+            const header = document.getElementById('superComputerGameContainer').querySelector('.bg-slate-900\\/90');
+            header.className = `bg-slate-900/90 p-5 text-white flex justify-between items-center border-b border-${theme.bgGradient.split(' ')[0].replace('from-', '')}/30`;
+            
+            const iconBox = header.querySelector('div.flex.items-center.justify-center.text-xl');
+            iconBox.className = `w-11 h-11 bg-${theme.bgGradient.split(' ')[0].replace('from-', '')}/20 text-${theme.bgGradient.split(' ')[0].replace('from-', '')} rounded-xl flex items-center justify-center text-xl border border-${theme.bgGradient.split(' ')[0].replace('from-', '')}/30 backdrop-blur-sm`;
+            iconBox.innerHTML = `<i class="fa-solid ${theme.icon}"></i>`;
+            
+            document.getElementById('scGameLessonTitle').innerText = title;
+            header.querySelector('p.animate-pulse').innerText = `⚡ ${theme.title}`;
+            
+            document.getElementById('scGameProgressBarFill').className = `bg-gradient-to-r ${theme.bgGradient} h-full w-0 transition-all duration-500 progress-glow`;
+            
+            const blueprintContainer = document.getElementById('scBlueprintAreaContainer') || document.querySelector('.w-48.h-64.border-2.border-dashed');
+            if(!blueprintContainer.id) blueprintContainer.id = 'scBlueprintAreaContainer';
+            blueprintContainer.className = 'w-full max-w-[250px] h-64 border-2 border-dashed border-cyan-500/40 rounded-xl grid grid-cols-2 gap-3 place-items-center place-content-center p-4 bg-cyan-900/10 shadow-[inset_0_0_20px_rgba(6,182,212,0.1)]';
+            blueprintContainer.innerHTML = '';
+            
+            theme.parts.forEach(part => {
+                const div = document.createElement('div');
+                div.id = 'scPart-' + part.id;
+                div.className = `w-14 h-14 border-2 border-slate-700 rounded-2xl flex items-center justify-center opacity-30 transition-all duration-500 bg-slate-800/50 shadow-inner`;
+                div.innerHTML = `<i class="fa-solid ${part.icon} text-slate-500 text-2xl"></i>`;
+                blueprintContainer.appendChild(div);
+            });
+            
+            document.getElementById('scBlueprintStatus').innerText = "جاري التجميع...";
+        }
+
+        window.startGlobalSuperComputerGame = function() {
+            scGameQuestions = (window.allGradeQuestions || []).filter(q => q.lesson === selectedLesson + "_sc_game");
+            scActiveGameKey = selectedLesson + "_sc_game";
+            
+            if(scGameQuestions.length === 0) {
+                document.getElementById('learningCenterContainer').classList.add('hidden'); 
+                document.getElementById('quizContainer').classList.remove('hidden');
+                document.getElementById('quizActiveContent').classList.add('hidden'); 
+                document.getElementById('quizProgressBarContainer').classList.add('hidden');
+                document.getElementById('emptyQuizHeaderLabel').innerText = "🕹️ لعبة التجميع قيد التحضير";
+                document.getElementById('emptyQuizState').classList.remove('hidden'); 
+                return;
+            }
+            
+            currentTheme = getThemeForLesson(selectedLesson);
+            setupDynamicThemeUI(currentTheme, currentLessonTextTitle + " (تجميعي)");
+            
+            document.getElementById('learningCenterContainer').classList.add('hidden'); 
+            document.getElementById('interactiveGameContainer').classList.add('hidden');
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('superComputerGameContainer').classList.remove('hidden');
+            document.getElementById('scGameActiveArea').classList.remove('hidden'); 
+            document.getElementById('scGameResultArea').classList.add('hidden');
+            
+            scGameIndex = 0; scGameScore = 0; scGameButtonsBlocked = false; 
+            window.currentQuizStartTime = Date.now(); 
+            document.getElementById('scGameScoreCounter').innerText = `القطع المجمعة: 0 / ${scGameQuestions.length}`;
+            
+            renderSuperComputerQuestion();
+        }
+
+        window.startSuperComputerGame = function(targetGameKey, targetTitle) {
+            scGameQuestions = (window.allGradeQuestions || []).filter(q => q.lesson === targetGameKey);
+            scActiveGameKey = targetGameKey;
+            
+            if(scGameQuestions.length === 0) {
+                document.getElementById('learningCenterContainer').classList.add('hidden'); 
+                document.getElementById('quizContainer').classList.remove('hidden');
+                document.getElementById('quizActiveContent').classList.add('hidden'); 
+                document.getElementById('quizProgressBarContainer').classList.add('hidden');
+                document.getElementById('emptyQuizHeaderLabel').innerText = "🕹️ لعبة التجميع قيد التحضير";
+                document.getElementById('emptyQuizState').classList.remove('hidden'); 
+                return;
+            }
+            
+            currentTheme = getThemeForLesson(targetGameKey.replace('_sc_game', ''));
+            setupDynamicThemeUI(currentTheme, targetTitle || "لعبة مخصصة");
+            
+            document.getElementById('learningCenterContainer').classList.add('hidden'); 
+            document.getElementById('interactiveGameContainer').classList.add('hidden');
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('superComputerGameContainer').classList.remove('hidden');
+            document.getElementById('scGameActiveArea').classList.remove('hidden'); 
+            document.getElementById('scGameResultArea').classList.add('hidden');
+            
+            scGameIndex = 0; scGameScore = 0; scGameButtonsBlocked = false; 
+            window.currentQuizStartTime = Date.now(); 
+            document.getElementById('scGameScoreCounter').innerText = `القطع المجمعة: 0 / ${scGameQuestions.length}`;
+            
+            renderSuperComputerQuestion();
+        }
+
+        function renderSuperComputerQuestion() {
+            if (scGameIndex >= scGameQuestions.length) return;
+            const q = scGameQuestions[scGameIndex]; scGameButtonsBlocked = false;
+            
+            const currentPart = currentTheme.parts[scGameIndex % currentTheme.parts.length];
+            document.getElementById('scGameProgressBarFill').style.width = ((scGameIndex + 1) / scGameQuestions.length * 100) + '%';
+            document.getElementById('scGameQuestIndexLabel').innerText = `تحدي رقم ${scGameIndex + 1}`;
+            document.getElementById('scTargetPartLabel').innerText = `الجزء المستهدف: ${currentPart.name}`;
+            document.getElementById('scGameQuestionBox').innerText = q.question;
+            
+            const optionsBox = document.getElementById('scGameOptionsContainer'); optionsBox.innerHTML = '';
+            
+            const gOptions = q.options || (q.type === 'true_false' ? ["صح", "خطأ"] : []);
+            if (gOptions && Array.isArray(gOptions)) {
+                gOptions.forEach((opt, idx) => {
+                    if(opt && opt.toString().trim() !== "") {
+                        const btn = document.createElement('button');
+                        btn.className = `w-full text-right p-4 rounded-2xl font-black text-sm border-2 bg-slate-800 text-slate-300 border-slate-700 shadow shadow-${currentTheme.bgGradient.split(' ')[0].replace('from-', '')}/10 hover:border-${currentTheme.bgGradient.split(' ')[0].replace('from-', '')}/50 hover:bg-slate-700 transition-colors`;
+                        btn.innerHTML = `<div class="flex justify-between items-center"><span>${opt}</span><div class="w-5 h-5 rounded flex items-center justify-center border border-slate-600 bg-slate-900"></div></div>`;
+                        btn.onclick = () => handleSuperComputerLogic(btn, idx, q.correct);
+                        optionsBox.appendChild(btn);
+                    }
+                });
+            }
+        }
+
+        function handleSuperComputerLogic(clickedButton, clickedIdx, correctIdx) {
+            if (scGameButtonsBlocked) return;
+            
+            if (clickedIdx === correctIdx) {
+                scGameButtonsBlocked = true; scGameScore++;
+                document.getElementById('scGameScoreCounter').innerText = `القطع المجمعة: ${scGameScore} / ${scGameQuestions.length}`;
+                
+                clickedButton.className = "w-full text-right p-4 rounded-2xl font-black text-sm bg-emerald-500 border-emerald-600 text-white shadow-xl transition-all";
+                clickedButton.innerHTML = `<div class="flex justify-between items-center"><span>${clickedButton.querySelector('span').innerText}</span><span class="bg-slate-900/60 text-emerald-300 text-xs px-3 py-1 rounded-full font-black animate-bounce">✓ متطابق!</span></div>`;
+                
+                const part = currentTheme.parts[scGameIndex % currentTheme.parts.length];
+                const partEl = document.getElementById('scPart-' + part.id);
+                if(partEl) {
+                    partEl.className = partEl.className.replace('opacity-30', 'opacity-100');
+                    partEl.className += ` shadow-[0_0_15px_${part.color.replace('text-', '')}] border-${part.color.replace('text-', '')}`;
+                    partEl.classList.remove('border-slate-700');
+                    const icon = partEl.querySelector('i');
+                    if(icon) {
+                        icon.className = icon.className.replace('text-slate-500', '') + ` ${part.color} animate-pulse`;
+                    }
+                }
+                document.getElementById('scBlueprintStatus').innerText = `تم تركيب: ${part.name}`;
+                document.getElementById('scBlueprintStatus').className = `text-xs font-black mt-4 text-center ${part.color} animate-pulse`;
+                
+                playGameSound('success');
+                setTimeout(() => { document.getElementById('scBlueprintStatus').className = `text-xs font-bold text-slate-400 bg-slate-900 px-4 py-2 rounded-full border border-slate-800 mt-6`; scGameNext(); }, 1200);
+            } else {
+                clickedButton.disabled = true; 
+                clickedButton.className = "w-full text-right p-4 rounded-2xl font-black text-sm bg-red-900/50 border-red-500/50 text-red-400 opacity-80 transition-all";
+                clickedButton.innerHTML = `<div class="flex justify-between items-center"><span>${clickedButton.querySelector('span').innerText}</span><span class="bg-red-500 text-white text-[11px] px-2 py-0.5 rounded-md font-bold">✗ خطأ بالتركيب</span></div>`;
+                
+                // وميض أحمر للمخطط
+                const blueprint = document.getElementById('scBlueprintArea');
+                blueprint.classList.add('shadow-[inset_0_0_30px_rgba(239,68,68,0.3)]');
+                document.getElementById('scBlueprintStatus').innerText = `تحذير: ماس كهربائي!`;
+                document.getElementById('scBlueprintStatus').className = `text-xs font-black mt-4 text-center text-red-500 animate-bounce`;
+                
+                playGameSound('error');
+                setTimeout(() => { 
+                    blueprint.classList.remove('shadow-[inset_0_0_30px_rgba(239,68,68,0.3)]'); 
+                }, 1000);
+            }
+        }
+
+        window.scGameNext = function() {
+            if (scGameIndex < scGameQuestions.length - 1) { scGameIndex++; renderSuperComputerQuestion(); } 
+            else { endSuperComputerGame(); }
+        }
+
+        async function endSuperComputerGame() {
+            document.getElementById('scGameActiveArea').classList.add('hidden'); 
+            document.getElementById('scGameResultArea').classList.remove('hidden');
+            const percent = Math.round((scGameScore / scGameQuestions.length) * 100);
+            document.getElementById('scGameFinalPercent').innerText = percent + "%";
+            document.getElementById('scGameFinalScore').innerText = `تم تجميع: ${scGameScore} قطع`;
+            
+            const pcResultBox = document.getElementById('scResultPCBox');
+            const heading = document.getElementById('scGameResultHeading');
+            
+            if (percent >= 90) {
+                heading.innerText = currentTheme.finalMessage;
+                heading.className = `text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r ${currentTheme.finalTextGradient} animate-pulse`;
+                pcResultBox.className = `w-40 h-40 bg-slate-900 rounded-3xl flex flex-col items-center justify-center text-7xl mx-auto ${currentTheme.borderGlow} border-4 border-${currentTheme.bgGradient.split(' ')[0].replace('from-', '')} relative overflow-hidden group`;
+                pcResultBox.innerHTML = `
+                    <i class="fa-solid ${currentTheme.finalIcon} text-${currentTheme.bgGradient.split(' ')[0].replace('from-', '')} relative z-10 group-hover:scale-110 transition-transform"></i>
+                    <i class="fa-solid ${currentTheme.finalDecorator} text-${currentTheme.bgGradient.split(' ')[1].replace('to-', '')} text-3xl absolute top-4 right-4 animate-bounce z-10"></i>
+                    <div class="absolute inset-0 bg-gradient-to-tr ${currentTheme.finalGradient}"></div>
+                `;
+                playGameSound('victory');
+            } else if (percent >= 50) {
+                heading.innerText = "👍 تم التجميع بنجاح، لكن ينقصك بعض الأجزاء!";
+                heading.className = "text-3xl font-black text-sky-400";
+                pcResultBox.className = "w-32 h-32 bg-slate-800 rounded-3xl flex items-center justify-center text-6xl mx-auto shadow-[0_0_30px_rgba(56,189,248,0.3)] border-2 border-sky-500";
+                pcResultBox.innerHTML = `<i class="fa-solid ${currentTheme.icon} text-sky-400"></i>`;
+                playGameSound('victory');
+            } else {
+                heading.innerText = "⚠️ فشل في إتمام التجميع بشكل مستقر!";
+                heading.className = "text-2xl font-black text-red-500";
+                pcResultBox.className = "w-32 h-32 bg-slate-900 rounded-3xl flex flex-col items-center justify-center text-6xl mx-auto shadow-[inset_0_0_30px_rgba(239,68,68,0.2)] border-2 border-red-900";
+                pcResultBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500 animate-ping"></i>`;
+            }
+
+            try { 
+                const timeSpent = Math.floor((Date.now() - (window.currentQuizStartTime || Date.now())) / 1000);
+                await db.ref(`structured_student_scores/${deviceFingerprint}/quizzes/${scActiveGameKey}`).set({ score: `${percent}%`, timeSpent: timeSpent }); 
+            } catch(e){}
+            localStorage.setItem(`local_score_${selectedGrade}_${scActiveGameKey}`, percent);
         }
 
         window.fetchAndRenderLeaderboard = async function() {
