@@ -95,7 +95,7 @@
             <div class="flex flex-col sm:flex-row gap-3 items-end">
                 <div class="flex-1 w-full">
                     <select id="targetStudentGrade" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none">
-                        <option value="grade3">الصف الثالث الابتدائي</option><option value="grade4">الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
+                        <option value="grade3">الصف الثالث الابتدائي</option><option value="grade4" selected>الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
                         <option value="prep1">الصف الأول الاعدادي</option><option value="prep2">الصف الثاني الاعدادي</option><option value="prep3">الصف الثالث الاعدادي</option><option value="sec1">الصف الأول الثانوي</option>
                     </select>
                 </div>
@@ -105,6 +105,62 @@
                 </div>
             </div>
             <div class="bg-slate-950 border border-slate-850 rounded-xl p-4 font-mono text-emerald-400 font-bold text-center text-xs overflow-y-auto max-h-[150px] space-y-1 scrollbar-thin" id="studentCodeResultBox">اضغط على أحد الأزرار لتوليد الأكواد...</div>
+        </div>
+
+        <!-- Code Management Module -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-slate-800 pb-4 gap-4">
+                <div class="space-y-1 text-right">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-cyan-400"></i> سجل الأكواد وإدارتها</h2>
+                    <p class="text-xs text-slate-400 font-bold">تتبع الأكواد المولدة، انسخها أو احذفها حسب الحاجة</p>
+                </div>
+                
+                <div class="flex flex-wrap gap-3 w-full lg:w-auto items-center">
+                    <div class="w-full sm:w-56">
+                        <select id="manageCodesGradeFilter" onchange="fetchAndRenderCodes()" class="w-full bg-slate-950 border-2 border-cyan-500/40 rounded-xl py-2 px-3 text-xs font-black text-cyan-300 focus:outline-none">
+                            <option value="grade3">الصف الثالث الابتدائي</option>
+                            <option value="grade4" selected>الصف الرابع الابتدائي</option>
+                            <option value="grade5">الصف الخامس الابتدائي</option>
+                            <option value="grade6">الصف السادس الابتدائي</option>
+                            <option value="prep1">الصف الأول الاعدادي</option>
+                            <option value="prep2">الصف الثاني الاعدادي</option>
+                            <option value="prep3">الصف الثالث الاعدادي</option>
+                            <option value="sec1">الصف الأول الثانوي</option>
+                        </select>
+                    </div>
+                    <input type="text" id="searchCodesInput" onkeyup="filterCodesTable()" class="w-full sm:w-[250px] bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-xs focus:outline-none focus:border-cyan-500 transition-all placeholder:text-slate-500" placeholder="🔍 ابحث عن كود...">
+                    <button onclick="deleteAllGradeCodes()" class="bg-red-600 hover:bg-red-500 text-white text-xs font-black py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center gap-2 w-full sm:w-auto justify-center shrink-0">
+                        <i class="fa-solid fa-trash-can text-sm"></i> حذف كل أكواد الصف
+                    </button>
+                    <button id="deleteSelectedCodesBtn" onclick="deleteSelectedCodes()" class="hidden bg-orange-600 hover:bg-orange-500 text-white text-xs font-black py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center gap-2 w-full sm:w-auto justify-center shrink-0">
+                        <i class="fa-solid fa-trash text-sm"></i> حذف المحدد
+                    </button>
+                    <button onclick="exportCodesToExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center gap-2 w-full sm:w-auto justify-center shrink-0">
+                        <i class="fa-solid fa-file-excel text-sm"></i> 📥 تصدير لـ Excel
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-y-auto rounded-xl border border-slate-800 max-h-[180px] scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+                <table class="w-full text-sm text-center text-slate-300" id="codesTable">
+                    <thead class="text-xs uppercase bg-slate-950 text-cyan-400 font-bold sticky top-0 z-10">
+                        <tr>
+                            <th class="px-4 py-4 border-r border-slate-800 w-10">
+                                <input type="checkbox" id="selectAllCodesCheckbox" onchange="toggleAllCodes()" class="w-4 h-4 cursor-pointer rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-cyan-500">
+                            </th>
+                            <th class="px-6 py-4 border-r border-slate-800">الكود السري</th>
+                            <th class="px-6 py-4 border-r border-slate-800">تاريخ الإنشاء</th>
+                            <th class="px-6 py-4 border-r border-slate-800">الحالة / الطالب</th>
+                            <th class="px-6 py-4">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="codesTableBody" class="divide-y divide-slate-850">
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-slate-500 font-bold">جاري استدعاء سجل الأكواد...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="bg-indigo-950/20 border border-indigo-500/20 rounded-2xl p-6 shadow-xl grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -178,6 +234,7 @@
                         <div class="grid grid-cols-2 gap-2 text-xs font-bold">
                             <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg"><input type="checkbox" id="chkShowQuiz" checked class="accent-indigo-500"> التقييم العادي</label>
                             <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg"><input type="checkbox" id="chkShowGame" checked class="accent-indigo-500"> اللعبة التفاعلية</label>
+                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-slate-900 rounded-lg col-span-2 sm:col-span-1"><input type="checkbox" id="chkShowSuperComputer" checked class="accent-purple-500"> لعبة التجميع الديناميكية البنفسجية</label>
                         </div>
                     </div>
 
@@ -215,11 +272,12 @@
                 <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-cyan-400"></i>بنك أسئلة هذا الاختبار المخصص</h2>
                 <div class="flex items-center gap-3 w-full xl:w-auto">
                     <input type="text" id="searchQuestionsInput" onkeyup="renderQuestionsDashboardList()" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none" placeholder="🔍 بحث في الأسئلة...">
-                    <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs shrink-0">
-                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('all')" id="filterBtn-all" class="px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow">الكل</button>
-                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('standard')" id="filterBtn-standard" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">📝 عادي</button>
-                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('game')" id="filterBtn-game" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">🕹️ لعبة</button>
-                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('subquiz')" id="filterBtn-subquiz" class="px-3 py-1.5 rounded-lg font-bold text-slate-400">🟣 إضافي</button>
+                    <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs shrink-0 overflow-x-auto">
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('all')" id="filterBtn-all" class="px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow whitespace-nowrap">الكل</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('standard')" id="filterBtn-standard" class="px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap">📝 عادي</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('game')" id="filterBtn-game" class="px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap">🕹️ لعبة</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('subquiz')" id="filterBtn-subquiz" class="px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap">🟣 إضافي</button>
+                        <button type="button" onclick="changeCurrentTeacherDisplayFilter('sc_game')" id="filterBtn-sc_game" class="px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap">⚡ بناء وتجميع</button>
                     </div>
                 </div>
             </div>
@@ -256,7 +314,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
                         <input type="radio" name="questionDestination" value="main_default" checked class="w-4 h-4 text-blue-500">
-                        <span class="text-xs font-semibold text-blue-400">⚡ الزر الأزرق الرئيسي للدرس</span>
+                        <span class="text-xs font-semibold text-blue-400">⚡ الزر الأزرق (تقييم و أسئلة الدرس)</span>
                     </label>
                     <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
                         <input type="radio" name="questionDestination" value="sub_quiz_active" class="w-4 h-4 text-purple-500">
@@ -264,11 +322,12 @@
                     </label>
                     <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
                         <input type="radio" name="questionDestination" value="game" class="w-4 h-4 text-orange-500">
-                        <span class="text-xs font-semibold text-orange-400">🎮 لعبة الزر البرتقالي الرئيسي</span>
+                        <span class="text-xs font-semibold text-orange-400">🎮 الزر البرتقالي (لعبة الأسئلة)</span>
                     </label>
-                    <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer">
-                        <input type="radio" name="questionDestination" value="sub_quiz_game" class="w-4 h-4 text-pink-500">
-                        <span class="text-xs font-semibold text-pink-400">🕹️ لعبة الزر البنفسجي المختار (3)</span>
+                    <!-- Removed confusing old sub_quiz_game option -->
+                    <label class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl cursor-pointer sm:col-span-2">
+                        <input type="radio" name="questionDestination" value="super_computer_global" class="w-4 h-4 text-fuchsia-500">
+                        <span class="text-xs font-semibold text-fuchsia-400">⚡ اللعبة البنفسجية الرئيسية المستقلة</span>
                     </label>
                 </div>
                 <div>
@@ -294,11 +353,10 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, push, set, get, remove, update, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBdPtiyl2hlZ7U5IWM4gd-vHHORrKqpBJI",
             authDomain: "ict-eleman.firebaseapp.com",
@@ -310,22 +368,263 @@
             measurementId: "G-YRDX6GPW2G"
         };
 
-        const app = initializeApp(firebaseConfig); 
-        const auth = getAuth(app); const db = getDatabase(app);
+        const app = firebase.initializeApp(firebaseConfig); 
+        const auth = firebase.auth(); const db = firebase.database();
         
         let localQuestionsData = {};
+        let globalCodesData = {};
+
+        window.fetchAndRenderCodes = async function() {
+            const gradeFilter = document.getElementById('manageCodesGradeFilter').value;
+            const body = document.getElementById('codesTableBody');
+            body.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin"></i> جاري استدعاء سجل الأكواد...</td></tr>`;
+            try {
+                const snapshot = await db.ref("individual_student_codes").get();
+                globalCodesData = {};
+                if(snapshot.exists()) { 
+                    const allCodes = snapshot.val();
+                    for(let codeKey in allCodes) {
+                        if(allCodes[codeKey].grade === gradeFilter) {
+                            globalCodesData[codeKey] = allCodes[codeKey];
+                        }
+                    }
+                }
+                renderCodesTable();
+            } catch(e) {
+                console.error("Error fetching codes:", e);
+                body.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-500 font-bold">حدث خطأ في جلب الأكواد: ${e.message}</td></tr>`;
+            }
+        }
+
+        window.renderCodesTable = function() {
+            const body = document.getElementById('codesTableBody');
+            body.innerHTML = "";
+            const codesEntries = Object.entries(globalCodesData).sort((a,b) => {
+                return new Date(b[1].createdAt) - new Date(a[1].createdAt);
+            });
+
+            const selectAllCheck = document.getElementById('selectAllCodesCheckbox');
+            if (selectAllCheck) selectAllCheck.checked = false;
+            const delSelectedBtn = document.getElementById('deleteSelectedCodesBtn');
+            if (delSelectedBtn) delSelectedBtn.classList.add('hidden');
+
+            if(codesEntries.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500 font-bold">لا توجد أكواد مسجلة لهذا الصف.</td></tr>`;
+                return;
+            }
+
+            codesEntries.forEach(([codeId, codeData]) => {
+                const tr = document.createElement('tr');
+                tr.className = "bg-slate-900/40 border-b border-slate-850 hover:bg-slate-800/40 transition-colors code-row";
+                
+                let studentName = "";
+                let statusHtml = "";
+                
+                if (codeData.lockedDevice && globalAllStudentsScores && globalAllStudentsScores[codeData.lockedDevice]) {
+                    studentName = globalAllStudentsScores[codeData.lockedDevice].studentName || "مجهول";
+                    statusHtml = `<span class="bg-red-500/10 text-red-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-red-500/20 block mb-1">🔴 مستخدم بواسطة:</span><span class="text-xs text-white font-bold block">${studentName}</span>`;
+                } else if (codeData.lockedDevice) {
+                    statusHtml = `<span class="bg-red-500/10 text-red-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-red-500/20 block mb-1">🔴 مستخدم بواسطة:</span><span class="text-xs text-slate-400 font-bold block">مجهول (جهاز آخر)</span>`;
+                } else {
+                    statusHtml = `<span class="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-emerald-500/20">🟢 نشط / غير مستخدم</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="px-4 py-4 border-r border-slate-850 text-center"><input type="checkbox" value="${codeId}" class="code-checkbox w-4 h-4 cursor-pointer rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-cyan-500" onchange="checkSelectedCodes()"></td>
+                    <td class="px-6 py-4 font-mono text-white text-sm font-bold border-r border-slate-850 code-val select-all">${codeId}</td>
+                    <td class="px-6 py-4 text-xs text-slate-400 font-semibold border-r border-slate-850" dir="ltr">${codeData.createdAt || '-'}</td>
+                    <td class="px-6 py-4 border-r border-slate-850 text-center">${statusHtml}</td>
+                    <td class="px-6 py-4 flex items-center justify-center gap-2">
+                        <button onclick="copyCodeToClipboard('${codeId}')" class="text-cyan-400 hover:text-white bg-cyan-500/10 hover:bg-cyan-500 p-2 rounded-xl text-xs flex items-center justify-center border border-cyan-500/20 w-8 h-8 transition-all" title="نسخ الكود"><i class="fa-solid fa-copy"></i></button>
+                        <button onclick="deleteStudentCode('${codeId}')" class="text-red-500 hover:text-white bg-red-500/10 hover:bg-red-500 p-2 rounded-xl text-xs flex items-center justify-center border border-red-500/20 w-8 h-8 transition-all" title="حذف الكود نهائياً"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+            filterCodesTable();
+        }
+
+        window.filterCodesTable = function() {
+            const input = document.getElementById("searchCodesInput");
+            if (!input) return;
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("codesTable");
+            if (!table) return;
+            const tr = table.getElementsByClassName("code-row");
+            for (let i = 0; i < tr.length; i++) {
+                const td = tr[i].getElementsByClassName("code-val")[0];
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }       
+            }
+        }
+
+        window.deleteStudentCode = async function(codeId) {
+            if(!confirm(`⚠️ هل أنت متأكد من حذف الكود ${codeId} نهائياً؟ لا يمكن التراجع عن هذا الإجراء.`)) return;
+            try {
+                const codeData = globalCodesData[codeId];
+                if (codeData && codeData.lockedDevice) {
+                    await db.ref(`structured_student_scores/${codeData.lockedDevice}`).remove();
+                }
+                await db.ref(`individual_student_codes/${codeId}`).remove();
+                delete globalCodesData[codeId];
+                renderCodesTable();
+                if(typeof listenToLiveStudentsScores === 'function') listenToLiveStudentsScores();
+            } catch(e) {
+                alert("حدث خطأ أثناء الحذف!");
+            }
+        }
+
+        window.toggleAllCodes = function() {
+            const isChecked = document.getElementById('selectAllCodesCheckbox').checked;
+            const checkboxes = document.querySelectorAll('.code-checkbox');
+            checkboxes.forEach(cb => {
+                if(cb.closest('tr').style.display !== 'none') {
+                    cb.checked = isChecked;
+                }
+            });
+            checkSelectedCodes();
+        }
+
+        window.checkSelectedCodes = function() {
+            const checkboxes = document.querySelectorAll('.code-checkbox:checked');
+            const btn = document.getElementById('deleteSelectedCodesBtn');
+            if(checkboxes.length > 0) {
+                btn.classList.remove('hidden');
+            } else {
+                btn.classList.add('hidden');
+            }
+        }
+
+        window.deleteSelectedCodes = async function() {
+            const checkboxes = document.querySelectorAll('.code-checkbox:checked');
+            if(checkboxes.length === 0) return;
+            if(!confirm(`⚠️ هل أنت متأكد من حذف ${checkboxes.length} كود نهائياً مع كافة بيانات الطلاب المرتبطين بها؟`)) return;
+            
+            const btn = document.getElementById('deleteSelectedCodesBtn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري الحذف...`;
+            btn.disabled = true;
+
+            try {
+                let updates = {};
+                let scoreUpdates = {};
+                checkboxes.forEach(cb => {
+                    const codeId = cb.value;
+                    const codeData = globalCodesData[codeId];
+                    if (codeData && codeData.lockedDevice) {
+                        scoreUpdates[`${codeData.lockedDevice}`] = null;
+                    }
+                    updates[`${codeId}`] = null;
+                    delete globalCodesData[codeId];
+                });
+                
+                if (Object.keys(scoreUpdates).length > 0) {
+                    await db.ref("structured_student_scores").update(scoreUpdates);
+                }
+                await db.ref("individual_student_codes").update(updates);
+                
+                renderCodesTable();
+                if(typeof listenToLiveStudentsScores === 'function') listenToLiveStudentsScores();
+            } catch(e) {
+                alert("حدث خطأ أثناء الحذف الجماعي!");
+            }
+            
+            btn.innerHTML = `<i class="fa-solid fa-trash text-sm"></i> حذف المحدد`;
+            btn.disabled = false;
+        }
+
+        window.deleteAllGradeCodes = async function() {
+            const gradeFilter = document.getElementById('manageCodesGradeFilter').value;
+            const gradeName = document.getElementById('manageCodesGradeFilter').options[document.getElementById('manageCodesGradeFilter').selectedIndex].text;
+            
+            const codesToDelete = Object.keys(globalCodesData);
+            if(codesToDelete.length === 0) {
+                alert("لا توجد أكواد لهذا الصف لحذفها.");
+                return;
+            }
+            
+            const conf = prompt(`⚠️ تحذير خطير: سيتم مسح كافة أكواد ${gradeName} وعددها (${codesToDelete.length}) بالإضافة لمسح درجات الطلاب الذين استخدموها.\n\nتأكيداً للحذف، اكتب كلمة "حذف" في المربع أدناه:`);
+            if(conf !== "حذف") {
+                if(conf !== null) alert("تم إلغاء عملية الحذف الجماعي لأن الكلمة غير متطابقة.");
+                return;
+            }
+
+            try {
+                let updates = {};
+                let scoreUpdates = {};
+                codesToDelete.forEach(codeId => {
+                    const codeData = globalCodesData[codeId];
+                    if (codeData && codeData.lockedDevice) {
+                        scoreUpdates[`${codeData.lockedDevice}`] = null;
+                    }
+                    updates[`${codeId}`] = null;
+                });
+                
+                if (Object.keys(scoreUpdates).length > 0) {
+                    await db.ref("structured_student_scores").update(scoreUpdates);
+                }
+                await db.ref("individual_student_codes").update(updates);
+                
+                globalCodesData = {};
+                renderCodesTable();
+                if(typeof listenToLiveStudentsScores === 'function') listenToLiveStudentsScores();
+                alert(`✅ تم حذف جميع أكواد ${gradeName} وبيانات الطلاب المرتبطين بها بنجاح.`);
+            } catch(e) {
+                alert("حدث خطأ أثناء حذف كل الأكواد!");
+            }
+        }
+
+        window.copyCodeToClipboard = function(codeId) {
+            navigator.clipboard.writeText(codeId).then(() => {
+                alert(`✅ تم نسخ الكود: ${codeId}`);
+            });
+        }
+
+        window.exportCodesToExcel = function() {
+            const gradeFilter = document.getElementById('manageCodesGradeFilter').value;
+            let csvContent = "\uFEFF"; 
+            const codesEntries = Object.entries(globalCodesData);
+            if(codesEntries.length === 0) { alert("لا توجد أكواد متاحة للتصدير في هذا الصف الدراسي!"); return; }
+            
+            csvContent += "الكود السري,تاريخ الإنشاء,الحالة,اسم الطالب\n";
+            codesEntries.forEach(([codeId, codeData]) => {
+                let statusText = "نشط";
+                let studentName = "-";
+                
+                if (codeData.lockedDevice && globalAllStudentsScores && globalAllStudentsScores[codeData.lockedDevice]) {
+                    statusText = "مستخدم";
+                    studentName = globalAllStudentsScores[codeData.lockedDevice].studentName || "مجهول";
+                } else if (codeData.lockedDevice) {
+                    statusText = "مستخدم";
+                    studentName = "مجهول";
+                }
+                
+                csvContent += `"${codeId}","${codeData.createdAt || '-'}","${statusText}","${studentName}"\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", `أكواد_منصة_ICT_الصف_${gradeFilter}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
         let currentDisplayFilter = "all";
         let bulkSelectedKeys = new Set();
         let isGeneratingCode = false;
         let globalSubQuizzesObject = {};
         let globalAllStudentsScores = {};
 
-        onAuthStateChanged(auth, (user) => {
+        auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('securityLockScreen').classList.add('hidden');
                 document.getElementById('teacherDashboardContent').classList.remove('hidden');
                 updateLessonOptions(false);
                 listenToLiveStudentsScores();
+                fetchAndRenderCodes();
             } else {
                 document.getElementById('securityLockScreen').classList.remove('hidden');
                 document.getElementById('teacherDashboardContent').classList.add('hidden');
@@ -338,23 +637,39 @@
             const pass = document.getElementById('teacherPasswordInput').value;
             const btn = document.getElementById('loginBtn');
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`; btn.disabled = true;
-            signInWithEmailAndPassword(auth, email, pass).then(() => {
+            auth.signInWithEmailAndPassword(email, pass).then(() => {
                 btn.innerHTML = "فتح لوحة التحكم"; btn.disabled = false;
             }).catch((error) => {
                 document.getElementById('loginErrorMsg').classList.remove('hidden');
                 btn.innerHTML = "فتح لوحة التحكم"; btn.disabled = false;
             });
         }
-        window.logoutFirebaseAuth = function() { signOut(auth); }
+        window.logoutFirebaseAuth = function() { auth.signOut(); }
 
         const escapeHTML = str => { if (!str) return ''; return str.replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag])); };
 
+        let globalDeviceToCodeMap = {};
+
         async function listenToLiveStudentsScores() {
             try {
-                const snapshot = await get(ref(db, "structured_student_scores"));
+                const codesSnapshot = await db.ref("individual_student_codes").get();
+                if(codesSnapshot.exists()) {
+                    const allCodes = codesSnapshot.val();
+                    for(let code in allCodes) {
+                        if(allCodes[code].lockedDevice && allCodes[code].grade) {
+                            if (!globalDeviceToCodeMap[allCodes[code].lockedDevice]) {
+                                globalDeviceToCodeMap[allCodes[code].lockedDevice] = {};
+                            }
+                            globalDeviceToCodeMap[allCodes[code].lockedDevice][allCodes[code].grade] = code;
+                        }
+                    }
+                }
+
+                const snapshot = await db.ref("structured_student_scores").get();
                 if(snapshot.exists()) { globalAllStudentsScores = snapshot.val(); } 
                 else { globalAllStudentsScores = {}; }
                 renderScoresTable();
+                if(typeof renderCodesTable === "function") renderCodesTable();
             } catch(e) {
                 console.error("Error fetching scores:", e);
                 document.getElementById('scoresTableBody').innerHTML = `<tr><td colspan="2" class="px-6 py-8 text-center text-red-500 font-bold">حدث خطأ في جلب الدرجات: ${e.message} (تأكد من تحديث القواعد)</td></tr>`;
@@ -366,30 +681,29 @@
             const header = document.getElementById('scoresTableHeader');
             const body = document.getElementById('scoresTableBody');
             
-            header.innerHTML = `<th class="px-6 py-4">اسم الطالب البطل</th><th class="px-6 py-4">معرف الجهاز</th>`;
+            header.innerHTML = `<th class="px-6 py-4">اسم الطالب البطل</th><th class="px-6 py-4">كود الطالب</th><th class="px-6 py-4">معرف الجهاز</th>`;
             body.innerHTML = "";
 
-            // فلترة الاختبارات الفرعية (البنفسجية) فقط
+            // فلترة الاختبارات الفرعية (البنفسجية) والاختبارات الرئيسية (الزرقاء)
             const gradePrefix = activeFilterGrade + "_";
-            const subQuizPrefix = gradePrefix + "subquiz_";
 
             let filteredStudentsEntries = Object.entries(globalAllStudentsScores).filter(([_, data]) => {
-                return data.studentName && Object.keys(data.quizzes || {}).some(k => k.startsWith(subQuizPrefix));
+                return data.studentName && Object.keys(data.quizzes || {}).some(k => k.startsWith(gradePrefix) && !k.endsWith('_game'));
             });
 
             if(filteredStudentsEntries.length === 0) {
-                body.innerHTML = `<tr><td colspan="2" class="px-6 py-8 text-center text-slate-500 font-bold">لا توجد درجات اختبارات مسجلة لهذا الصف المختار حالياً.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-slate-500 font-bold">لا توجد درجات اختبارات مسجلة لهذا الصف المختار حالياً.</td></tr>`;
                 return;
             }
 
-            // جمع مفاتيح الاختبارات الفرعية فقط + بناء خريطة العناوين من بيانات الدرجة
+            // جمع مفاتيح الاختبارات الفرعية والرئيسية + بناء خريطة العناوين من بيانات الدرجة
             let subQuizKeysSet = new Set();
             let quizTitleMap = {};
 
             filteredStudentsEntries.forEach(([_, studentRow]) => {
                 if(studentRow.quizzes) {
                     Object.entries(studentRow.quizzes).forEach(([quizKey, scoreData]) => {
-                        if(quizKey.startsWith(subQuizPrefix)) {
+                        if(quizKey.startsWith(gradePrefix) && !quizKey.endsWith('_game')) {
                             subQuizKeysSet.add(quizKey);
                             // حفظ اسم الاختبار واسم الدرس من أول سجل يملك هذه المعلومات
                             if(!quizTitleMap[quizKey] && typeof scoreData === 'object' && scoreData.quizTitle) {
@@ -417,13 +731,37 @@
                 const th = document.createElement('th');
                 th.className = "px-3 py-4 text-center text-xs min-w-[130px] border-r border-slate-800";
                 let meta = quizTitleMap[quizKey];
+                
+                let isSubQuiz = quizKey.includes("subquiz_");
+                let titleColor = isSubQuiz ? "text-purple-400" : "text-blue-400";
+                let defaultTitle = isSubQuiz ? "اختبار إضافي" : "اختبار الدرس";
+                
                 if(meta) {
-                    th.innerHTML = `<div class="text-purple-400 font-black">${meta.quizTitle}</div><div class="text-slate-500 font-bold text-[10px] mt-0.5">${formatLessonName(meta.lessonKey)}</div>`;
+                    th.innerHTML = `<div class="${titleColor} font-black">${meta.quizTitle}</div><div class="text-slate-500 font-bold text-[10px] mt-0.5">${formatLessonName(meta.lessonKey)}</div>`;
                 } else {
                     // للبيانات القديمة التي لا تحتوي على عنوان
-                    th.innerHTML = `<div class="text-purple-400 font-black">اختبار</div><div class="text-slate-500 text-[10px]">${quizKey.slice(-6)}</div>`;
+                    let cleanKey = quizKey.replace(gradePrefix, '').replace('subquiz_', '');
+                    th.innerHTML = `<div class="${titleColor} font-black">${defaultTitle}</div><div class="text-slate-500 text-[10px] mt-0.5">${formatLessonName(cleanKey)}</div>`;
                 }
                 header.appendChild(th);
+            });
+            // ترتيب الطلاب حسب المجموع الإجمالي للدرجات بترتيب تنازلي
+            filteredStudentsEntries.sort((a, b) => {
+                const getScore = (studentRow) => {
+                    let total = 0;
+                    if (studentRow.quizzes) {
+                        subQuizKeysArray.forEach(k => {
+                            let val = studentRow.quizzes[k];
+                            if (val) {
+                                let s = typeof val === 'object' ? val.score : val;
+                                if (typeof s === 'string') s = parseInt(s.replace('%', ''));
+                                if (!isNaN(s)) total += s;
+                            }
+                        });
+                    }
+                    return total;
+                };
+                return getScore(b[1]) - getScore(a[1]);
             });
 
             // بناء صفوف الطلاب
@@ -431,7 +769,15 @@
                 const tr = document.createElement('tr');
                 tr.className = "bg-slate-900/40 border-b border-slate-850 hover:bg-slate-800/40 transition-colors";
                 
+                let studentCodeDisplay = "غير متوفر";
+                if (globalDeviceToCodeMap[fingerprint] && globalDeviceToCodeMap[fingerprint][activeFilterGrade]) {
+                    studentCodeDisplay = globalDeviceToCodeMap[fingerprint][activeFilterGrade];
+                } else if (studentRow.studentCode) {
+                    studentCodeDisplay = studentRow.studentCode;
+                }
+
                 let rowHtml = `<td class="px-6 py-4 font-bold text-white text-xs">${escapeHTML(studentRow.studentName || 'مجهول')}</td>`;
+                rowHtml += `<td class="px-6 py-4 font-bold text-amber-400 text-xs text-center" dir="ltr">${escapeHTML(studentCodeDisplay)}</td>`;
                 rowHtml += `<td class="px-6 py-4 font-mono text-[10px] text-slate-500">${fingerprint}</td>`;
 
                 subQuizKeysArray.forEach(quizKey => {
@@ -479,26 +825,47 @@
         window.exportScoresToExcel = function() {
             const activeFilterGrade = document.getElementById('scoreTableGradeFilter').value;
             let csvContent = "\uFEFF"; 
+            const gradePrefix = activeFilterGrade + "_";
             let filteredStudentsEntries = Object.entries(globalAllStudentsScores).filter(([_, data]) => {
-                return data.studentName && Object.keys(data.quizzes || {}).some(k => k.includes('_' + activeFilterGrade + '_') || k.startsWith('subquiz_' + activeFilterGrade + '_'));
+                return data.studentName && Object.keys(data.quizzes || {}).some(k => k.startsWith(gradePrefix) && !k.endsWith('_game'));
             });
             if(filteredStudentsEntries.length === 0) { alert("لا توجد بيانات متاحة للتصدير في هذا الصف الدراسي!"); return; }
             let subQuizKeysSet = new Set();
+            let quizTitleMap = {};
             filteredStudentsEntries.forEach(([_, studentRow]) => {
                 if(studentRow.quizzes) {
-                    Object.keys(studentRow.quizzes).forEach(quizKey => {
-                        if(quizKey.includes('_' + activeFilterGrade + '_') || quizKey.startsWith('subquiz_' + activeFilterGrade + '_')) subQuizKeysSet.add(quizKey);
+                    Object.entries(studentRow.quizzes).forEach(([quizKey, scoreData]) => {
+                        if(quizKey.startsWith(gradePrefix) && !quizKey.endsWith('_game')) {
+                            subQuizKeysSet.add(quizKey);
+                            if(!quizTitleMap[quizKey] && typeof scoreData === 'object' && scoreData.quizTitle) {
+                                quizTitleMap[quizKey] = scoreData.quizTitle;
+                            }
+                        }
                     });
                 }
             });
             let subQuizKeysArray = Array.from(subQuizKeysSet).sort();
-            let headerArray = ["اسم الطالب البطل", "معرف الجهاز"];
-            subQuizKeysArray.forEach(k => headerArray.push(k.replace('subquiz_' + activeFilterGrade + '_', '')));
+            let headerArray = ["اسم الطالب البطل", "كود الطالب", "معرف الجهاز"];
+            subQuizKeysArray.forEach(k => {
+                if(quizTitleMap[k]) {
+                    headerArray.push(quizTitleMap[k]);
+                } else {
+                    headerArray.push(k.replace(gradePrefix, '').replace('subquiz_', ''));
+                }
+            });
             csvContent += headerArray.join(",") + "\n";
             filteredStudentsEntries.forEach(([fingerprint, studentRow]) => {
-                let rowArray = [ `"${(studentRow.studentName || 'مجهول').replace(/"/g, '""')}"`, `"${fingerprint}"` ];
+                let studentCodeDisplay = "غير متوفر";
+                if (globalDeviceToCodeMap[fingerprint] && globalDeviceToCodeMap[fingerprint][activeFilterGrade]) {
+                    studentCodeDisplay = globalDeviceToCodeMap[fingerprint][activeFilterGrade];
+                } else if (studentRow.studentCode) {
+                    studentCodeDisplay = studentRow.studentCode;
+                }
+                
+                let rowArray = [ `"${(studentRow.studentName || 'مجهول').replace(/"/g, '""')}"`, `"${studentCodeDisplay}"`, `"${fingerprint}"` ];
                 subQuizKeysArray.forEach(quizKey => {
                     let scoreVal = (studentRow.quizzes && studentRow.quizzes[quizKey]) ? studentRow.quizzes[quizKey] : "مغلق/لم يحل";
+                    if (typeof scoreVal === 'object' && scoreVal.score) scoreVal = scoreVal.score;
                     rowArray.push(`"${scoreVal}"`);
                 });
                 csvContent += rowArray.join(",") + "\n";
@@ -550,7 +917,7 @@
 
             let contentData = {};
             try {
-                const snapshot = await get(ref(db, `lessons_content/${selectedGrade}`));
+                const snapshot = await db.ref(`lessons_content/${selectedGrade}`).get();
                 if (snapshot.exists()) { contentData = snapshot.val(); }
             } catch(e) {}
 
@@ -594,11 +961,12 @@
         // 🌟 دالة تحديث وإصلاح فلاتر العرض التنافسية (النقطة الرابعة) 🌟
         window.changeCurrentTeacherDisplayFilter = function(filterValue) {
             currentDisplayFilter = filterValue;
-            document.getElementById('filterBtn-all').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
-            document.getElementById('filterBtn-standard').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
-            document.getElementById('filterBtn-game').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
-            document.getElementById('filterBtn-subquiz').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400";
-            document.getElementById('filterBtn-' + filterValue).className = "px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow";
+            document.getElementById('filterBtn-all').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap";
+            document.getElementById('filterBtn-standard').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap";
+            document.getElementById('filterBtn-game').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap";
+            document.getElementById('filterBtn-subquiz').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap";
+            document.getElementById('filterBtn-sc_game').className = "px-3 py-1.5 rounded-lg font-bold text-slate-400 whitespace-nowrap";
+            document.getElementById('filterBtn-' + filterValue).className = "px-3 py-1.5 rounded-lg font-black bg-indigo-600 text-white shadow whitespace-nowrap";
             renderQuestionsDashboardList();
         }
 
@@ -611,8 +979,9 @@
             for(let i=0; i<6; i++) randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
             const generatedCode = `ICT-${numMap[selectedGrade] || 0}-${randomStr}`;
             try {
-                await set(ref(db, `individual_student_codes/${generatedCode}`), { grade: selectedGrade, status: "active", createdAt: new Date().toLocaleString() }); 
+                await db.ref(`individual_student_codes/${generatedCode}`).set({ grade: selectedGrade, status: "active", createdAt: new Date().toLocaleString() }); 
                 document.getElementById('studentCodeResultBox').innerHTML = `<div class="text-emerald-450 select-all">${generatedCode}</div>`; alert(`🎉 تم إنشاء كود الطالب الجديد بنجاح: ${generatedCode}`); 
+                if (document.getElementById('manageCodesGradeFilter').value === selectedGrade) { fetchAndRenderCodes(); }
             } catch(err) { alert(err.message); }
             setTimeout(() => { isGeneratingCode = false; btn.innerText = "توليد كود واحد"; }, 500);
         }
@@ -632,9 +1001,10 @@
                 generatedCodesListHTML += `<div class="border-b border-white/5 py-1 select-all hover:bg-white/5 transition-colors text-emerald-400 font-mono text-center">${finalCode}</div>`;
             }
             try {
-                await update(ref(db), batchUpdates);
+                await db.ref().update(batchUpdates);
                 document.getElementById('studentCodeResultBox').innerHTML = `<div class="text-right text-xs font-black text-slate-400 mb-2 border-b border-white/10 pb-1">📋 تم توليد 50 كوداً بنجاح (اضغط مرتين لنسخ أي كود):</div>` + generatedCodesListHTML;
                 alert("🚀 تم توليد وحفظ 50 كوداً سرياً سحابياً لطلاب الصف المختار دفعة واحدة بنجاح!");
+                if (document.getElementById('manageCodesGradeFilter').value === selectedGrade) { fetchAndRenderCodes(); }
             } catch(e) { alert("خطأ في الاتصال بالسيرفر!"); }
             setTimeout(() => { isGeneratingCode = false; btn.innerHTML = `<i class="fa-solid fa-layer-group ml-1"></i> توليد 50 كود فوري`; }, 500);
         }
@@ -663,25 +1033,35 @@
 
         window.deleteSelectedQuestions = async function() {
             if (!confirm(`هل أنت متأكد تماماً من حذف (${bulkSelectedKeys.size}) سؤالاً المحددة بالصناديق نهائياً؟`)) return;
-            try { const updates = {}; for (let key of bulkSelectedKeys) { updates[`questions/${key}`] = null; } await update(ref(db), updates); bulkSelectedKeys.clear(); document.getElementById('bulkDeleteSelectedBtn').classList.add('hidden'); renderQuestionsDashboardList(); } 
+            try { const updates = {}; for (let key of bulkSelectedKeys) { updates[`questions/${key}`] = null; } await db.ref().update(updates); bulkSelectedKeys.clear(); document.getElementById('bulkDeleteSelectedBtn').classList.add('hidden'); renderQuestionsDashboardList(); } 
             catch(err) { alert(err.message); }
         }
 
         window.uploadBulkQuestions = async function() {
-            const jsonText = document.getElementById('bulkJsonInput').value.trim(); const grade = document.getElementById('filterGrade').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value;
-            if (!jsonText || !activeQuizKey) { alert("أدخل بيانات JSON وتأكد من اختيار اختبار فرعي مستهدف أولاً!"); return; }
+            const jsonText = document.getElementById('bulkJsonInput').value.trim(); const grade = document.getElementById('filterGrade').value; let lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value;
+            if (!jsonText) { alert("أدخل بيانات JSON أولاً!"); return; }
+            
+            let targetDestinationKey = lesson;
+            const destinationMode = document.querySelector('input[name="questionDestination"]:checked').value;
+            
+            if (destinationMode === 'sub_quiz_active') {
+                if(activeQuizKey === 'default_main') { alert("الرجاء اختيار اسم اختبار فرعي مخصص من القائمة رقم (3) أولاً!"); return; }
+                targetDestinationKey = activeQuizKey;
+            } else if (destinationMode === 'game') {
+                targetDestinationKey = lesson + "_game";
+            } else if (destinationMode === 'super_computer_global') {
+                targetDestinationKey = lesson + "_sc_game";
+            }
+
             try {
                 const questions = JSON.parse(jsonText); let updates = {}; let uploadCount = 0;
                 for (let q of questions) {
-                    let targetLesson = activeQuizKey; 
-                    if(activeQuizKey === 'default_main') targetLesson = document.getElementById('filterLesson').value;
-                    if (q.isGame) { targetLesson = document.getElementById('filterLesson').value + "_game"; }
                     let finalOptions = ["", "", "", ""]; for (let i = 0; i < 4; i++) { finalOptions[i] = (q.options && q.options[i]) ? q.options[i].toString().trim() : ""; }
                     let qType = q.type || ((finalOptions[0] === "صح" && finalOptions[1] === "خطأ") ? "true_false" : "mcq");
-                    const newKey = push(ref(db, "questions")).key;
-                    updates[`questions/${newKey}`] = { id: newKey, grade: grade, lesson: targetLesson, type: qType, question: q.question.trim(), options: finalOptions, correct: parseInt(q.correct) || 0, time: parseInt(q.time) || 30, points: parseInt(q.points) || 5 }; uploadCount++;
+                    const newKey = db.ref("questions").push().key;
+                    updates[`questions/${newKey}`] = { id: newKey, grade: grade, lesson: targetDestinationKey, type: qType, question: q.question.trim(), options: finalOptions, correct: parseInt(q.correct) || 0, time: parseInt(q.time) || 30, points: parseInt(q.points) || 5 }; uploadCount++;
                 }
-                await update(ref(db), updates); alert(`🎉 تم رفع وحفظ (${uploadCount}) سؤال جماعياً سحابياً بنجاح!`); document.getElementById('bulkJsonInput').value = ''; renderQuestionsDashboardList();
+                await db.ref().update(updates); alert(`🎉 تم رفع وحفظ (${uploadCount}) سؤال جماعياً سحابياً بنجاح!`); document.getElementById('bulkJsonInput').value = ''; renderQuestionsDashboardList();
             } catch(err) { alert("خطأ في صيغة كود الـ JSON"); }
         }
 
@@ -690,7 +1070,7 @@
             if(!quizName || !lesson) { alert("الرجاء كتابة اسم زر الاختبار المخصص أولاً!"); return; }
             const quizId = 'subquiz_' + grade + '_' + lesson + '_' + Date.now(); 
             try {
-                await set(ref(db, `lessons_content/${grade}/${lesson}/sub_quizzes/${quizId}`), { quizTitle: quizName, createdAt: new Date().toLocaleString() });
+                await db.ref(`lessons_content/${grade}/${lesson}/sub_quizzes/${quizId}`).set({ quizTitle: quizName, createdAt: new Date().toLocaleString() });
                 document.getElementById('newQuizSubName').value = ""; alert("🎉 تم توليد زر الاختبار المخصص الفرعي بنجاح!"); onFilterChange();
             } catch(e) { alert("خطأ في الاتصال بالسيرفر! تحقق من استقرار شبكة الإنترنت."); }
         }
@@ -701,9 +1081,9 @@
             if(!confirm("⚠️ تحذير: سيتم حذف هذا الاختبار الفرعي وكافة الأسئلة التابعة له؟")) return;
             try {
                 const updates = {}; updates[`lessons_content/${grade}/${lesson}/sub_quizzes/${activeQuizKey}`] = null;
-                const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade)));
+                const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get();
                 if(snapshot.exists()) { snapshot.forEach(child => { if(child.val().lesson === activeQuizKey) updates[`questions/${child.key}`] = null; }); }
-                await update(ref(db), updates); alert("🗑️ تم حذف الاختبار الفرعي بنجاح!"); onFilterChange();
+                await db.ref().update(updates); alert("🗑️ تم حذف الاختبار الفرعي بنجاح!"); onFilterChange();
             } catch(e) { alert("خطأ أثناء الحذف!"); }
         }
 
@@ -714,7 +1094,7 @@
             const mcqList = document.getElementById('mcqQuestionsList'); const tfList = document.getElementById('tfQuestionsList'); 
             mcqList.innerHTML = ''; tfList.innerHTML = ''; localQuestionsData = {}; let mcqCount = 0; let tfCount = 0;
             try {
-                const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade)));
+                const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get();
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnap) => {
                         const key = childSnap.key; const q = childSnap.val();
@@ -722,24 +1102,28 @@
                         // الفحص الصارم: عرض الأسئلة بناءً على الفلتر
                         let matchCondition;
                         if(activeQuizKey === 'default_main') {
-                            matchCondition = (q.lesson === lesson) || (q.lesson === (lesson + "_game")) || (typeof q.lesson === 'string' && q.lesson.includes(lesson) && q.lesson.includes('subquiz'));
+                            matchCondition = (q.lesson === lesson) || (q.lesson === (lesson + "_game")) || (q.lesson === (lesson + "_sc_game")) || (typeof q.lesson === 'string' && q.lesson.includes(lesson) && q.lesson.includes('subquiz'));
                         } else {
                             matchCondition = (q.lesson === activeQuizKey) || (q.lesson === (activeQuizKey + "_game"));
                         }
                         
                         if (matchCondition) {
-                            if (currentDisplayFilter === 'standard' && q.lesson.endsWith('_game')) return;
+                            if (currentDisplayFilter === 'standard' && (q.lesson.endsWith('_game') || q.lesson.endsWith('_sc_game'))) return;
                             if (currentDisplayFilter === 'standard' && q.lesson.includes('subquiz') && activeQuizKey === 'default_main') return;
                             if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return;
+                            if (currentDisplayFilter === 'game' && q.lesson.endsWith('_sc_game')) return;
                             if (currentDisplayFilter === 'subquiz' && !q.lesson.includes('subquiz')) return;
+                            if (currentDisplayFilter === 'sc_game' && !q.lesson.endsWith('_sc_game')) return;
                             if (searchKeyword && !q.question.toLowerCase().includes(searchKeyword)) return;
 
-                            localQuestionsData[key] = q; const isGame = q.lesson.endsWith('_game'); const isSubQuiz = q.lesson.includes('subquiz'); const isChecked = bulkSelectedKeys.has(key) ? 'checked' : '';
+                            localQuestionsData[key] = q; const isGame = q.lesson.endsWith('_game') && !q.lesson.endsWith('_sc_game'); const isSubQuiz = q.lesson.includes('subquiz'); const isSCGame = q.lesson.endsWith('_sc_game'); const isChecked = bulkSelectedKeys.has(key) ? 'checked' : '';
                             const safeQ = escapeHTML(q.question); let optionsHtml = '';
                             if (q.options) { q.options.forEach((o, i) => { if (o && o.trim() !== "") { optionsHtml += `<span class="text-[11px] px-2 py-0.5 rounded-md ${i === q.correct ? 'bg-emerald-500/20 text-emerald-400 font-black' : 'bg-slate-800 text-slate-400'}">${escapeHTML(o)}</span>`; } }); }
 
                             let tagHtml = '';
-                            if (isGame) {
+                            if (isSCGame) {
+                                tagHtml = '<span class="bg-fuchsia-500/10 text-fuchsia-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-fuchsia-500/20">⚡ كمبيوتر خارق</span>';
+                            } else if (isGame) {
                                 tagHtml = '<span class="bg-amber-500/10 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-amber-500/20">🕹️ طور اللعبة</span>';
                             } else if (isSubQuiz) {
                                 tagHtml = '<span class="bg-purple-500/10 text-purple-400 text-[10px] px-2 py-0.5 rounded-full font-black border border-purple-500/20">🟣 إضافي</span>';
@@ -788,11 +1172,12 @@
             document.getElementById('lessonFolderColor').value = "#f59e0b";
             document.getElementById('chkShowTextTab').checked = true; document.getElementById('chkShowQuizTab').checked = true;
             document.getElementById('chkShowVideo').checked = true; document.getElementById('chkShowQuiz').checked = true; document.getElementById('chkShowGame').checked = true;
+            document.getElementById('chkShowSuperComputer').checked = true;
             bulkSelectedKeys.clear(); document.getElementById('bulkDeleteSelectedBtn').classList.add('hidden');
             
             let lData = {};
             try {
-                const lessonSnapshot = await get(ref(db, `lessons_content/${grade}/${lesson}`));
+                const lessonSnapshot = await db.ref(`lessons_content/${grade}/${lesson}`).get();
                 if (lessonSnapshot.exists()) { 
                     lData = lessonSnapshot.val(); 
                     document.getElementById('lessonImageURL').value = lData.imageURL || ""; 
@@ -808,6 +1193,9 @@
                         document.getElementById('chkShowVideo').checked = lData.visibility.showVideo !== false;
                         document.getElementById('chkShowQuiz').checked = lData.visibility.showQuiz !== false;
                         document.getElementById('chkShowGame').checked = lData.visibility.showGame !== false;
+                        if(document.getElementById('chkShowSuperComputer')) {
+                            document.getElementById('chkShowSuperComputer').checked = lData.visibility.showSuperComputer !== false;
+                        }
                     }
                 }
             } catch (err) {}
@@ -869,16 +1257,17 @@
                 showQuizTab: document.getElementById('chkShowQuizTab').checked,
                 showVideo: document.getElementById('chkShowVideo').checked,
                 showQuiz: document.getElementById('chkShowQuiz').checked,
-                showGame: document.getElementById('chkShowGame').checked
+                showGame: document.getElementById('chkShowGame').checked,
+                showSuperComputer: document.getElementById('chkShowSuperComputer').checked
             };
             
             let currentSubQuizzes = null;
-            try { const snap = await get(ref(db, `lessons_content/${grade}/${lesson}/sub_quizzes`)); if(snap.exists()) currentSubQuizzes = snap.val(); } catch(e){}
+            try { const snap = await db.ref(`lessons_content/${grade}/${lesson}/sub_quizzes`).get(); if(snap.exists()) currentSubQuizzes = snap.val(); } catch(e){}
 
             updates[`lessons_content/${grade}/${lesson}`] = { imageURL: imageURL, videoURL: videoURL, customTitle: customTitle, mainTitle: mainTitle, tagTitle: tagTitle, order: finalOrderForTarget, color: folderColor, visibility: visibilityObj, sub_quizzes: currentSubQuizzes };
 
             try { 
-                await update(ref(db), updates); 
+                await db.ref().update(updates); 
                 alert('🎉 تم حفظ الترتيب وحالة الأزرار وكافة شروحات المجلد سحابياً بنجاح!'); 
                 updateLessonOptions(true); 
             } catch(err) { alert(err.message); }
@@ -899,33 +1288,39 @@
                 targetDestinationKey = activeQuizKey + "_game";
             } else if (destinationMode === 'game') {
                 targetDestinationKey = lesson + "_game";
+            } else if (destinationMode === 'super_computer_global') {
+                targetDestinationKey = lesson + "_sc_game";
             }
             
             let options = [document.getElementById('opt0').value, document.getElementById('opt1').value, document.getElementById('opt2').value, document.getElementById('opt3').value]; if(type==='true_false'){ options[2]=""; options[3]=""; }
-            const targetID = editingKey ? editingKey : push(ref(db, "questions")).key;
+            const targetID = editingKey ? editingKey : db.ref("questions").push().key;
             const questionObj = { id: targetID, grade: grade, lesson: targetDestinationKey, type: type, question: qText.trim(), options: options, correct: parseInt(correctAnswerIndex), time: parseInt(timeLimit), points: parseInt(pointsVal) };
-            try { await set(ref(db, `questions/${targetID}`), questionObj); cancelEditing(); renderQuestionsDashboardList(); alert("🎉 تم نشر وحفظ السؤال الفردي الجديد بنجاح!"); } catch (error) { alert(error.message); }
+            try { await db.ref(`questions/${targetID}`).set(questionObj); cancelEditing(); renderQuestionsDashboardList(); alert("🎉 تم نشر وحفظ السؤال الفردي الجديد بنجاح!"); } catch (error) { alert(error.message); }
         });
 
         window.triggerEditMode = function(key) {
             const q = localQuestionsData[key]; if(!q) return;
             document.getElementById('editingQuestionKey').value = key; document.getElementById('questionText').value = q.question; document.getElementById('timeLimit').value = q.time || 30; document.getElementById('questionPoints').value = q.points || 5;
+            
+            let safeType = (q.type === 'true_false') ? 'true_false' : 'mcq';
+            document.getElementById('questionType').value = safeType; toggleTypeFields();
+            
             document.getElementById('opt0').value = q.options[0] || ''; document.getElementById('opt1').value = q.options[1] || ''; document.getElementById('opt2').value = q.options[2] || ''; document.getElementById('opt3').value = q.options[3] || ''; document.querySelectorAll('input[name="correct"]')[q.correct].checked = true;
-            document.getElementById('questionType').value = q.type || 'mcq'; toggleTypeFields();
+            
             document.getElementById('submitBtnText').innerText = "حفظ وتحديث التعديل"; document.getElementById('cancelEditBtn').classList.remove('hidden');
         }
 
         window.cancelEditing = function() { document.getElementById('editingQuestionKey').value = ""; document.getElementById('questionForm').reset(); toggleTypeFields(); document.getElementById('submitBtnText').innerText = "نشر وحفظ السؤال الحالي سحابياً 🚀"; document.getElementById('cancelEditBtn').classList.add('hidden'); }
-        window.deleteQuestionInline = async function(key) { if(confirm("حذف السؤال نهائياً؟")) { try { await remove(ref(db, `questions/${key}`)); renderQuestionsDashboardList(); } catch(err) { alert(err.message); } } }
+        window.deleteQuestionInline = async function(key) { if(confirm("حذف السؤال نهائياً؟")) { try { await db.ref(`questions/${key}`).remove(); renderQuestionsDashboardList(); } catch(err) { alert(err.message); } } }
 
         window.executeBulkFilteredDeleteEngine = async function() {
             const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value; let filterText = currentDisplayFilter === 'all' ? "كافة الأسئلة" : (currentDisplayFilter === 'standard' ? "أسئلة الامتحان القياسي فقط" : "أسئلة طور اللعبة فقط"); if (!confirm(`⚠️ تحذير: حذف وإزالة [ ${filterText} ] المفتوحة حالياً لهذا الدرس؟`)) return;
-            try { const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade))); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && q.lesson === lesson)) { if (currentDisplayFilter === 'standard' && q.lesson.endsWith('_game')) return; if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return; updates[`questions/${child.key}`] = null; } }); await update(ref(db), updates); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
+            try { const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get(); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && q.lesson === lesson)) { if (currentDisplayFilter === 'standard' && q.lesson.endsWith('_game')) return; if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return; updates[`questions/${child.key}`] = null; } }); await db.ref().update(updates); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
         }
 
         window.executeAbsoluteLessonResetEngine = async function() {
             const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value; if (!confirm("🚨 إبادة وتصفير كافة أسئلة المجلد بالكامل؟")) return;
-            try { const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade))); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.grade === grade && (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && child.val().lesson === lesson))) { updates[`questions/${child.key}`] = null; } }); await update(ref(db), updates); alert(`💥 تم تفريغ المجلد!`); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
+            try { const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get(); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.grade === grade && (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && child.val().lesson === lesson))) { updates[`questions/${child.key}`] = null; } }); await db.ref().update(updates); alert(`💥 تم تفريغ المجلد!`); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
         }
 
         window.refreshTeacherLists = function() { updateLessonOptions(true); }
@@ -966,9 +1361,9 @@
 
             try {
                 if (Object.keys(updates).length > 0) {
-                    await update(ref(db), updates);
+                    await db.ref().update(updates);
                 }
-                await set(ref(db, `lessons_content/${grade}/${lessonId}`), { customTitle: title, imageURL: "", videoURL: "", order: finalOrderForNew, isCustom: true, createdAt: new Date().toLocaleString() });
+                await db.ref(`lessons_content/${grade}/${lessonId}`).set({ customTitle: title, imageURL: "", videoURL: "", order: finalOrderForNew, isCustom: true, createdAt: new Date().toLocaleString() });
                 document.getElementById('newLessonTitle').value = ""; 
                 document.getElementById('newLessonOrder').value = ""; 
                 document.getElementById('filterLesson').value = lessonId; 
@@ -983,9 +1378,9 @@
             if (!confirm("هل تريد حذف هذا المجلد وكل الأسئلة المرتبطة به نهائياً؟")) return;
             try {
                 const updates = {}; updates[`lessons_content/${grade}/${lesson}`] = null;
-                const snapshot = await get(query(ref(db, "questions"), orderByChild("grade"), equalTo(grade)));
+                const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get();
                 if (snapshot.exists()) { snapshot.forEach((child) => { const q = child.val(); if (q.lesson === lesson || q.lesson === (lesson + "_game")) { updates[`questions/${child.key}`] = null; } }); }
-                await update(ref(db), updates); alert("🗑 تم حذف المجلد المخصص والأسئلة التابعة له بنجاح!"); await updateLessonOptions(false);
+                await db.ref().update(updates); alert("🗑 تم حذف المجلد المخصص والأسئلة التابعة له بنجاح!"); await updateLessonOptions(false);
             } catch (err) { alert(err.message); }
         }
     </script>
