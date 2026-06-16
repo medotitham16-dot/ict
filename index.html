@@ -279,14 +279,14 @@
 
         <div id="tabContent-quizTab" class="hidden min-h-[200px] w-full flex-col items-center justify-center p-4">
             <div id="lessonQuizzesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                <button id="btn-standardQuiz" onclick="startStandardQuizEngine()" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-file-pen text-lg"></i> تقييم و أسئلة الدرس
+                <button id="btn-standardQuiz" onclick="startStandardQuizEngine()" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black py-4 rounded-2xl text-sm xl:text-base whitespace-nowrap px-2 shadow-xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-pen text-lg shrink-0"></i> تقييم و أسئلة الدرس
                 </button>
-                <button id="btn-gameQuiz" onclick="startInteractiveGameEngine()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-gamepad text-xl animate-bounce"></i> لعبة الأسئلة 🎮
+                <button id="btn-gameQuiz" onclick="startInteractiveGameEngine()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black py-4 rounded-2xl text-sm xl:text-base whitespace-nowrap px-2 shadow-xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-gamepad text-xl animate-bounce shrink-0"></i> لعبة الأسئلة 🎮
                 </button>
-                <button id="btn-superComputerGlobal" onclick="startGlobalSuperComputerGame()" class="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 hidden">
-                    <i class="fa-solid fa-microchip animate-pulse text-xl"></i> بناء الكمبيوتر ⚡
+                <button id="btn-superComputerGlobal" onclick="startGlobalSuperComputerGame()" class="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-black py-4 rounded-2xl text-sm xl:text-base whitespace-nowrap px-2 shadow-xl flex items-center justify-center gap-2 hidden">
+                    <i class="fa-solid fa-microchip animate-pulse text-xl shrink-0"></i> بناء الكمبيوتر ⚡
                 </button>
             </div>
             <div id="quizTabEmptyAlert" class="hidden p-12 text-center text-amber-500 font-bold text-sm leading-relaxed w-full">
@@ -1200,12 +1200,12 @@
             if (mainBtn) {
                 const savedMainScore = localStorage.getItem(`local_score_${selectedGrade}_${selectedLesson}`);
                 const mainScoreNum = savedMainScore ? parseInt(savedMainScore) : 0;
-                mainBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> تقييم و أسئلة الدرس ${mainScoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓</span>` : ''}`;
+                mainBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg shrink-0"></i> تقييم و أسئلة الدرس ${mainScoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2 shrink-0">مكتمل ✓</span>` : ''}`;
             }
 
             const gameBtn = document.getElementById('btn-gameQuiz');
             if (gameBtn) {
-                gameBtn.innerHTML = `<i class="fa-solid fa-gamepad text-xl animate-bounce"></i> لعبة الأسئلة 🎮`;
+                gameBtn.innerHTML = `<i class="fa-solid fa-gamepad text-xl animate-bounce shrink-0"></i> لعبة الأسئلة 🎮`;
             }
 
             const quizzesContainer = document.getElementById('lessonQuizzesContainer');
