@@ -442,26 +442,28 @@
             <div id="scGameProgressBarFill" class="bg-gradient-to-r from-purple-500 to-fuchsia-500 h-full w-0 transition-all duration-500 progress-glow"></div>
         </div>
 
-        <div class="flex flex-col md:flex-row min-h-[500px]">
+        <div class="flex flex-col md:flex-row h-[85vh] max-h-[800px] md:h-auto md:min-h-[500px]">
             <!-- Blueprint Section -->
-            <div class="md:w-5/12 bg-slate-950 p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-l border-purple-500/20 relative">
-                <div class="text-center mb-6 w-full">
-                    <h4 class="text-cyan-400 font-black text-sm uppercase tracking-widest"><i class="fa-solid fa-layer-group"></i> Blueprint</h4>
+            <div class="md:w-5/12 shrink-0 bg-slate-950 p-3 md:p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-l border-purple-500/20 relative">
+                <div class="text-center mb-2 md:mb-6 w-full">
+                    <h4 class="text-cyan-400 font-black text-xs md:text-sm uppercase tracking-widest"><i class="fa-solid fa-layer-group"></i> Blueprint</h4>
                 </div>
                 <!-- PC Case Wireframe -->
-                <div class="w-48 h-64 border-2 border-dashed border-cyan-500/40 rounded-xl relative flex flex-col items-center justify-center bg-cyan-900/10 shadow-[inset_0_0_20px_rgba(6,182,212,0.1)]">
-                    <div id="scPart-motherboard" class="absolute inset-2 border border-slate-700 rounded-lg flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-chess-board text-3xl text-slate-500"></i></div>
-                    <div id="scPart-cpu" class="absolute top-1/4 left-1/2 -translate-x-1/2 border border-slate-700 w-12 h-12 rounded-md flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-microchip text-xl text-slate-500"></i></div>
-                    <div id="scPart-ram" class="absolute top-1/4 right-4 border border-slate-700 w-4 h-16 rounded-sm flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-memory text-sm text-slate-500"></i></div>
-                    <div id="scPart-gpu" class="absolute bottom-1/4 left-1/2 -translate-x-1/2 border border-slate-700 w-32 h-8 rounded flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-server text-lg text-slate-500"></i></div>
-                    <div id="scPart-cooler" class="absolute top-8 left-1/2 -translate-x-1/2 border border-slate-700 w-16 h-16 rounded-full flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-fan text-2xl text-slate-500"></i></div>
-                    <div id="scPart-psu" class="absolute bottom-2 left-1/2 -translate-x-1/2 border border-slate-700 w-24 h-12 rounded flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-plug text-xl text-slate-500"></i></div>
+                <div class="transform scale-75 md:scale-100 origin-top -mb-[4rem] md:mb-0">
+                    <div class="w-48 h-64 border-2 border-dashed border-cyan-500/40 rounded-xl relative flex flex-col items-center justify-center bg-cyan-900/10 shadow-[inset_0_0_20px_rgba(6,182,212,0.1)]">
+                        <div id="scPart-motherboard" class="absolute inset-2 border border-slate-700 rounded-lg flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-chess-board text-3xl text-slate-500"></i></div>
+                        <div id="scPart-cpu" class="absolute top-1/4 left-1/2 -translate-x-1/2 border border-slate-700 w-12 h-12 rounded-md flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-microchip text-xl text-slate-500"></i></div>
+                        <div id="scPart-ram" class="absolute top-1/4 right-4 border border-slate-700 w-4 h-16 rounded-sm flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-memory text-sm text-slate-500"></i></div>
+                        <div id="scPart-gpu" class="absolute bottom-1/4 left-1/2 -translate-x-1/2 border border-slate-700 w-32 h-8 rounded flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-server text-lg text-slate-500"></i></div>
+                        <div id="scPart-cooler" class="absolute top-8 left-1/2 -translate-x-1/2 border border-slate-700 w-16 h-16 rounded-full flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-fan text-2xl text-slate-500"></i></div>
+                        <div id="scPart-psu" class="absolute bottom-2 left-1/2 -translate-x-1/2 border border-slate-700 w-24 h-12 rounded flex items-center justify-center opacity-30 transition-all duration-500"><i class="fa-solid fa-plug text-xl text-slate-500"></i></div>
+                    </div>
                 </div>
-                <div id="scBlueprintStatus" class="mt-6 text-xs font-bold text-slate-400 bg-slate-900 px-4 py-2 rounded-full border border-slate-800">جاري التجميع...</div>
+                <div id="scBlueprintStatus" class="mt-2 md:mt-6 text-[10px] md:text-xs font-bold text-slate-400 bg-slate-900 px-4 py-1.5 md:py-2 rounded-full border border-slate-800">جاري التجميع...</div>
             </div>
 
             <!-- Question Section -->
-            <div class="md:w-7/12 p-6 sm:p-10 relative bg-slate-900/40">
+            <div class="md:w-7/12 p-4 sm:p-10 relative bg-slate-900/40 flex-1 overflow-y-auto">
                 <div id="scGameActiveArea" class="space-y-6">
                     <div class="flex justify-between items-center text-xs font-black text-purple-300 mb-4">
                         <span id="scGameQuestIndexLabel" class="bg-purple-900/40 px-3 py-1 rounded-md border border-purple-500/20">تحدي رقم 1</span>
