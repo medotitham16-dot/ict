@@ -1315,12 +1315,36 @@
 
         window.executeBulkFilteredDeleteEngine = async function() {
             const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value; let filterText = currentDisplayFilter === 'all' ? "كافة الأسئلة" : (currentDisplayFilter === 'standard' ? "أسئلة الامتحان القياسي فقط" : "أسئلة طور اللعبة فقط"); if (!confirm(`⚠️ تحذير: حذف وإزالة [ ${filterText} ] المفتوحة حالياً لهذا الدرس؟`)) return;
-            try { const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get(); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && q.lesson === lesson)) { if (currentDisplayFilter === 'standard' && q.lesson.endsWith('_game')) return; if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return; updates[`questions/${child.key}`] = null; } }); await db.ref().update(updates); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
+            try { const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get(); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); 
+                let matchCondition;
+                if(activeQuizKey === 'default_main') {
+                    matchCondition = (q.lesson === lesson) || (q.lesson === (lesson + "_game")) || (q.lesson === (lesson + "_sc_game")) || (typeof q.lesson === 'string' && q.lesson.includes(lesson) && q.lesson.includes('subquiz'));
+                } else {
+                    matchCondition = (q.lesson === activeQuizKey) || (q.lesson === (activeQuizKey + "_game"));
+                }
+                if (matchCondition) { 
+                    if (currentDisplayFilter === 'standard' && (q.lesson.endsWith('_game') || q.lesson.endsWith('_sc_game'))) return;
+                    if (currentDisplayFilter === 'standard' && q.lesson.includes('subquiz') && activeQuizKey === 'default_main') return;
+                    if (currentDisplayFilter === 'game' && !q.lesson.endsWith('_game')) return;
+                    if (currentDisplayFilter === 'game' && q.lesson.endsWith('_sc_game')) return;
+                    if (currentDisplayFilter === 'subquiz' && !q.lesson.includes('subquiz')) return;
+                    if (currentDisplayFilter === 'sc_game' && !q.lesson.endsWith('_sc_game')) return;
+                    updates[`questions/${child.key}`] = null; 
+                } 
+            }); await db.ref().update(updates); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
         }
 
         window.executeAbsoluteLessonResetEngine = async function() {
             const grade = document.getElementById('filterGrade').value; const lesson = document.getElementById('filterLesson').value; const activeQuizKey = document.getElementById('activeSubQuizSelector').value; if (!confirm("🚨 إبادة وتصفير كافة أسئلة المجلد بالكامل؟")) return;
-            try { const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get(); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); if (q.grade === grade && (q.lesson === activeQuizKey || q.lesson === (lesson + "_game") || (activeQuizKey === 'default_main' && child.val().lesson === lesson))) { updates[`questions/${child.key}`] = null; } }); await db.ref().update(updates); alert(`💥 تم تفريغ المجلد!`); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
+            try { const snapshot = await db.ref("questions").orderByChild("grade").equalTo(grade).get(); if (snapshot.exists()) { const updates = {}; snapshot.forEach((child) => { const q = child.val(); 
+                let matchCondition;
+                if(activeQuizKey === 'default_main') {
+                    matchCondition = (q.lesson === lesson) || (q.lesson === (lesson + "_game")) || (q.lesson === (lesson + "_sc_game")) || (typeof q.lesson === 'string' && q.lesson.includes(lesson) && q.lesson.includes('subquiz'));
+                } else {
+                    matchCondition = (q.lesson === activeQuizKey) || (q.lesson === (activeQuizKey + "_game"));
+                }
+                if (q.grade === grade && matchCondition) { updates[`questions/${child.key}`] = null; } 
+            }); await db.ref().update(updates); alert(`💥 تم تفريغ المجلد!`); cancelEditing(); renderQuestionsDashboardList(); } } catch(err) { alert(err.message); }
         }
 
         window.refreshTeacherLists = function() { updateLessonOptions(true); }
