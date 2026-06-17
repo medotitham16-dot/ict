@@ -852,9 +852,9 @@
                 let finalDisplayTag = item.tag;
                 
                 if (dynamicTitlesData[item.key]) {
-                    if (dynamicTitlesData[item.key].customTitle) { finalDisplaySubLabel = dynamicTitlesData[item.key].customTitle; }
-                    if (dynamicTitlesData[item.key].mainTitle) { finalDisplayLabel = dynamicTitlesData[item.key].mainTitle; }
-                    if (dynamicTitlesData[item.key].tagTitle) { finalDisplayTag = dynamicTitlesData[item.key].tagTitle; }
+                    if (dynamicTitlesData[item.key].customTitle !== undefined && dynamicTitlesData[item.key].customTitle !== "") { finalDisplaySubLabel = dynamicTitlesData[item.key].customTitle; }
+                    if (dynamicTitlesData[item.key].mainTitle !== undefined && dynamicTitlesData[item.key].mainTitle !== "") { finalDisplayLabel = dynamicTitlesData[item.key].mainTitle; }
+                    if (dynamicTitlesData[item.key].tagTitle !== undefined) { finalDisplayTag = dynamicTitlesData[item.key].tagTitle; }
                 }
 
                 window.currentGradeLessons[selectedGrade][item.key] = {
