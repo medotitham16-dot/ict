@@ -1202,7 +1202,9 @@
             if (mainBtn) {
                 const savedMainScore = localStorage.getItem(`local_score_${selectedGrade}_${selectedLesson}`);
                 const mainScoreNum = savedMainScore ? parseInt(savedMainScore) : 0;
-                mainBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg shrink-0"></i> تقييم و أسئلة الدرس ${mainScoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2 shrink-0">مكتمل ✓</span>` : ''}`;
+                const mainQuizQs = (window.allGradeQuestions || []).filter(q => q.lesson === selectedLesson);
+                const showCompleted = mainQuizQs.length > 0 && mainScoreNum >= 50;
+                mainBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg shrink-0"></i> تقييم و أسئلة الدرس ${showCompleted ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2 shrink-0">مكتمل ✓</span>` : ''}`;
             }
 
             const gameBtn = document.getElementById('btn-gameQuiz');
@@ -1227,10 +1229,12 @@
                     const subBtn = document.createElement('button');
                     const savedLocalScore = localStorage.getItem(`local_score_${selectedGrade}_${quizKey}`);
                     const scoreNum = savedLocalScore ? parseInt(savedLocalScore) : 0;
+                    const subQuizQs = (window.allGradeQuestions || []).filter(q => q.lesson === quizKey);
+                    const showSubCompleted = subQuizQs.length > 0 && scoreNum >= 50;
                     
                     if (isPreviousPassed) {
                         subBtn.className = "sub-quiz-btn-dynamic w-full bg-slate-800 border-2 border-fuchsia-500/30 hover:bg-slate-700 text-fuchsia-400 hover:text-white font-black py-4 rounded-2xl text-md shadow-xl flex items-center justify-center gap-2 transition-all hover:scale-105";
-                        subBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} ${scoreNum >= 50 ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓ ${scoreNum}%</span>` : ''}`;
+                        subBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg"></i> ${quizData.quizTitle || 'اختبار إضافي'} ${showSubCompleted ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2">مكتمل ✓ ${scoreNum}%</span>` : ''}`;
                         subBtn.onclick = () => startStandardQuizEngine(quizKey, quizData.quizTitle || 'اختبار إضافي');
                     } else {
                         subBtn.className = "sub-quiz-btn-dynamic w-full bg-slate-800/50 text-slate-500 font-black py-4 rounded-2xl text-md flex items-center justify-center gap-2 cursor-not-allowed opacity-80 border-2 border-slate-700";
