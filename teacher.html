@@ -56,6 +56,8 @@
                 <div class="flex flex-wrap gap-3 w-full lg:w-auto items-center">
                     <div class="w-full sm:w-56">
                         <select id="scoreTableGradeFilter" onchange="renderScoresTable()" class="w-full bg-slate-950 border-2 border-indigo-500/40 rounded-xl py-2 px-3 text-xs font-black text-indigo-300 focus:outline-none">
+                            <option value="grade1">الصف الأول الابتدائي</option>
+                            <option value="grade2">الصف الثاني الابتدائي</option>
                             <option value="grade3">الصف الثالث الابتدائي</option>
                             <option value="grade4" selected>الصف الرابع الابتدائي</option>
                             <option value="grade5">الصف الخامس الابتدائي</option>
@@ -95,7 +97,7 @@
             <div class="flex flex-col sm:flex-row gap-3 items-end">
                 <div class="flex-1 w-full">
                     <select id="targetStudentGrade" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none">
-                        <option value="grade3">الصف الثالث الابتدائي</option><option value="grade4" selected>الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
+                        <option value="grade1">الصف الأول الابتدائي</option><option value="grade2">الصف الثاني الابتدائي</option><option value="grade3">الصف الثالث الابتدائي</option><option value="grade4" selected>الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
                         <option value="prep1">الصف الأول الاعدادي</option><option value="prep2">الصف الثاني الاعدادي</option><option value="prep3">الصف الثالث الاعدادي</option><option value="sec1">الصف الأول الثانوي</option>
                     </select>
                 </div>
@@ -118,6 +120,8 @@
                 <div class="flex flex-wrap gap-3 w-full lg:w-auto items-center">
                     <div class="w-full sm:w-56">
                         <select id="manageCodesGradeFilter" onchange="fetchAndRenderCodes()" class="w-full bg-slate-950 border-2 border-cyan-500/40 rounded-xl py-2 px-3 text-xs font-black text-cyan-300 focus:outline-none">
+                            <option value="grade1">الصف الأول الابتدائي</option>
+                            <option value="grade2">الصف الثاني الابتدائي</option>
                             <option value="grade3">الصف الثالث الابتدائي</option>
                             <option value="grade4" selected>الصف الرابع الابتدائي</option>
                             <option value="grade5">الصف الخامس الابتدائي</option>
@@ -167,7 +171,7 @@
             <div>
                 <label class="block text-indigo-400 text-xs font-bold mb-2">1. اختر الصف الدراسي الحالي:</label>
                 <select id="filterGrade" onchange="updateLessonOptions(false)" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:outline-none">
-                    <option value="grade3" selected>الصف الثالث الابتدائي</option><option value="grade4">الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
+                    <option value="grade1">الصف الأول الابتدائي</option><option value="grade2">الصف الثاني الابتدائي</option><option value="grade3" selected>الصف الثالث الابتدائي</option><option value="grade4">الصف الرابع الابتدائي</option><option value="grade5">الصف الخامس الابتدائي</option><option value="grade6">الصف السادس الابتدائي</option>
                     <option value="prep1">الصف الأول الاعدادي</option><option value="prep2">الصف الثاني الاعدادي</option><option value="prep3">الصف الثالث الاعدادي</option><option value="sec1">الصف الأول الثانوي</option>
                 </select>
             </div>
@@ -883,6 +887,8 @@
             lessonSelect.innerHTML = ''; 
 
             const primaryLessonTitlesRef = {
+                'grade1': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
+                'grade2': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
                 'grade3': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
                 'grade4': ["أدوات الاستكشافات العلمية", "أجهزة الحاسب ومكوناتها", "أنظمة التشغيل", "التكنولوجيا المساعدة", "المشكلات التكنولوجية الشائعة وحلولها", "مصادر جمع البيانات وتحليلها", "الحماية من مخاطر شبكة الإنترنت", "الاستخدام الصحيح والأخلافي لتكنولوجيا المعلومات", "عمليات البحث على شبكة الإنترنت", "الجهات المسئولة عن حل مشكلات الإنترنت", "الأمان الرقمي", "مشروع تطبيقي"],
                 'grade5': ["الأجهزة الملحقة بالحاسب الآلي", "الشبكات وأنواعها", "أنظمة التواصل الذكية", "مشكلات الاتصال بالإنترنت وخطوات حلها", "الملفات الرقمية وكيفية التعامل معها", "مشاركة المعلومات: متى وأين وكيف؟", "أساليب حماية البيانات والمعلومات", "إدارة كلمات المرور", "طرق التعامل مع المواقع الإلكترونية الاحتيالية", "حقوق النشر", "انتقاء المصادر الرقمية", "توثيق المعلومات"],
@@ -904,7 +910,7 @@
                 let end = selectedGrade === 'sec1' ? 10 : 12;
                 for (let i = limit + 1; i <= end; i++) { folderStructureStatic.push({ key: `lesson${i}`, label: `الدرس ${i} - المحور الثاني: ${refs[i-1] || ''}`, order: autoOrderCounter++ }); }
                 folderStructureStatic.push({ key: 'review2', label: '🏆 التقييم النهائي والشامل للمنهج', order: autoOrderCounter++ });
-            } else if (['grade3', 'prep3'].includes(selectedGrade)) {
+            } else if (['grade1', 'grade2', 'grade3', 'prep3'].includes(selectedGrade)) {
                 refs.forEach((t, i) => { folderStructureStatic.push({ key: `lesson${i+1}`, label: `القسم ${i+1} : ${t}`, order: autoOrderCounter++ }); });
             } else if (selectedGrade === 'prep1') {
                 refs.forEach((t, i) => { folderStructureStatic.push({ key: `lesson${i+1}`, label: i === 9 ? t : `الدرس ${i+1} : ${t}`, order: autoOrderCounter++ }); });
@@ -974,7 +980,7 @@
             if(isGeneratingCode) return; isGeneratingCode = true;
             const btn = document.getElementById('generateCodeBtn'); btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
             const selectedGrade = document.getElementById('targetStudentGrade').value;
-            const numMap = { 'grade3':3, 'grade4':4, 'grade5':5, 'grade6':6, 'prep1':7, 'prep2':8, 'prep3':9, 'sec1':10 };
+            const numMap = { 'grade1':1, 'grade2':2, 'grade3':3, 'grade4':4, 'grade5':5, 'grade6':6, 'prep1':7, 'prep2':8, 'prep3':9, 'sec1':10 };
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let randomStr = '';
             for(let i=0; i<6; i++) randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
             const generatedCode = `ICT-${numMap[selectedGrade] || 0}-${randomStr}`;
@@ -991,7 +997,7 @@
             const btn = document.getElementById('generate50CodesBtn');
             btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> جاري الحفظ...`;
             const selectedGrade = document.getElementById('targetStudentGrade').value;
-            const numMap = { 'grade3':3, 'grade4':4, 'grade5':5, 'grade6':6, 'prep1':7, 'prep2':8, 'prep3':9, 'sec1':10 };
+            const numMap = { 'grade1':1, 'grade2':2, 'grade3':3, 'grade4':4, 'grade5':5, 'grade6':6, 'prep1':7, 'prep2':8, 'prep3':9, 'sec1':10 };
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
             let batchUpdates = {}; let generatedCodesListHTML = "";
             for (let block = 0; block < 50; block++) {
