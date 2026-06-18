@@ -595,7 +595,7 @@
         };
         const app = firebase.initializeApp(firebaseConfig); const db = firebase.database();
         
-        const gradeNames = { 'grade3':'الثالث الابتدائي', 'grade4':'الرابع الابتدائي', 'grade5':'الخامس الابتدائي', 'grade6':'السادس الابتدائي', 'prep1':'الأول الإعدادي', 'prep2':'الثاني الإعدادي', 'prep3':'الثالث الإعدادي', 'sec1':'الصف الأول الثانوي' };
+        const gradeNames = { 'grade1':'الأول الابتدائي', 'grade2':'الثاني الابتدائي', 'grade3':'الثالث الابتدائي', 'grade4':'الرابع الابتدائي', 'grade5':'الخامس الابتدائي', 'grade6':'السادس الابتدائي', 'prep1':'الأول الإعدادي', 'prep2':'الثاني الإعدادي', 'prep3':'الثالث الإعدادي', 'sec1':'الصف الأول الثانوي' };
         
         let selectedGrade = "", selectedLesson = "", currentLessonTextTitle = "";
         let allQuestionsFetched = [], activeQuestions = [], studentAnswers = [], currentIndex = 0, timer, timeLeft = 0, deviceFingerprint = "", isReviewMode = false;
@@ -760,6 +760,8 @@
         async function buildLessonsGrid() {
             const grid = document.getElementById('lessonsGrid'); grid.innerHTML = ''; let folderStructure = [];
             const primaryLessonTitles = {
+                'grade1': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
+                'grade2': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
                 'grade3': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
                 'grade4': ["أدوات الاستكشافات العلمية", "أجهزة الحاسب ومكوناتها", "أنظمة التشغيل", "التكنولوجيا المساعدة", "المشكلات التكنولوجية الشائعة وحلولها", "مصادر جمع البيانات وتحليلها", "الحماية من مخاطر شبكة الإنترنت", "الاستخدام الصحيح والأخلافي لتكنولوجيا المعلومات", "عمليات البحث على شبكة الإنترنت", "الجهات المسئولة عن حل مشكلات الإنترنت", "الأمان الرقمي", "مشروع تطبيقي"],
                 'grade5': ["الأجهزة الملحقة بالحاسب الآلي", "الشبكات وأنواعها", "أنظمة التواصل الذكية", "مشكلات الاتصال بالإنترنت وخطوات حلها", "الملفات الرقمية وكيفية التعامل معها", "مشاركة المعلومات: متى وأين وكيف؟", "أساليب حماية البيانات والمعلومات", "إدارة كلمات المرور", "طرق التعامل مع المواقع الإلكترونية الاحتيالية", "حقوق النشر", "انتقاء المصادر الرقمية", "توثيق المعلومات"],
@@ -774,7 +776,7 @@
                 folderStructure.push({ key: 'review1', label: '📝 مراجعة المطبوع', subLabel: 'تقييم شامل ومراجعة المحور الأول', tag: 'المحور الأول', isReview: true });
                 for (let i = 1; i <= 6; i++) { folderStructure.push({ key: `lesson${i+6}`, label: `الدرس ${i}`, subLabel: titles[i+5], tag: 'المحور الثاني', isReview: false, axis: 'second' }); }
                 folderStructure.push({ key: 'review2', label: '🏆 مراجعة ختامية', subLabel: 'تقييم شامل ومراجعة المحور الثاني', tag: 'المحور الثاني', isReview: true });
-            } else if (['grade3', 'prep3'].includes(selectedGrade)) {
+            } else if (['grade1', 'grade2', 'grade3', 'prep3'].includes(selectedGrade)) {
                 const titles = primaryLessonTitles[selectedGrade]; titles.forEach((title, idx) => { folderStructure.push({ key: `lesson${idx+1}`, label: `القسم ${idx+1}`, subLabel: title, isReview: false, axis: 'first' }); });
             } else if (selectedGrade === 'prep1') {
                 const prep1Titles = ["التكنولوجيا الخضراء Green Technology", "التحول الرقمي Digital Transformation", "أنظمة التشغيل Operating Systems", "تثبيت وإزالة البرامج والأجهزة الرقمية الملحقة", "البريد الإلكتروني E-mail", "الحوسبة السحابية Cloud Computing", "جوجل ميت وإدارة مشروعك Google Meet", "تصميم قواعد البيانات Databases Design", "النماذج والاستعلامات Forms & Queries", "المشروع + مراجعة عامة على المنهج"];
