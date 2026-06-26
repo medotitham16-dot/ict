@@ -1426,8 +1426,8 @@
         window.renderSubQuizzesUI = function() {
             const mainBtn = document.getElementById('btn-standardQuiz');
             if (mainBtn) {
-                const savedMainScore = localStorage.getItem(`local_score_${selectedGrade}_${selectedLesson}`);
-                const mainScoreNum = savedMainScore ? parseInt(savedMainScore) : 0;
+                const mainQuizKey = `${selectedGrade}_${selectedLesson}`; let mainScoreNum = 0; if (window.studentQuizzesData && window.studentQuizzesData[mainQuizKey]) { const qData = window.studentQuizzesData[mainQuizKey]; mainScoreNum = parseFloat(typeof qData === "object" ? qData.score : qData) || 0; }
+                
                 const mainQuizQs = (window.allGradeQuestions || []).filter(q => q.lesson === selectedLesson);
                 const showCompleted = mainQuizQs.length > 0 && mainScoreNum >= 50;
                 mainBtn.innerHTML = `<i class="fa-solid fa-file-pen text-lg shrink-0"></i> تقييم و أسئلة الدرس ${showCompleted ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full mr-2 shrink-0">مكتمل ✓</span>` : ''}`;
@@ -1453,8 +1453,8 @@
                     if (sqGames.length > 0) hasAnySuperComputerGames = true;
 
                     const subBtn = document.createElement('button');
-                    const savedLocalScore = localStorage.getItem(`local_score_${selectedGrade}_${quizKey}`);
-                    const scoreNum = savedLocalScore ? parseInt(savedLocalScore) : 0;
+                    const fullQuizKey = `${selectedGrade}_${quizKey}`; let scoreNum = 0; if (window.studentQuizzesData && window.studentQuizzesData[fullQuizKey]) { const qData = window.studentQuizzesData[fullQuizKey]; scoreNum = parseFloat(typeof qData === "object" ? qData.score : qData) || 0; }
+                    
                     const subQuizQs = (window.allGradeQuestions || []).filter(q => q.lesson === quizKey);
                     const showSubCompleted = subQuizQs.length > 0 && scoreNum >= 50;
                     
@@ -2139,3 +2139,4 @@
     </script>
 </body>
 </html>
+
