@@ -1079,7 +1079,7 @@
                             if (belongsToLesson) {
                                 let scoreStr = typeof qData === 'object' ? qData.score : qData;
                                 let scoreNum = parseFloat(scoreStr);
-                                if (!isNaN(scoreNum) && scoreNum > 0) {
+                                if (!isNaN(scoreNum) && scoreNum >= 50) {
                                     isCompleted = true;
                                     break;
                                 }
