@@ -842,9 +842,11 @@
 
         async function loadStudentStats() {
             try {
+                window.studentQuizzesData = {};
                 const snapshot = await db.ref(`structured_student_scores/${deviceFingerprint}`).get();
                 if (snapshot.exists()) {
                     const data = snapshot.val();
+                    window.studentQuizzesData = data.quizzes || {};
                     let totalStars = 0;
                     let totalScores = 0;
                     let count = 0;
@@ -900,8 +902,8 @@
                 document.getElementById('authContainer').classList.add('hidden'); 
                 document.getElementById('lessonsDashboard').classList.remove('hidden'); 
                 document.getElementById('dashboardTitle').innerText = "منهج " + gradeNames[selectedGrade]; 
-                buildLessonsGrid();
-                loadStudentStats();
+                await loadStudentStats();
+                await buildLessonsGrid();
             } catch (error) { console.error("Firebase Error:", error); alert("خطأ في الاتصال بالسيرفر! " + (error.message || "تأكد من إعداد القواعد Security Rules المحدثة.")); }
         }
 
@@ -1068,9 +1070,18 @@
                     folder.className = `custom-card border-4 p-5 rounded-[2rem] flex flex-col items-center gap-3 shadow-[0_15px_35px_rgba(0,0,0,0.4)] glass-folder-btn w-40 sm:w-56 z-10 hover:scale-110 transition-transform duration-300 ${item.isReview ? 'bg-emerald-900/60 border-emerald-500/50' : 'bg-slate-800/80 border-indigo-500/50 hover:border-indigo-400'}`;
                     folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl sm:text-4xl transition-colors mb-1" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black text-white text-sm sm:text-base">${finalDisplayLabel}</span><span class="text-[10px] font-bold text-indigo-200/80 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
 
-                    const localScoreNormal = localStorage.getItem(`local_score_${selectedGrade}_${item.key}`);
-                    const localScoreGame = localStorage.getItem(`local_score_${selectedGrade}_${item.key}_game`);
-                    const isCompleted = (localScoreNormal !== null && parseFloat(localScoreNormal) > 0) || (localScoreGame !== null && parseFloat(localScoreGame) > 0);
+                    const qKeyNormal = `${selectedGrade}_${item.key}`;
+                    const qKeyGame = `${selectedGrade}_${item.key}_game`;
+                    let isCompleted = false;
+                    if (window.studentQuizzesData) {
+                        const scoreNormal = window.studentQuizzesData[qKeyNormal] ? parseFloat(window.studentQuizzesData[qKeyNormal].score) : 0;
+                        const scoreGame = window.studentQuizzesData[qKeyGame] ? parseFloat(window.studentQuizzesData[qKeyGame].score) : 0;
+                        isCompleted = (scoreNormal > 0) || (scoreGame > 0);
+                    } else {
+                        const localScoreNormal = localStorage.getItem(`local_score_${qKeyNormal}`);
+                        const localScoreGame = localStorage.getItem(`local_score_${qKeyGame}`);
+                        isCompleted = (localScoreNormal !== null && parseFloat(localScoreNormal) > 0) || (localScoreGame !== null && parseFloat(localScoreGame) > 0);
+                    }
 
                     const pathNode = document.createElement('div');
                     
