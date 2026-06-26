@@ -1068,9 +1068,22 @@
                     folder.className = `custom-card border-4 p-5 rounded-[2rem] flex flex-col items-center gap-3 shadow-[0_15px_35px_rgba(0,0,0,0.4)] glass-folder-btn w-40 sm:w-56 z-10 hover:scale-110 transition-transform duration-300 ${item.isReview ? 'bg-emerald-900/60 border-emerald-500/50' : 'bg-slate-800/80 border-indigo-500/50 hover:border-indigo-400'}`;
                     folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl sm:text-4xl transition-colors mb-1" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black text-white text-sm sm:text-base">${finalDisplayLabel}</span><span class="text-[10px] font-bold text-indigo-200/80 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
 
+                    const localScoreNormal = localStorage.getItem(`local_score_${selectedGrade}_${item.key}`);
+                    const localScoreGame = localStorage.getItem(`local_score_${selectedGrade}_${item.key}_game`);
+                    const isCompleted = (localScoreNormal !== null && parseFloat(localScoreNormal) > 0) || (localScoreGame !== null && parseFloat(localScoreGame) > 0);
+
                     const pathNode = document.createElement('div');
-                    pathNode.className = `absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full border-4 border-slate-900 z-20 flex items-center justify-center ${item.isReview ? 'bg-emerald-400 shadow-[0_0_20px_#34d399] animate-pulse' : 'bg-indigo-400 shadow-[0_0_20px_#818cf8]'}`;
-                    pathNode.innerHTML = `<i class="fa-solid ${item.isReview ? 'fa-check' : 'fa-star'} text-slate-900 text-[10px] sm:text-xs"></i>`;
+                    
+                    let nodeBgClass = item.isReview ? 'bg-emerald-400 shadow-[0_0_20px_#34d399] animate-pulse' : 'bg-indigo-400 shadow-[0_0_20px_#818cf8]';
+                    let nodeIconClass = item.isReview ? 'fa-check' : 'fa-star';
+                    
+                    if (!item.isReview && isCompleted) {
+                        nodeBgClass = 'bg-emerald-500 shadow-[0_0_20px_#10b981]';
+                        nodeIconClass = 'fa-check';
+                    }
+
+                    pathNode.className = `absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full border-4 border-slate-900 z-20 flex items-center justify-center ${nodeBgClass}`;
+                    pathNode.innerHTML = `<i class="fa-solid ${nodeIconClass} text-slate-900 text-[10px] sm:text-xs"></i>`;
                     
                     wrapper.appendChild(pathNode);
                     wrapper.appendChild(folder);
