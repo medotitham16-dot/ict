@@ -299,11 +299,15 @@
 
             <!-- Lessons Grid Area -->
             <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-[32px] p-6 sm:p-8 shadow-xl w-full">
-                <div class="flex justify-between items-center mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-500"></i> مسار التعلم والمقررات</h3>
-                    <div class="text-xs font-bold bg-slate-800 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-700 hidden sm:block">تم التحديث</div>
+                    
+                    <div class="flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700/50 backdrop-blur-sm self-end">
+                        <button onclick="switchLessonsView('grid')" id="btnViewGrid" class="px-4 py-2 rounded-lg text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2"><i class="fa-solid fa-border-all"></i> شبكة</button>
+                        <button onclick="switchLessonsView('map')" id="btnViewMap" class="px-4 py-2 rounded-lg text-xs font-black transition-all bg-indigo-600 text-white shadow-md flex items-center gap-2"><i class="fa-solid fa-map-location-dot"></i> خريطة</button>
+                    </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5" id="lessonsGrid"></div>
+                <div id="lessonsGridContainer" class="w-full"></div>
             </div>
         </main>
     </div>
@@ -803,6 +807,25 @@
             else { body.classList.remove('theme-light'); body.classList.add('theme-dark'); icon.className = "fa-solid fa-sun text-amber-400"; localStorage.setItem('user_theme', 'dark'); }
         }
 
+        window.currentLessonsViewMode = localStorage.getItem('user_lessons_view') || 'map';
+        
+        window.switchLessonsView = function(mode) {
+            window.currentLessonsViewMode = mode;
+            localStorage.setItem('user_lessons_view', mode);
+            
+            const btnGrid = document.getElementById('btnViewGrid');
+            const btnMap = document.getElementById('btnViewMap');
+            if(mode === 'grid') {
+                btnGrid.className = "px-4 py-2 rounded-lg text-xs font-black transition-all bg-indigo-600 text-white shadow-md flex items-center gap-2";
+                btnMap.className = "px-4 py-2 rounded-lg text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+            } else {
+                btnMap.className = "px-4 py-2 rounded-lg text-xs font-black transition-all bg-indigo-600 text-white shadow-md flex items-center gap-2";
+                btnGrid.className = "px-4 py-2 rounded-lg text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+            }
+            
+            buildLessonsGrid();
+        };
+
         window.togglePasswordVisibility = function() {
             const input = document.getElementById('gradeCodeInput');
             const icon = document.getElementById('eyeIcon');
@@ -883,7 +906,22 @@
         }
 
         async function buildLessonsGrid() {
-            const grid = document.getElementById('lessonsGrid'); grid.innerHTML = ''; let folderStructure = [];
+            const container = document.getElementById('lessonsGridContainer'); 
+            if(container) container.innerHTML = '';
+            
+            let folderStructure = [];
+            
+            // Initialization for ViewMode styling toggle
+            if (document.getElementById('btnViewMap')) {
+                if(window.currentLessonsViewMode === 'grid') {
+                    document.getElementById('btnViewGrid').className = "px-4 py-2 rounded-lg text-xs font-black transition-all bg-indigo-600 text-white shadow-md flex items-center gap-2";
+                    document.getElementById('btnViewMap').className = "px-4 py-2 rounded-lg text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+                } else {
+                    document.getElementById('btnViewMap').className = "px-4 py-2 rounded-lg text-xs font-black transition-all bg-indigo-600 text-white shadow-md flex items-center gap-2";
+                    document.getElementById('btnViewGrid').className = "px-4 py-2 rounded-lg text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+                }
+            }
+
             const primaryLessonTitles = {
                 'grade1': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
                 'grade2': Array.from({length: 12}, (_, i) => `محتوى وتطبيقات القسم رقم ${i+1}`),
@@ -972,8 +1010,21 @@
             window.currentGradeLessons = window.currentGradeLessons || {};
             window.currentGradeLessons[selectedGrade] = {};
 
-            folderStructure.forEach((item) => {
-                const gridNode = document.getElementById('lessonsGrid'); if(!gridNode) return;
+            const containerNode = document.getElementById('lessonsGridContainer'); 
+            if(!containerNode) return;
+            
+            const gridNode = document.createElement('div');
+            gridNode.id = 'lessonsGrid';
+            
+            if (window.currentLessonsViewMode === 'grid') {
+                gridNode.className = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5";
+            } else {
+                gridNode.className = "relative max-w-3xl mx-auto flex flex-col gap-12 sm:gap-16 py-12 w-full";
+                gridNode.innerHTML = `<div class="absolute left-1/2 top-0 bottom-0 w-3 bg-gradient-to-b from-indigo-500/20 via-purple-500/50 to-indigo-500/20 -translate-x-1/2 rounded-full border-x border-white/5 z-0"></div>`;
+            }
+            containerNode.appendChild(gridNode);
+
+            folderStructure.forEach((item, index) => {
                 let finalDisplaySubLabel = item.subLabel;
                 let finalDisplayLabel = item.label;
                 let finalDisplayTag = item.tag;
@@ -990,24 +1041,41 @@
                 };
 
                 const folder = document.createElement('button'); 
-                const badgeHtml = finalDisplayTag ? `<span class="bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full font-bold mb-1">${finalDisplayTag}</span>` : '';
+                const badgeHtml = finalDisplayTag ? `<span class="bg-indigo-500/20 text-indigo-400 text-[10px] px-2 py-0.5 rounded-full font-bold mb-1 shadow-sm">${finalDisplayTag}</span>` : '';
                 
                 folder.setAttribute('data-axis', item.axis || 'first');
                 if (item.isReview) folder.setAttribute('data-review', 'true');
                 
-                folder.className = `custom-card border-2 p-5 rounded-3xl flex flex-col items-center gap-3 shadow-lg glass-folder-btn ${item.isReview ? 'bg-emerald-500/5 border-emerald-500/20' : ''}`;
-                
                 let iconStyleStr = "";
-                let iconClass = item.isReview ? 'fa-server text-emerald-500' : 'fa-microchip text-amber-500';
+                let iconClass = item.isReview ? (window.currentLessonsViewMode === 'grid' ? 'fa-server text-emerald-500' : 'fa-server text-emerald-400 animate-pulse') : (window.currentLessonsViewMode === 'grid' ? 'fa-microchip text-amber-500' : 'fa-rocket text-amber-400');
                 
                 if (item.color && item.color !== "#f59e0b" && item.color !== "#1e293b") {
                     iconStyleStr = `style="color: ${item.color} !important; filter: drop-shadow(0 0 10px ${item.color}80);"`;
-                    iconClass = item.isReview ? 'fa-server' : 'fa-microchip';
+                    iconClass = item.isReview ? 'fa-server' : (window.currentLessonsViewMode === 'grid' ? 'fa-microchip' : 'fa-rocket');
                 }
                 
-                folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl transition-colors" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black question-text text-sm">${finalDisplayLabel}</span><span class="text-[11px] font-bold text-indigo-400 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
                 folder.onclick = () => openLearningCenter(item.key, finalDisplayLabel + " : " + finalDisplaySubLabel);
-                gridNode.appendChild(folder);
+
+                if (window.currentLessonsViewMode === 'grid') {
+                    folder.className = `custom-card border-2 p-5 rounded-3xl flex flex-col items-center gap-3 shadow-lg glass-folder-btn ${item.isReview ? 'bg-emerald-500/5 border-emerald-500/20' : ''}`;
+                    folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl transition-colors" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black question-text text-sm">${finalDisplayLabel}</span><span class="text-[11px] font-bold text-indigo-400 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
+                    gridNode.appendChild(folder);
+                } else {
+                    const isLeft = index % 2 === 0;
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `relative w-full flex items-center ${isLeft ? 'justify-start' : 'justify-end'} px-4 sm:px-12`;
+                    
+                    folder.className = `custom-card border-4 p-5 rounded-[2rem] flex flex-col items-center gap-3 shadow-[0_15px_35px_rgba(0,0,0,0.4)] glass-folder-btn w-40 sm:w-56 z-10 hover:scale-110 transition-transform duration-300 ${item.isReview ? 'bg-emerald-900/60 border-emerald-500/50' : 'bg-slate-800/80 border-indigo-500/50 hover:border-indigo-400'}`;
+                    folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl sm:text-4xl transition-colors mb-1" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black text-white text-sm sm:text-base">${finalDisplayLabel}</span><span class="text-[10px] font-bold text-indigo-200/80 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
+
+                    const pathNode = document.createElement('div');
+                    pathNode.className = `absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full border-4 border-slate-900 z-20 flex items-center justify-center ${item.isReview ? 'bg-emerald-400 shadow-[0_0_20px_#34d399] animate-pulse' : 'bg-indigo-400 shadow-[0_0_20px_#818cf8]'}`;
+                    pathNode.innerHTML = `<i class="fa-solid ${item.isReview ? 'fa-check' : 'fa-star'} text-slate-900 text-[10px] sm:text-xs"></i>`;
+                    
+                    wrapper.appendChild(pathNode);
+                    wrapper.appendChild(folder);
+                    gridNode.appendChild(wrapper);
+                }
             });
         }
 
