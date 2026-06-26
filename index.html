@@ -200,7 +200,7 @@
             </div>
         </div>
 
-        <form id="loginForm" class="space-y-4 relative z-10" onsubmit="verifyAndLockStudentCode(event)">
+        <form id="loginForm" class="space-y-4 relative z-10" onsubmit="try { verifyAndLockStudentCode(event); } catch(e) { alert('خطأ برمجي: ' + e); } return false;">
             <div class="relative group">
                 <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-400 transition-colors"><i class="fa-solid fa-user"></i></div>
                 <input type="text" id="studentNameInput" class="w-full bg-slate-950/50 border border-slate-700 text-white rounded-2xl py-4 pr-11 pl-4 text-right focus:outline-none focus:border-indigo-500 focus:bg-slate-900 transition-all placeholder:text-slate-500 font-bold text-sm" placeholder="الاسم الثلاثي للطالب" required>
@@ -2122,4 +2122,20 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('user_theme');
-            if (save
+            if (savedTheme === 'light') {
+                document.body.classList.replace('theme-dark', 'theme-light');
+                document.getElementById('themeIcon').className = "fa-solid fa-moon text-indigo-600 text-lg";
+            }
+
+            const codeInput = document.getElementById('gradeCodeInput');
+            codeInput.addEventListener('input', window.handleCodeChange);
+
+            const savedCode = localStorage.getItem('saved_grade_code');
+            if (savedCode) {
+                codeInput.value = savedCode;
+                window.handleCodeChange();
+            }
+        });
+    </script>
+</body>
+</html>
