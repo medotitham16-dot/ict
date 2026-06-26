@@ -1071,6 +1071,7 @@
                     folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl sm:text-4xl transition-colors mb-1" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black text-white text-sm sm:text-base">${finalDisplayLabel}</span><span class="text-[10px] font-bold text-indigo-200/80 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span></div>`;
 
                     let isCompleted = false;
+                    let maxScoreDebug = 0;
                     if (window.studentQuizzesData) {
                         for (let k in window.studentQuizzesData) {
                             const qData = window.studentQuizzesData[k];
@@ -1079,13 +1080,15 @@
                             if (belongsToLesson) {
                                 let scoreStr = typeof qData === 'object' ? qData.score : qData;
                                 let scoreNum = parseFloat(scoreStr);
+                                if (!isNaN(scoreNum) && scoreNum > maxScoreDebug) maxScoreDebug = scoreNum;
                                 if (!isNaN(scoreNum) && scoreNum >= 50) {
                                     isCompleted = true;
-                                    break;
                                 }
                             }
                         }
                     }
+
+                    folder.innerHTML = `${badgeHtml}<i class="fa-solid ${iconClass} text-3xl sm:text-4xl transition-colors mb-1" ${iconStyleStr}></i><div class="text-center px-1"><span class="block font-black text-white text-sm sm:text-base">${finalDisplayLabel}</span><span class="text-[10px] font-bold text-indigo-200/80 block mt-1 leading-relaxed">${finalDisplaySubLabel}</span><span class="text-[11px] font-bold text-amber-400 block mt-1">(الدرجة المسجلة: ${maxScoreDebug}%)</span></div>`;
 
                     const pathNode = document.createElement('div');
                     
@@ -2119,20 +2122,4 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('user_theme');
-            if (savedTheme === 'light') {
-                document.body.classList.replace('theme-dark', 'theme-light');
-                document.getElementById('themeIcon').className = "fa-solid fa-moon text-indigo-600 text-lg";
-            }
-
-            const codeInput = document.getElementById('gradeCodeInput');
-            codeInput.addEventListener('input', window.handleCodeChange);
-
-            const savedCode = localStorage.getItem('saved_grade_code');
-            if (savedCode) {
-                codeInput.value = savedCode;
-                window.handleCodeChange();
-            }
-        });
-    </script>
-</body>
-</html>
+            if (save
