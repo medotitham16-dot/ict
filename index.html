@@ -1597,10 +1597,12 @@
         }
 
         window.confirmExitGame = function() { if(confirm("هل تود الخروج من طور اللعبة؟")) backToCurrentLesson(); }
-        window.backToLessons = function() { 
+        window.backToLessons = async function() { 
             clearInterval(timer); isReviewMode = false;
             document.getElementById('quizContainer').classList.add('hidden'); document.getElementById('interactiveGameContainer').classList.add('hidden');
             document.getElementById('globalEmptyState').classList.add('hidden'); document.getElementById('learningCenterContainer').classList.add('hidden'); 
+            await loadStudentStats();
+            await buildLessonsGrid();
             document.getElementById('lessonsDashboard').classList.remove('hidden'); 
         }
         window.backToMainAuth = function() { location.reload(); }
