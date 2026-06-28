@@ -1115,6 +1115,7 @@
             
             currentLessonImagesArray = [];
             currentImageIndexInGallery = 0;
+            window.currentLessonSubQuizzes = null;
             document.getElementById('imageGalleryControls').classList.add('hidden');
 
             const mainImgDisplay = document.getElementById('lessonMainImageDisplay');
@@ -1195,7 +1196,6 @@
 
                     // Render sub_quizzes dynamically
                     window.currentLessonSubQuizzes = lData.sub_quizzes || null;
-                    if (window.renderSubQuizzesUI) window.renderSubQuizzesUI();
                 } else { executeEmptyUI('both'); }
             } catch(e) { executeEmptyUI('both'); }
 
@@ -1207,6 +1207,8 @@
                     gameQuestions = window.allGradeQuestions.filter(q => q.lesson === (selectedLesson + "_game"));
                 } else { window.allGradeQuestions = []; gameQuestions = []; }
             } catch (error) { window.allGradeQuestions = []; gameQuestions = []; }
+            
+            if (window.renderSubQuizzesUI) window.renderSubQuizzesUI();
         }
 
         function displaySelectedGalleryImage() {
@@ -1499,7 +1501,7 @@
                 };
                 await db.ref(`structured_student_scores/${deviceFingerprint}/quizzes/${selectedGrade}_${window.activeQuizKey}`).set(saveVal);
             } catch(e){}
-            localStorage.setItem(`local_score_${selectedGrade}_${window.activeQuizKey}`, percent);
+            localStorage.setItem(`local_score_${selectedGrade}_${window.activeQuizKey}`, percent); if (!window.studentQuizzesData) window.studentQuizzesData = {}; window.studentQuizzesData[`${selectedGrade}_${window.activeQuizKey}`] = saveVal;
         }
 
         window.startReviewMode = function(onlyErrors = false) {
@@ -1600,7 +1602,7 @@
                 const timeSpent = Math.floor((Date.now() - (window.currentQuizStartTime || Date.now())) / 1000);
                 await db.ref(`structured_student_scores/${deviceFingerprint}/quizzes/${selectedGrade}_${selectedLesson}_game`).set({ score: `${percent}%`, timeSpent: timeSpent }); 
             } catch(e){}
-            localStorage.setItem(`local_score_${selectedGrade}_${selectedLesson}_game`, percent);
+            localStorage.setItem(`local_score_${selectedGrade}_${selectedLesson}_game`, percent); if (!window.studentQuizzesData) window.studentQuizzesData = {}; window.studentQuizzesData[`${selectedGrade}_${selectedLesson}_game`] = { score: `${percent}%`, timeSpent: timeSpent };
         }
 
         window.confirmExitGame = function() { if(confirm("هل تود الخروج من طور اللعبة؟")) backToCurrentLesson(); }
@@ -1846,7 +1848,7 @@
                 const timeSpent = Math.floor((Date.now() - (window.currentQuizStartTime || Date.now())) / 1000);
                 await db.ref(`structured_student_scores/${deviceFingerprint}/quizzes/${scActiveGameKey}`).set({ score: `${percent}%`, timeSpent: timeSpent }); 
             } catch(e){}
-            localStorage.setItem(`local_score_${selectedGrade}_${scActiveGameKey}`, percent);
+            localStorage.setItem(`local_score_${selectedGrade}_${scActiveGameKey}`, percent); if (!window.studentQuizzesData) window.studentQuizzesData = {}; window.studentQuizzesData[`${selectedGrade}_${scActiveGameKey}`] = { score: `${percent}%`, timeSpent: timeSpent };
         }
 
         window.fetchAndRenderLeaderboard = async function() {
@@ -2139,4 +2141,6 @@
     </script>
 </body>
 </html>
+
+
 
